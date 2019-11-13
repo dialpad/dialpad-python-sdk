@@ -3,7 +3,7 @@ import requests
 
 from cached_property import cached_property
 
-from .resources import UserResource
+from .resources import UserResource, SMSResource
 
 
 class DialpadClient(object):
@@ -62,7 +62,10 @@ class DialpadClient(object):
       return self._cursor_iterator(response_json, path=path, method=method, data=data, headers=headers)
     return response_json
 
-
   @cached_property
   def users(self):
     return UserResource(self)
+
+  @cached_property
+  def sms(self):
+    return SMSResource(self)
