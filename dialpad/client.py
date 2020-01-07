@@ -3,7 +3,7 @@ import requests
 
 from cached_property import cached_property
 
-from .resources import UserResource, SMSResource, TranscriptResource
+from .resources import UserResource, SMSResource, TranscriptResource, DeviceResource
 
 
 class DialpadClient(object):
@@ -73,3 +73,7 @@ class DialpadClient(object):
   @cached_property
   def transcripts(self):
     return TranscriptResource(self)
+
+  @cached_property
+  def devices(self):
+    return DeviceResource(self)
