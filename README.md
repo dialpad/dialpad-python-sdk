@@ -85,7 +85,7 @@ and endpoints that we expose in the API, so let's start with how to add a new re
 Each resource exposed by this library should have its own python file under the `dialpad/resources`
 directory, and should define a single `class` that inherits from `DialpadResource`.
 
-The class itself should define set its `_resource_path` class property to a list of strings such
+The class itself should set the `_resource_path` class property to a list of strings such
 that `'/api/v2/' + _resource_path.join('/')` corresponds to the API path for that resource.
 
 Once the `_resource_path` is defined, the resource class can define instance methods to expose
