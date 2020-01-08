@@ -117,6 +117,9 @@ If the request succeeds, then `self._request` will either return a python dict, 
 python dicts, depending on whether the server responds with a pagenated response. Pagenated
 responses will be detected automatically, so the caller does not need to worry about it.
 
+If the request fails, then a `requests.HTTPError` exception will be raised, and it'll be up to the
+consumer of this library to deal with it 😎
+
 
 #### The `resources/__init__.py` File
 
