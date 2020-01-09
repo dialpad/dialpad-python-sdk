@@ -1,7 +1,7 @@
 from .resource import DialpadResource
 
-class DeviceResource(DialpadResource):
-  _resource_path = ['devices']
+class UserDeviceResource(DialpadResource):
+  _resource_path = ['userdevices']
 
   def get(self, device_id):
     return self.request([device_id])
