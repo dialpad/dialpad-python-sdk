@@ -8,6 +8,7 @@ from .resources import SMSResource
 from .resources import TranscriptResource
 from .resources import UserDeviceResource
 from .resources import CallEventSubscriptionResource
+from .resources import StatsExportResource
 
 
 class DialpadClient(object):
@@ -85,3 +86,7 @@ class DialpadClient(object):
   @cached_property
   def call_event_subscriptions(self):
     return CallEventSubscriptionResource(self)
+
+  @cached_property
+  def stats(self):
+    return StatsExportResource(self)
