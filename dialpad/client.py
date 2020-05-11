@@ -47,6 +47,9 @@ class DialpadClient(object):
     if method == 'POST':
       return requests.post(url, json=data, headers=headers)
 
+    if method == 'PUT':
+      return requests.put(url, json=data, headers=headers)
+
     if method == 'PATCH':
       return requests.patch(url, json=data, headers=headers)
 

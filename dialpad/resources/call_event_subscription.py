@@ -28,7 +28,7 @@ class CallEventSubscriptionResource(DialpadResource):
                                          "transcription", or "recording")
     """
 
-    return self.request([subscription_id], method='POST',
+    return self.request([subscription_id], method='PUT',
                         data=dict(url=url, enabled=enabled, group_calls_only=group_calls_only,
                                   **kwargs))
 
