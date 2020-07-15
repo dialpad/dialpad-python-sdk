@@ -18,3 +18,6 @@ class UserResource(DialpadResource):
 
   def list(self, state='active', limit=25):
     return self.request(data={'limit': limit, 'state': state})
+
+  def assign_number(self, user_id, **kwargs):
+    return self.request([user_id, 'assign_number'], method='POST', data=kwargs)

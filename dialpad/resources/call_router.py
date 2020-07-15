@@ -14,3 +14,6 @@ class CallRouterResource(DialpadResource):
 
   def delete(self, call_router_id):
     return self.request([call_router_id], method='DELETE')
+
+  def assign_number(self, call_router_id, **kwargs):
+    return self.request([call_router_id, 'assign_number'], method='POST', data=kwargs)
