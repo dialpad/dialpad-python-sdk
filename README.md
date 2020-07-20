@@ -14,7 +14,7 @@ machine:
 
 ```bash
 git clone git@github.com:dialpad/dialpad-python-sdk.git
-cd python-dialpad
+cd dialpad-python-sdk
 python ./setup.py install
 ```
 
