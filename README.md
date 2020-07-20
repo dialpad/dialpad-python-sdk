@@ -13,7 +13,7 @@ For now, this package is private and unpublished, but it's still reasonably easy
 machine:
 
 ```bash
-git clone git@github.com:jakedialpad/python-dialpad.git
+git clone git@github.com:dialpad/dialpad-python-sdk.git
 cd python-dialpad
 python ./setup.py install
 ```

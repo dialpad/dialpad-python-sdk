@@ -12,6 +12,6 @@ setup(
   long_description=readme,
   author='Jake Nielsen',
   author_email='jnielsen@dialpad.com',
-  url='https://github.com/jakedialpad/python-dialpad',
+  url='https://github.com/dialpad/dialpad-python-sdk',
   packages=find_packages()
 )
