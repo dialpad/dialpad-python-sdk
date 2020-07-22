@@ -9,8 +9,7 @@ For information about the API itself, head on over to our
 
 ## Installation
 
-For now, this package is private and unpublished, but it's still reasonably easy to install on your
-machine:
+For now, this package is unpublished, but it's still reasonably easy to install on your machine:
 
 ```bash
 git clone git@github.com:dialpad/dialpad-python-sdk.git
@@ -32,7 +31,7 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(beta=True, token='API_TOKEN_HERE')
 
-print dp_client.users.get(user_id='1234567')
+print dp_client.user.get(user_id='1234567')
 ```
 
 ### Client Constructor Arguments
@@ -47,13 +46,13 @@ print dp_client.users.get(user_id='1234567')
 ### API Resources
 
 In general, each resource that we support in our public API will be exposed as properties of the
-client object. For example, the `User` resource can be accessed using the `users` property (as
+client object. For example, the `User` resource can be accessed using the `user` property (as
 demonstrated above).
 
 Each of these resource properties will expose related HTTP methods as methods of that resource
 property.
 
-For example, `GET /api/v2/users/{id}` translates to `dp_client.users.get('the_user_id')`.
+For example, `GET /api/v2/users/{id}` translates to `dp_client.user.get('the_user_id')`.
 
 
 ### API Responses
@@ -69,7 +68,7 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(beta=True, token='API_TOKEN_HERE')
 
-for user in dp_client.users.list():
+for user in dp_client.user.list():
   print user
 ```
 
@@ -89,20 +88,20 @@ The class itself should set the `_resource_path` class property to a list of str
 that `'/api/v2/' + _resource_path.join('/')` corresponds to the API path for that resource.
 
 Once the `_resource_path` is defined, the resource class can define instance methods to expose
-functionality related to the resource that it represents, and can use the `self._request` helper
+functionality related to the resource that it represents, and can use the `self.request` helper
 method to make authenticated requests to API paths under the `_resource_path`. For example,
-if `_resource_path` is set to `['users']`, then calling `self._request(method='POST')` would make
-a `POST` request to `/api/v2/users`. (A more precise description of the `_request` method is given
+if `_resource_path` is set to `['users']`, then calling `self.request(method='POST')` would make
+a `POST` request to `/api/v2/users`. (A more precise description of the `request` method is given
 in the following section)
 
 With that in mind, most methods that the developer chooses to add to a resource class will probably
-just be a very thin method that passes the appropriate arguments into `self._request`, and returns
+just be a very thin method that passes the appropriate arguments into `self.request`, and returns
 the result.
 
 
-#### The `_request` Helper Method
+#### The `request` Helper Method
 
-`self._request` is a helper method that handles the details of authentication, response parsing, and
+`self.request` is a helper method that handles the details of authentication, response parsing, and
 pagination, such that the caller only needs to specify the API path, HTTP method, and request data.
 The method arguments are as follows:
 
@@ -113,7 +112,7 @@ The method arguments are as follows:
 - `headers (optional)` Any additional headers that should be included in the request (the API key
   is automatically included)
 
-If the request succeeds, then `self._request` will either return a python dict, or an iterator of
+If the request succeeds, then `self.request` will either return a python dict, or an iterator of
 python dicts, depending on whether the server responds with a pagenated response. Pagenated
 responses will be detected automatically, so the caller does not need to worry about it.
 

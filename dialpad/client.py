@@ -3,13 +3,23 @@ import requests
 
 from cached_property import cached_property
 
-from .resources import UserResource
-from .resources import SMSResource
-from .resources import TranscriptResource
-from .resources import UserDeviceResource
-from .resources import CallEventSubscriptionResource
-from .resources import StatsExportResource
+from .resources import BlockedNumberResource
+from .resources import CallResource
 from .resources import CallRouterResource
+from .resources import CallbackResource
+from .resources import CallCenterResource
+from .resources import CompanyResource
+from .resources import ContactResource
+from .resources import DepartmentResource
+from .resources import EventSubscriptionResource
+from .resources import NumberResource
+from .resources import OfficeResource
+from .resources import RoomResource
+from .resources import SMSResource
+from .resources import StatsExportResource
+from .resources import TranscriptResource
+from .resources import UserResource
+from .resources import UserDeviceResource
 
 
 class DialpadClient(object):
@@ -72,29 +82,69 @@ class DialpadClient(object):
     return response_json
 
   @cached_property
-  def users(self):
-    return UserResource(self)
+  def blocked_number(self):
+    return BlockedNumberResource(self)
+
+  @cached_property
+  def call(self):
+    return CallResource(self)
+
+  @cached_property
+  def call_router(self):
+    return CallRouterResource(self)
+
+  @cached_property
+  def callback(self):
+    return CallbackResource(self)
+
+  @cached_property
+  def callcenter(self):
+    return CallCenterResource(self)
+
+  @cached_property
+  def company(self):
+    return CompanyResource(self)
+
+  @cached_property
+  def contact(self):
+    return ContactResource(self)
+
+  @cached_property
+  def department(self):
+    return DepartmentResource(self)
+
+  @cached_property
+  def event_subscription(self):
+    return EventSubscriptionResource(self)
+
+  @cached_property
+  def number(self):
+    return NumberResource(self)
+
+  @cached_property
+  def office(self):
+    return OfficeResource(self)
+
+  @cached_property
+  def room(self):
+    return RoomResource(self)
 
   @cached_property
   def sms(self):
     return SMSResource(self)
 
   @cached_property
-  def transcripts(self):
-    return TranscriptResource(self)
-
-  @cached_property
-  def userdevices(self):
-    return UserDeviceResource(self)
-
-  @cached_property
-  def call_event_subscriptions(self):
-    return CallEventSubscriptionResource(self)
-
-  @cached_property
   def stats(self):
     return StatsExportResource(self)
 
   @cached_property
-  def callrouters(self):
-    return CallRouterResource(self)
+  def transcript(self):
+    return TranscriptResource(self)
+
+  @cached_property
+  def user(self):
+    return UserResource(self)
+
+  @cached_property
+  def userdevice(self):
+    return UserDeviceResource(self)

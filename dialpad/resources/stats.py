@@ -1,11 +1,14 @@
 from .resource import DialpadResource
 
 class StatsExportResource(DialpadResource):
+  """StatsExportResource implements python bindings for the Dialpad API's stats endpoints.
+  See https://developers.dialpad.com/reference#stats for additional documentation.
+  """
   _resource_path = ['stats']
 
   def post(self, coaching_group=False, days_ago_start=1, days_ago_end=30, is_today=False,
            export_type='stats', stat_type='calls', **kwargs):
-    """Initiate a stats export
+    """Initiate a stats export.
 
     Args:
       coaching_group (bool, optional): Whether or not the the statistics should be for trainees of
@@ -30,6 +33,9 @@ class StatsExportResource(DialpadResource):
                                     "staffgroup", "callrouter", "channel", "coachinggroup",
                                     "unknown". The type corresponding to the target_id.
       timezone (str, optional): Timezone using a tz database name.
+
+    See Also:
+      https://developers.dialpad.com/reference#statsapi_processstats
     """
 
     data = {
@@ -47,4 +53,12 @@ class StatsExportResource(DialpadResource):
     return self.request(method='POST', data=data)
 
   def get(self, export_id):
+    """Retrieves the results of a stats export.
+
+    Args:
+      export_id (str, required): The export ID returned by the post method.
+
+    See Also:
+      https://developers.dialpad.com/reference#statsapi_getstats
+    """
     return self.request([export_id])
