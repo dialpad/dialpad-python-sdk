@@ -40,8 +40,8 @@ class StatsExportResource(DialpadResource):
 
     data = {
       'coaching_group': coaching_group,
-      'days_ago_start': days_ago_start,
-      'days_ago_end': days_ago_end,
+      'days_ago_start': str(days_ago_start),
+      'days_ago_end': str(days_ago_end),
       'is_today': is_today,
       'export_type': export_type,
       'stat_type': stat_type,

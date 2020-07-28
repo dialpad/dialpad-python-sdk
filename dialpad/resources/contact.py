@@ -52,8 +52,6 @@ class ContactResource(DialpadResource):
       emails (list<str>, optional): A list of email addresses associated with the contact.
       extension (str, optional): The contact's extension number.
       job_title (str, optional): The contact's job title.
-      owner_id (str, optional): The ID of the user who should own this contact. If no owner_id is
-                                specified, then a company-level shared contact will be created.
       phones (list<str>, optional): A list of e164 numbers that belong to this contact.
       trunk_group (str, optional): The contact's trunk group.
       urls (list<str>, optional): A list of urls that pertain to this contact.
@@ -97,8 +95,6 @@ class ContactResource(DialpadResource):
       emails (list<str>, optional): A list of email addresses associated with the contact.
       extension (str, optional): The contact's extension number.
       job_title (str, optional): The contact's job title.
-      owner_id (str, optional): The ID of the user who should own this contact. If no owner_id is
-                                specified, then a company-level shared contact will be created.
       phones (list<str>, optional): A list of e164 numbers that belong to this contact.
       trunk_group (str, optional): The contact's trunk group.
       urls (list<str>, optional): A list of urls that pertain to this contact.

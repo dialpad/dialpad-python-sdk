@@ -129,7 +129,7 @@ class EventSubscriptionResource(DialpadResource):
     """
 
     return self.request(['sms', subscription_id], method='PUT',
-                        data=dict(url=url, enabled=enabled, group_calls_only=group_calls_only,
+                        data=dict(url=url, enabled=enabled, direction=direction,
                                   **kwargs))
 
   def delete_sms_event_subscription(self, subscription_id):

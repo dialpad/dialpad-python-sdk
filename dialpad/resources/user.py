@@ -105,7 +105,7 @@ class UserResource(DialpadResource):
     See Also:
       https://developers.dialpad.com/reference#callapi_updateactivecall
     """
-    return self.request([user_id, 'activecall'], data=kwargs)
+    return self.request([user_id, 'activecall'], method='PATCH', data=kwargs)
 
   def assign_number(self, user_id, **kwargs):
     """Assigns a new number to the user.
