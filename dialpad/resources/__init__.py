@@ -1,6 +1,5 @@
 from .blocked_number import BlockedNumberResource
 from .call import CallResource
-from .call_router import CallRouterResource
 from .callback import CallbackResource
 from .callcenter import CallCenterResource
 from .company import CompanyResource
