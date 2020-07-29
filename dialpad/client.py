@@ -22,12 +22,12 @@ from .resources import UserDeviceResource
 
 
 class DialpadClient(object):
-  def __init__(self, token, beta=False, base_url=None):
+  def __init__(self, token, sandbox=False, base_url=None):
     self._token = token
     if base_url is not None:
       self._base_url = base_url
     else:
-      self._base_url = 'https://dialpadbeta.com' if beta else 'https://dialpad.com'
+      self._base_url = 'https://sandbox.dialpad.com' if sandbox else 'https://dialpad.com'
 
   def _url(self, *path):
     path = ['%s' % p for p in path]

@@ -27,7 +27,7 @@ Once a `DialpadClient` object has been constructed, it can be used to call our A
 ```python
 from dialpad import DialpadClient
 
-dp_client = DialpadClient(beta=True, token='API_TOKEN_HERE')
+dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
 print dp_client.user.get(user_id='1234567')
 ```
@@ -35,10 +35,9 @@ print dp_client.user.get(user_id='1234567')
 ### Client Constructor Arguments
 
 - `token (required)` The API token that will be used to authenticate API requests.
-- `beta (optional)` If the `beta` argument is set to `True`, then API calls will be
-  routed to `https://dialpadbeta.com`.
-- `base_url (optional)` To route requests to a specific app-engine version, you can set `base_url`
-  to the URL of the desired version (e.g. `https://jake-dot-uv-beta.appspot.com`)
+- `sandbox (optional)` If the `sandbox` argument is set to `True`, then API calls will be
+  routed to `https://sandbox.dialpad.com`.
+- `base_url (optional)` Routes requests to a specific url.
 
 
 ### API Resources
@@ -64,7 +63,7 @@ return an iterator which will lazily request the next page as the iterator is it
 ```python
 from dialpad import DialpadClient
 
-dp_client = DialpadClient(beta=True, token='API_TOKEN_HERE')
+dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
 for user in dp_client.user.list():
   print user
