@@ -11,23 +11,16 @@ ensure:
   the Dialpad API's open-api spec
 """
 
-# TODO: Clean this up
 import inspect
 import pkgutil
 import pytest
-import requests
-import unittest
 import utils
 
 from swagger_stub import swagger_stub
-from swagger_parser import SwaggerParser
 
 from dialpad.client import DialpadClient
 from dialpad import resources
 from dialpad.resources.resource import DialpadResource
-
-
-import json
 
 
 # The "swagger_files_url" pytest fixture stubs out live requests with a schema validation check
