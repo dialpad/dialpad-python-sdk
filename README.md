@@ -9,12 +9,10 @@ For information about the API itself, head on over to our
 
 ## Installation
 
-For now, this package is unpublished, but it's still reasonably easy to install on your machine:
+Just use everyone's favourite python package installer: `pip`
 
 ```bash
-git clone git@github.com:dialpad/dialpad-python-sdk.git
-cd dialpad-python-sdk
-python ./setup.py install
+pip install python-dialpad
 ```
 
 ## Usage
@@ -75,11 +73,33 @@ for user in dp_client.user.list():
 
 ## Development
 
-Most of the changes to this library will probably just be adding support for additional resources
-and endpoints that we expose in the API, so let's start with how to add a new resource.
+### Testing
 
+That's right, the testing section is first in line! Before you start diving in, let's just make sure
+your environment is set up properly, and that the tests are running buttery-smooth.
+
+Assuming you've already cloned the repository, all you'll need to do is install `pipenv`, and use
+it to install the dev packages:
+
+```python
+pip install pipenv
+pipenv install --dev
+```
+
+That was easy :)
+
+Now you can give the tests a whirl:
+
+```python
+pipenv run pytest
+```
+
+Neato!
 
 ### Adding New Resources
+
+Most of the changes to this library will probably just be adding support for additional resources
+and endpoints that we expose in the API, so let's start with how to add a new resource.
 
 Each resource exposed by this library should have its own python file under the `dialpad/resources`
 directory, and should define a single `class` that inherits from `DialpadResource`.
