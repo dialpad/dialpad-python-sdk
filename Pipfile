@@ -4,8 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-swagger-parser = {editable = true,git = "ssh://git@github.com/jakedialpad/swagger-parser.git",ref = "v1.0.1b"}
+swagger-parser = {ref = "v1.0.1b",git = "ssh://git@github.com/jakedialpad/swagger-parser.git",editable = true}
 swagger-stub = "*"
+bump2version = "*"
 
 [packages]
 requests = "*"
