@@ -7,7 +7,7 @@ with open('README.md') as f:
 
 setup(
   name='python-dialpad',
-  version='1.0.2',
+  version='1.0.3',
   description='A python wrapper for the Dialpad REST API',
   long_description=readme,
   long_description_content_type="text/markdown",
