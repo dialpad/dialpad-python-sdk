@@ -125,6 +125,18 @@ class TestResourceSanity:
       'get_operators': {
         'call_center_id': '123',
       },
+      'add_operator': {
+        'call_center_id': '123',
+        'user_id': '123',
+        'skill_level': '10',
+        'role': 'supervisor',
+        'license_type': 'lite_support_agents',
+        'keep_paid_numbers': False,
+      },
+      'remove_operator': {
+        'call_center_id': '123',
+        'user_id': '123',
+      },
     },
     'CompanyResource': {
       'get': {},
@@ -182,6 +194,17 @@ class TestResourceSanity:
       },
       'get_operators': {
         'department_id': '123',
+      },
+      'add_operator': {
+        'department_id': '123',
+        'operator_id': '123',
+        'operator_type': 'room',
+        'role': 'operator',
+      },
+      'remove_operator': {
+        'department_id': '123',
+        'operator_id': '123',
+        'operator_type': 'room',
       },
     },
     'EventSubscriptionResource': {

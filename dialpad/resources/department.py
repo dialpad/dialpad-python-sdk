@@ -28,3 +28,38 @@ class DepartmentResource(DialpadResource):
       https://developers.dialpad.com/reference#departmentapi_listoperators
     """
     return self.request([department_id, 'operators'], method='GET')
+
+  def add_operator(self, department_id, operator_id, operator_type, role='operator'):
+    """Adds the specified user as an operator of the specified department.
+
+    Args:
+      department_id (int, required): The ID of the department.
+      operator_id (int, required): The ID of the operator to add.
+      operator_type (str, required): Type of the operator to add ('user' or 'room').
+      role (str, optional): The role of the new operator ('operator' or 'admin').
+                            Default 'operator'
+
+    See Also:
+      https://developers.dialpad.com/reference#departmentapi_addoperator
+    """
+    return self.request([department_id, 'operators'], method='POST', data={
+      'operator_id': operator_id,
+      'operator_type': operator_type,
+      'role': role,
+    })
+
+  def remove_operator(self, department_id, operator_id, operator_type):
+    """Removes the specified user from the specified department.
+
+    Args:
+      department_id (int, required): The ID of the department.
+      operator_id (int, required): The ID of the operator to remove.
+      operator_type (str, required): Type of the operator to remove ('user' or 'room').
+
+    See Also:
+      https://developers.dialpad.com/reference#departmentapi_removeoperator
+    """
+    return self.request([department_id, 'operators'], method='DELETE', data={
+      'operator_id': operator_id,
+      'operator_type': operator_type,
+    })

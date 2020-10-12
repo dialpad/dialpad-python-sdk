@@ -64,7 +64,7 @@ class DialpadClient(object):
       return requests.patch(url, json=data, headers=headers)
 
     if method == 'DELETE':
-      return requests.delete(url, headers=headers)
+      return requests.delete(url, json=data, headers=headers)
 
     raise ValueError('Unsupported method "%s"' % method)
 
