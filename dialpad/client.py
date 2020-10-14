@@ -37,7 +37,7 @@ class DialpadClient(object):
     for i in response_json['items']:
       yield i
 
-    data = dict(data)
+    data = dict(data or {})
 
     while 'cursor' in response_json:
       data['cursor'] = response_json['cursor']
