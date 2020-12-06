@@ -32,7 +32,7 @@ class DialpadClient(object):
 
   def _url(self, *path):
     path = ['%s' % p for p in path]
-    return os.path.join(self._base_url, 'api', 'v2', *path)
+    return '/'.join([self._base_url, 'api', 'v2'] + path)
 
   def _cursor_iterator(self, response_json, path, method, data, headers):
     for i in response_json['items']:
