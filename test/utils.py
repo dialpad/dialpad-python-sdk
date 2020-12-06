@@ -14,6 +14,9 @@ def resource_filepath(filename):
 def prepare_test_resources():
   """Prepares any resources that are expected to be available at test-time."""
 
+  if not os.path.exists(RESOURCE_PATH):
+    os.mkdir(RESOURCE_PATH)
+
   # Generate the Dialpad API swagger spec, and write it to a file for easy access.
   with open(resource_filepath('swagger_spec.json'), 'w') as f:
     json.dump(_generate_swagger_spec(), f)
