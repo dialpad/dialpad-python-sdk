@@ -23,6 +23,7 @@ from .resources import UserDeviceResource
 
 class DialpadClient(object):
   def __init__(self, token, sandbox=False, base_url=None):
+    self._session = requests.Session()
     self._token = token
     if base_url is not None:
       self._base_url = base_url
@@ -31,7 +32,7 @@ class DialpadClient(object):
 
   def _url(self, *path):
     path = ['%s' % p for p in path]
-    return os.path.join(self._base_url, 'api', 'v2', *path)
+    return '/'.join([self._base_url, 'api', 'v2'] + path)
 
   def _cursor_iterator(self, response_json, path, method, data, headers):
     for i in response_json['items']:
@@ -52,19 +53,19 @@ class DialpadClient(object):
     headers = headers or {}
     headers['Authorization'] = 'Bearer %s' % self._token
     if method == 'GET':
-      return requests.get(url, params=data, headers=headers)
+      return self._session.get(url, params=data, headers=headers)
 
     if method == 'POST':
-      return requests.post(url, json=data, headers=headers)
+      return self._session.post(url, json=data, headers=headers)
 
     if method == 'PUT':
-      return requests.put(url, json=data, headers=headers)
+      return self._session.put(url, json=data, headers=headers)
 
     if method == 'PATCH':
-      return requests.patch(url, json=data, headers=headers)
+      return self._session.patch(url, json=data, headers=headers)
 
     if method == 'DELETE':
-      return requests.delete(url, json=data, headers=headers)
+      return self._session.delete(url, json=data, headers=headers)
 
     raise ValueError('Unsupported method "%s"' % method)
 
