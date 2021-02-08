@@ -446,6 +446,9 @@ class TestResourceSanity:
         'user_id': '123',
         'deskphone_id': '123',
       },
+      'get_personas': {
+        'user_id': '123',
+      },
     },
     'UserDeviceResource': {
       'get': {

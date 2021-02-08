@@ -212,3 +212,14 @@ class UserResource(DialpadResource):
       https://developers.dialpad.com/reference#deskphoneapi_getuserdeskphone
     """
     return self.request([user_id, 'deskphones', deskphone_id], method='GET')
+
+  def get_personas(self, user_id):
+    """Lists the calling personas that are associated with a user.
+
+    Args:
+      user_id (int, required): The ID of the user.
+
+    See Also:
+      https://developers.dialpad.com/reference#users
+    """
+    return self.request([user_id, 'personas'], method='GET')
