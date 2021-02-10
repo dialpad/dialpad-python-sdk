@@ -183,7 +183,7 @@ if [ $__bump_only == "false" ]; then
   else
     echo "You're about to build and push a new ($VERSION_PART) release to Github AND PyPI"
   fi
-  confirm "Are you that's what you want to do? (y/N)"
+  confirm "Are you sure that's what you want to do? (y/N)"
 fi
 
 # Do some sanity checks to make sure we're in a sufficient state to actually do what the user wants.
@@ -204,7 +204,8 @@ if [ "$branch_name" != "master" ]; then
 fi
 
 # Run the unit tests and make sure they're passing.
-pipenv run pytest || bail_out
+test_failure_prompt="Are you *entirely* sure you want to release a build with failing tests? (y/N)"
+pipenv run pytest || confirm "There are failing tests. $test_failure_prompt"
 
 # If we're *only* bumping the version, then we're safe to proceed at this point.
 if [ $__bump_only == "true" ]; then
