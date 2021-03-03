@@ -73,6 +73,9 @@ class DialpadClient(object):
     response = self._raw_request(path, method, data, headers)
     response.raise_for_status()
 
+    if response.status_code == 204:  # No Content
+      return None
+
     response_json = response.json()
     response_keys = set(k for k in response_json)
     # If the response contains the 'items' key, (and maybe 'cursor'), then this is a cursorized
