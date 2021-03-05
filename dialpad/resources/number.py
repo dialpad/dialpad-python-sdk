@@ -62,7 +62,8 @@ class NumberResource(DialpadResource):
     See Also:
       https://developers.dialpad.com/reference#numberapi_assignnumber
     """
-    return self.request([number, 'assign'], method='POST', data={
+    return self.request(['assign'], method='POST', data={
+        'number': number,
         'target_id': target_id,
         'target_type': target_type,
         'primary': primary
