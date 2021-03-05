@@ -103,21 +103,3 @@ class OfficeResource(DialpadResource):
       https://developers.dialpad.com/reference#planapi_getplan
     """
     return self.request([office_id, 'plan'], method='GET')
-
-  def update_licenses(self, office_id, fax_line_delta):
-    """Updates the number of licenses in the specified office's plan.
-
-    Note:
-      Currently only supports modifying the number of fax line licenses.
-
-    Args:
-      office_id (int, required): The ID of the office.
-      fax_line_delta (int, required): Number of fax lines to add. If a negative number is specified,
-                                      then fax lines will be removed rather than added.
-
-    See Also:
-      https://developers.dialpad.com/reference#planapi_updatelicenses
-    """
-    return self.request([office_id, 'plan', 'updateLicenses'], method='POST', data={
-        'fax_line_delta': fax_line_delta
-    })
