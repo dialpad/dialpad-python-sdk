@@ -82,10 +82,13 @@ class TestResourceSanity:
       },
     },
     'CallRouterResource': {
-      'get': {
-        'call_router_id': '123',
+      'list': {
+        'office_id': '123',
       },
-      'post': {
+      'get': {
+        'router_id': '123',
+      },
+      'create': {
         'name': 'Test Router',
         'routing_url': 'fakeurl.com/url',
         'office_id': '123',
@@ -95,7 +98,7 @@ class TestResourceSanity:
         'secret': '123',
       },
       'patch': {
-        'call_router_id': '123',
+        'router_id': '123',
         'name': 'Test Router',
         'routing_url': 'fakeurl.com/url',
         'office_id': '123',
@@ -105,10 +108,10 @@ class TestResourceSanity:
         'secret': '123',
       },
       'delete': {
-        'call_router_id': '123',
+        'router_id': '123',
       },
       'assign_number': {
-        'call_router_id': '123',
+        'router_id': '123',
         'area_code': '519',
       },
     },

@@ -4,9 +4,10 @@ import requests
 from cached_property import cached_property
 
 from .resources import BlockedNumberResource
-from .resources import CallResource
 from .resources import CallbackResource
 from .resources import CallCenterResource
+from .resources import CallResource
+from .resources import CallRouterResource
 from .resources import CompanyResource
 from .resources import ContactResource
 from .resources import DepartmentResource
@@ -17,8 +18,8 @@ from .resources import RoomResource
 from .resources import SMSResource
 from .resources import StatsExportResource
 from .resources import TranscriptResource
-from .resources import UserResource
 from .resources import UserDeviceResource
+from .resources import UserResource
 
 
 class DialpadClient(object):
@@ -91,6 +92,10 @@ class DialpadClient(object):
   @cached_property
   def call(self):
     return CallResource(self)
+
+  @cached_property
+  def call_router(self):
+    return CallRouterResource(self)
 
   @cached_property
   def callback(self):
