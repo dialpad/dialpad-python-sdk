@@ -20,6 +20,7 @@ from .resources import StatsExportResource
 from .resources import TranscriptResource
 from .resources import UserDeviceResource
 from .resources import UserResource
+from .resources import WebhookResource
 
 
 class DialpadClient(object):
@@ -152,3 +153,7 @@ class DialpadClient(object):
   @cached_property
   def userdevice(self):
     return UserDeviceResource(self)
+
+  @cached_property
+  def webhook(self):
+    return WebhookResource(self)

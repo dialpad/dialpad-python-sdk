@@ -461,6 +461,24 @@ class TestResourceSanity:
         'user_id': '123',
       },
     },
+    'WebhookResource': {
+      'list_webhooks': {},
+      'get_webhook': {
+        'webhook_id': '123',
+      },
+      'create_webhook': {
+        'hook_url': 'https://test.com/subhook',
+        'secret': 'badsecret',
+      },
+      'update_webhook': {
+        'webhook_id': '123',
+        'hook_url': 'https://test.com/subhook',
+        'secret': 'badsecret',
+      },
+      'delete_webhook': {
+        'webhook_id': '123',
+      },
+    },
   }
 
   def get_method_example_kwargs(self, resource_instance, resource_method):

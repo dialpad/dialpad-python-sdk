@@ -15,3 +15,4 @@ from .stats import StatsExportResource
 from .transcript import TranscriptResource
 from .user import UserResource
 from .userdevice import UserDeviceResource
+from .webhook import WebhookResource
