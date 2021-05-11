@@ -372,6 +372,35 @@ class TestResourceSanity:
         'export_id': '123',
       },
     },
+    'SubscriptionResource': {
+      'list_call_event_subscriptions': {
+        'target_id': '123',
+        'target_type': 'room',
+      },
+      'get_call_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_call_event_subscription': {
+        'enabled': True,
+        'group_calls_only': False,
+        'target_id': '123',
+        'target_type': 'office',
+        'call_states': ['connected', 'queued'],
+        'webhook_id': '1000',
+      },
+      'update_call_event_subscription': {
+        'subscription_id': '123',
+        'enabled': True,
+        'group_calls_only': False,
+        'target_id': '123',
+        'target_type': 'office',
+        'call_states': ['connected', 'queued'],
+        'webhook_id': '1000',
+      },
+      'delete_call_event_subscription': {
+        'subscription_id': '123',
+      },
+    },
     'TranscriptResource': {
       'get': {
         'call_id': '123',
