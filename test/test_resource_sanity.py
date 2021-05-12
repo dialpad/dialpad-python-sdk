@@ -400,6 +400,31 @@ class TestResourceSanity:
       'delete_call_event_subscription': {
         'subscription_id': '123',
       },
+      'list_sms_event_subscriptions': {
+        'target_id': '123',
+        'target_type': 'room',
+      },
+      'get_sms_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_sms_event_subscription': {
+        'direction': 'outbound',
+        'enabled': True,
+        'target_id': '123',
+        'target_type': 'office',
+        'webhook_id': '1000',
+      },
+      'update_sms_event_subscription': {
+        'subscription_id': '123',
+        'direction': 'outbound',
+        'enabled': True,
+        'target_id': '123',
+        'target_type': 'office',
+        'webhook_id': '1000',
+      },
+      'delete_sms_event_subscription': {
+        'subscription_id': '123',
+      },
     },
     'TranscriptResource': {
       'get': {

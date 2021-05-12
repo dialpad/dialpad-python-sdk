@@ -99,3 +99,85 @@ class SubscriptionResource(DialpadResource):
       https://developers.dialpad.com/reference#webhookcalleventsubscriptionapi_deletecalleventsubscription
     """
     return self.request(['call', subscription_id], method='DELETE')
+
+
+  def list_sms_event_subscriptions(self, limit=25, **kwargs):
+    """Lists SMS event subscriptions.
+
+    Args:
+      limit (int, optional): The number of subscriptions to fetch per request
+      target_id (str, optional): The ID of a specific target to use as a filter
+      target_type (str, optional): The type of the target (one of "department", "office",
+                                   "callcenter", "user", "room", "staffgroup", "callrouter",
+                                   "channel", "coachinggroup", or "unknown")
+
+    See Also:
+      https://developers.dialpad.com/reference#webhooksmseventsubscriptionapi_listsmseventsubscriptions
+    """
+    return self.request(['sms'], method='GET', data=dict(limit=limit, **kwargs))
+
+  def get_sms_event_subscription(self, subscription_id):
+    """Gets a specific sms event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhooksmseventsubscriptionapi_getsmseventsubscription
+    """
+    return self.request(['sms', subscription_id], method='GET')
+
+  def create_sms_event_subscription(self, webhook_id, direction, enabled=True, **kwargs):
+    """Create a new SMS event subscription.
+
+    Args:
+      webhook_id (str, required): The ID of the webhook which should be called when the
+                                  subscription fires
+      direction (str, required): The SMS direction that should fire the subscripion ("inbound",
+                                 "outbound", or "all")
+      enabled (bool, optional): Whether or not the subscription should actually fire
+      target_id (str, optional): The ID of a specific target to use as a filter
+      target_type (str, optional): The type of the target (one of "department", "office",
+                                   "callcenter", "user", "room", "staffgroup", "callrouter",
+                                   "channel", "coachinggroup", or "unknown")
+
+    See Also:
+      https://developers.dialpad.com/reference#smseventsubscriptionapi_createorupdatesmseventsubscription
+    """
+
+    return self.request(['sms'], method='POST',
+                        data=dict(webhook_id=webhook_id, enabled=enabled, direction=direction,
+                                  **kwargs))
+
+  def update_sms_event_subscription(self, subscription_id, **kwargs):
+    """Update an existing SMS event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+      webhook_id (str, optional): The ID of the webhook which should be called when the
+                                  subscription fires
+      direction (str, optional): The SMS direction that should fire the subscripion ("inbound",
+                                 "outbound", or "all")
+      enabled (bool, optional): Whether or not the subscription should actually fire
+      target_id (str, optional): The ID of a specific target to use as a filter
+      target_type (str, optional): The type of the target (one of "department", "office",
+                                   "callcenter", "user", "room", "staffgroup", "callrouter",
+                                   "channel", "coachinggroup", or "unknown")
+
+    See Also:
+      https://developers.dialpad.com/reference#smseventsubscriptionapi_createorupdatesmseventsubscription
+    """
+
+    return self.request(['sms', subscription_id], method='PATCH', data=kwargs)
+
+  def delete_sms_event_subscription(self, subscription_id):
+    """Deletes a specific sms event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhooksmseventsubscriptionapi_deletesmseventsubscription
+    """
+    return self.request(['sms', subscription_id], method='DELETE')
+
