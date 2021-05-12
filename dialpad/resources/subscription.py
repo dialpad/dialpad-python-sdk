@@ -168,6 +168,72 @@ class SubscriptionResource(DialpadResource):
     return self.request(['call', subscription_id], method='DELETE')
 
 
+  def list_contact_event_subscriptions(self, limit=25, **kwargs):
+    """Lists contact event subscriptions.
+
+    Args:
+      limit (int, optional): The number of subscriptions to fetch per request
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookcontacteventsubscriptionapi_listcontacteventsubscriptions
+    """
+    return self.request(['contact'], method='GET', data=dict(limit=limit, **kwargs))
+
+  def get_contact_event_subscription(self, subscription_id):
+    """Gets a specific contact event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookcontacteventsubscriptionapi_getcontacteventsubscription
+    """
+    return self.request(['contact', subscription_id], method='GET')
+
+  def create_contact_event_subscription(self, webhook_id, contact_type, enabled=True, **kwargs):
+    """Create a new contact event subscription.
+
+    Args:
+      webhook_id (str, required): The ID of the webhook which should be called when the
+                                  subscription fires
+      contact_type (str, required): The type of contact to subscribe to events for
+      enabled (bool, optional): Whether or not the subscription should actually fire
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookcontacteventsubscriptionapi_createcontacteventsubscription
+    """
+
+    return self.request(['contact'], method='POST',
+                        data=dict(webhook_id=webhook_id, enabled=enabled,
+                                  contact_type=contact_type, **kwargs))
+
+  def update_contact_event_subscription(self, subscription_id, **kwargs):
+    """Update an existing contact event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+      webhook_id (str, optional): The ID of the webhook which should be called when the
+                                  subscription fires
+      contact_type (str, optional): The type of contact to subscribe to events for
+      enabled (bool, optional): Whether or not the subscription should actually fire
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookcontacteventsubscriptionapi_updatecontacteventsubscription
+    """
+    return self.request(['contact', subscription_id], method='PATCH', data=kwargs)
+
+  def delete_contact_event_subscription(self, subscription_id):
+    """Deletes a specific contact event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookcontacteventsubscriptionapi_deletecontacteventsubscription
+    """
+    return self.request(['contact', subscription_id], method='DELETE')
+
+
   def list_sms_event_subscriptions(self, limit=25, **kwargs):
     """Lists SMS event subscriptions.
 

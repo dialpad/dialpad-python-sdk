@@ -418,6 +418,24 @@ class TestResourceSanity:
       'delete_call_event_subscription': {
         'subscription_id': '123',
       },
+      'list_contact_event_subscriptions': {},
+      'get_contact_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_contact_event_subscription': {
+        'contact_type': 'shared',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'update_contact_event_subscription': {
+        'subscription_id': '123',
+        'contact_type': 'shared',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'delete_contact_event_subscription': {
+        'subscription_id': '123',
+      },
       'list_sms_event_subscriptions': {
         'target_id': '123',
         'target_type': 'room',
