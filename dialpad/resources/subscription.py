@@ -8,6 +8,73 @@ class SubscriptionResource(DialpadResource):
   """
   _resource_path = ['subscriptions']
 
+  def list_agent_status_event_subscriptions(self, limit=25, **kwargs):
+    """Lists agent status event subscriptions.
+
+    Args:
+      limit (int, optional): The number of subscriptions to fetch per request
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookagentstatuseventsubscriptionapi_listagentstatuseventsubscriptions
+    """
+    return self.request(['agent_status'], method='GET', data=dict(limit=limit, **kwargs))
+
+  def get_agent_status_event_subscription(self, subscription_id):
+    """Gets a specific agent status event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookagentstatuseventsubscriptionapi_getagentstatuseventsubscription
+    """
+    return self.request(['agent_status', subscription_id], method='GET')
+
+  def create_agent_status_event_subscription(self, webhook_id, agent_type, enabled=True, **kwargs):
+    """Create a new agent status event subscription.
+
+    Args:
+      webhook_id (str, required): The ID of the webhook which should be called when the
+                                  subscription fires
+      agent_type (str, required): The type of agent to subscribe to updates to
+      enabled (bool, optional): Whether or not the subscription should actually fire
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookagentstatuseventsubscriptionapi_createagentstatuseventsubscription
+    """
+
+    return self.request(['agent_status'], method='POST',
+                        data=dict(webhook_id=webhook_id, enabled=enabled, agent_type=agent_type,
+                                  **kwargs))
+
+  def update_agent_status_event_subscription(self, subscription_id, **kwargs):
+    """Update an existing agent status event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+      webhook_id (str, optional): The ID of the webhook which should be called when the
+                                  subscription fires
+      agent_type (str, optional): The type of agent to subscribe to updates to
+      enabled (bool, optional): Whether or not the subscription should actually fire
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookagentstatuseventsubscriptionapi_updateagentstatuseventsubscription
+    """
+
+    return self.request(['agent_status', subscription_id], method='PATCH', data=kwargs)
+
+  def delete_agent_status_event_subscription(self, subscription_id):
+    """Deletes a specific agent status event subscription.
+
+    Args:
+      subscription_id (str, required): The ID of the subscription
+
+    See Also:
+      https://developers.dialpad.com/reference#webhookagentstatuseventsubscriptionapi_deleteagentstatuseventsubscription
+    """
+    return self.request(['agent_status', subscription_id], method='DELETE')
+
+
   def list_call_event_subscriptions(self, limit=25, **kwargs):
     """Lists call event subscriptions.
 

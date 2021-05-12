@@ -373,6 +373,24 @@ class TestResourceSanity:
       },
     },
     'SubscriptionResource': {
+      'list_agent_status_event_subscriptions': {},
+      'get_agent_status_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_agent_status_event_subscription': {
+        'agent_type': 'callcenter',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'update_agent_status_event_subscription': {
+        'subscription_id': '123',
+        'agent_type': 'callcenter',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'delete_agent_status_event_subscription': {
+        'subscription_id': '123',
+      },
       'list_call_event_subscriptions': {
         'target_id': '123',
         'target_type': 'room',
