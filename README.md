@@ -104,7 +104,7 @@ Each resource exposed by this library should have its own python file under the 
 directory, and should define a single `class` that inherits from `DialpadResource`.
 
 The class itself should set the `_resource_path` class property to a list of strings such
-that `'/api/v2/' + _resource_path.join('/')` corresponds to the API path for that resource.
+that `'/api/v2/' + '/'.join(_resource_path)` corresponds to the API path for that resource.
 
 Once the `_resource_path` is defined, the resource class can define instance methods to expose
 functionality related to the resource that it represents, and can use the `self.request` helper
