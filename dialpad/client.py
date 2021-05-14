@@ -17,9 +17,11 @@ from .resources import OfficeResource
 from .resources import RoomResource
 from .resources import SMSResource
 from .resources import StatsExportResource
+from .resources import SubscriptionResource
 from .resources import TranscriptResource
 from .resources import UserDeviceResource
 from .resources import UserResource
+from .resources import WebhookResource
 
 
 class DialpadClient(object):
@@ -142,6 +144,10 @@ class DialpadClient(object):
     return StatsExportResource(self)
 
   @cached_property
+  def subscription(self):
+    return SubscriptionResource(self)
+
+  @cached_property
   def transcript(self):
     return TranscriptResource(self)
 
@@ -152,3 +158,7 @@ class DialpadClient(object):
   @cached_property
   def userdevice(self):
     return UserDeviceResource(self)
+
+  @cached_property
+  def webhook(self):
+    return WebhookResource(self)

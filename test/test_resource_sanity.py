@@ -372,6 +372,96 @@ class TestResourceSanity:
         'export_id': '123',
       },
     },
+    'SubscriptionResource': {
+      'list_agent_status_event_subscriptions': {},
+      'get_agent_status_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_agent_status_event_subscription': {
+        'agent_type': 'callcenter',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'update_agent_status_event_subscription': {
+        'subscription_id': '123',
+        'agent_type': 'callcenter',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'delete_agent_status_event_subscription': {
+        'subscription_id': '123',
+      },
+      'list_call_event_subscriptions': {
+        'target_id': '123',
+        'target_type': 'room',
+      },
+      'get_call_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_call_event_subscription': {
+        'enabled': True,
+        'group_calls_only': False,
+        'target_id': '123',
+        'target_type': 'office',
+        'call_states': ['connected', 'queued'],
+        'webhook_id': '1000',
+      },
+      'update_call_event_subscription': {
+        'subscription_id': '123',
+        'enabled': True,
+        'group_calls_only': False,
+        'target_id': '123',
+        'target_type': 'office',
+        'call_states': ['connected', 'queued'],
+        'webhook_id': '1000',
+      },
+      'delete_call_event_subscription': {
+        'subscription_id': '123',
+      },
+      'list_contact_event_subscriptions': {},
+      'get_contact_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_contact_event_subscription': {
+        'contact_type': 'shared',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'update_contact_event_subscription': {
+        'subscription_id': '123',
+        'contact_type': 'shared',
+        'enabled': True,
+        'webhook_id': '1000',
+      },
+      'delete_contact_event_subscription': {
+        'subscription_id': '123',
+      },
+      'list_sms_event_subscriptions': {
+        'target_id': '123',
+        'target_type': 'room',
+      },
+      'get_sms_event_subscription': {
+        'subscription_id': '123',
+      },
+      'create_sms_event_subscription': {
+        'direction': 'outbound',
+        'enabled': True,
+        'target_id': '123',
+        'target_type': 'office',
+        'webhook_id': '1000',
+      },
+      'update_sms_event_subscription': {
+        'subscription_id': '123',
+        'direction': 'outbound',
+        'enabled': True,
+        'target_id': '123',
+        'target_type': 'office',
+        'webhook_id': '1000',
+      },
+      'delete_sms_event_subscription': {
+        'subscription_id': '123',
+      },
+    },
     'TranscriptResource': {
       'get': {
         'call_id': '123',
@@ -459,6 +549,24 @@ class TestResourceSanity:
       },
       'list': {
         'user_id': '123',
+      },
+    },
+    'WebhookResource': {
+      'list_webhooks': {},
+      'get_webhook': {
+        'webhook_id': '123',
+      },
+      'create_webhook': {
+        'hook_url': 'https://test.com/subhook',
+        'secret': 'badsecret',
+      },
+      'update_webhook': {
+        'webhook_id': '123',
+        'hook_url': 'https://test.com/subhook',
+        'secret': 'badsecret',
+      },
+      'delete_webhook': {
+        'webhook_id': '123',
       },
     },
   }

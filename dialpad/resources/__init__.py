@@ -12,6 +12,8 @@ from .office import OfficeResource
 from .room import RoomResource
 from .sms import SMSResource
 from .stats import StatsExportResource
+from .subscription import SubscriptionResource
 from .transcript import TranscriptResource
 from .user import UserResource
 from .userdevice import UserDeviceResource
+from .webhook import WebhookResource
