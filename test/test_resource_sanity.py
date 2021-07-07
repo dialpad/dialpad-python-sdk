@@ -266,6 +266,10 @@ class TestResourceSanity:
         'target_id': '123',
         'target_type': 'office',
       },
+      'format': {
+        'country_code': 'gb',
+        'number': '020 3048 4377',
+      },
     },
     'OfficeResource': {
       'list': {},
