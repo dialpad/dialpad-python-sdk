@@ -68,3 +68,19 @@ class NumberResource(DialpadResource):
         'target_type': target_type,
         'primary': primary
     })
+
+  def format(self, number, country_code=None):
+    """Converts local number to E.164 or E.164 to local format.
+
+    Args:
+      number (str, required): The phone number in local or E.164 format.
+      country_code (str, optional): Country code in ISO 3166-1 alpha-2 format such as "US".
+                                    Required when sending a local formatted phone number.
+
+    See Also:
+      https://developers.dialpad.com/reference#formatapi_formatnumber
+    """
+    return self.request(['format'], method='POST', data={
+        'number': number,
+        'country_code': country_code
+    })
