@@ -15,7 +15,19 @@ setup(
   author_email='jnielsen@dialpad.com',
   license='MIT',
   url='https://github.com/dialpad/dialpad-python-sdk',
-  install_requires=['cached-property', 'certifi', 'chardet', 'idna', 'requests', 'urllib3'],
+  install_requires=[
+    'cached-property',
+    'certifi',
+    'chardet',
+    'idna',
+    'requests',
+    'urllib3'
+  ],
+  extras_require={
+    'python_version > "3.0"': [
+      'more_itertools'
+    ]
+  },
   include_package_data=True,
   packages=find_packages()
 )

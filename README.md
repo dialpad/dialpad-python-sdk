@@ -29,7 +29,7 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
-print dp_client.user.get(user_id='1234567')
+print(dp_client.user.get(user_id='1234567'))
 ```
 
 ### Client Constructor Arguments
@@ -66,7 +66,7 @@ from dialpad import DialpadClient
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
 for user in dp_client.user.list():
-  print user
+  print(user)
 ```
 
 

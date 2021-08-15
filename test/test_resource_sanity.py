@@ -14,9 +14,10 @@ ensure:
 import inspect
 import pkgutil
 import pytest
-import utils
 
 from swagger_stub import swagger_stub
+
+from .utils import resource_filepath
 
 from dialpad.client import DialpadClient
 from dialpad import resources
@@ -32,7 +33,7 @@ from dialpad.resources.resource import DialpadResource
 @pytest.fixture(scope='module')
 def swagger_files_url():
   return [
-    (utils.resource_filepath('swagger_spec.json'), 'https://dialpad.com'),
+    (resource_filepath('swagger_spec.json'), 'https://dialpad.com'),
   ]
 
 
@@ -608,7 +609,7 @@ class TestResourceSanity:
   def _get_resource_classes(self):
     """Returns an iterator of DialpadResource subclasses that are exposed under dialpad.resources"""
     for mod in self._get_resource_submodules():
-      for k, v in mod.__dict__.iteritems():
+      for k, v in mod.__dict__.items():
         if not inspect.isclass(v):
           continue
 
@@ -665,8 +666,8 @@ class TestResourceSanity:
       if not isinstance(resource_instance, DialpadResource):
         continue
 
-      print ''
-      print 'Verifying request format of %s methods' % resource_instance.__class__.__name__
+      print('\nVerifying request format of %s methods' %
+            resource_instance.__class__.__name__)
 
       # Iterate through the attributes on the resource instance.
       for method_attr in dir(resource_instance):
@@ -693,5 +694,5 @@ class TestResourceSanity:
 
         # Call the method, and allow the swagger mock to raise an exception if it encounters a
         # schema error.
-        print 'Testing %s with kwargs: %s' % (method_attr, method_kwargs)
+        print('Testing %s with kwargs: %s' % (method_attr, method_kwargs))
         resource_method(**method_kwargs)
