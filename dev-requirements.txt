@@ -1,0 +1,5 @@
+-i https://pypi.org/simple
+coverage==5.5
+pytest==4.6.11
+pipenv==2021.5.29
+pytest-sugar==0.9.4
