@@ -1,16 +1,27 @@
 [[source]]
-name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-
-[dev-packages]
-bump2version = "*"
-swagger-stub = "*"
-swagger-parser = {ref = "v1.0.1b", git = "https://github.com/jakedialpad/swagger-parser.git", editable = true}
+name = "pypi"
 
 [packages]
-requests = "*"
-cached-property = "*"
+cached-property = "==1.5.1"
+certifi = "==2020.6.20"
+chardet = "==3.0.4"
+idna = "==2.10"
+requests = "==2.24.0"
+urllib3 = "==1.25.10"
 
 [requires]
 python_version = "2.7"
+
+[dev-packages]
+coverage = "==5.5"
+pytest = "<5"
+pipenv = "==2021.5.29"
+pytest-sugar = "==0.9.4"
+pyrsistent = "==0.16.1"
+pytest-cov = "*"
+bump2version = "*"
+swagger-spec-validator = "==2.7.3"
+swagger-stub = "==0.2.1"
+swagger-parser = {file = "https://github.com/jakedialpad/swagger-parser/archive/refs/tags/v1.0.1b.tar.gz"}
