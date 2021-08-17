@@ -87,6 +87,13 @@ pipenv install --dev
 
 That was easy :)
 
+<b>NOTE</b>: If you're on OSX, you may need to set the LOCALE's explcitly before running the `pipenv install` command.
+<br/>Read more: https://github.com/pypa/pipenv/issues/187
+```shell
+$ export LANG=en_US.UTF-8
+$ export LC_ALL=en_US.UTF-8
+```
+
 Now you can give the tests a whirl:
 
 ```python
