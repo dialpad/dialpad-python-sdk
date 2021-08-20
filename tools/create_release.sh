@@ -205,7 +205,7 @@ fi
 
 # Run the unit tests and make sure they're passing.
 test_failure_prompt="Are you *entirely* sure you want to release a build with failing tests? (y/N)"
-pipenv run pytest || confirm "There are failing tests. $test_failure_prompt"
+tox || confirm "There are failing tests. $test_failure_prompt"
 
 # If we're *only* bumping the version, then we're safe to proceed at this point.
 if [ $__bump_only == "true" ]; then

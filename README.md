@@ -29,7 +29,7 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
-print dp_client.user.get(user_id='1234567')
+print(dp_client.user.get(user_id='1234567'))
 ```
 
 ### Client Constructor Arguments
@@ -66,7 +66,7 @@ from dialpad import DialpadClient
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
 for user in dp_client.user.list():
-  print user
+  print(user)
 ```
 
 
@@ -74,24 +74,24 @@ for user in dp_client.user.list():
 
 ### Testing
 
-That's right, the testing section is first in line! Before you start diving in, let's just make sure
-your environment is set up properly, and that the tests are running buttery-smooth.
+That's right, the testing section is first in line! Before you start diving in, let's just make sure your environment is set up properly, and that the tests are running buttery-smooth.
 
-Assuming you've already cloned the repository, all you'll need to do is install `pipenv`, and use
-it to install the dev packages:
+Assuming you've already cloned the repository, all you'll need to do is install `tox`, and run the command against the appropriate environment.
 
-```python
-pip install pipenv
-pipenv install --dev
-```
+* Install the `tox` package.
+  ```shell
+  $ pip install tox
+  ```
 
+* Run the tests
+  ```shell
+  $ tox
+  ```
+  Optionaly, you can specify an environment to run the tests against. For eg:
+  ```shell
+  $ tox -e py38
+  ```
 That was easy :)
-
-Now you can give the tests a whirl:
-
-```python
-pipenv run pytest
-```
 
 Neato!
 

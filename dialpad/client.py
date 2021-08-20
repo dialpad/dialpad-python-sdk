@@ -1,37 +1,42 @@
-import os
+
 import requests
 
 from cached_property import cached_property
 
-from .resources import BlockedNumberResource
-from .resources import CallbackResource
-from .resources import CallCenterResource
-from .resources import CallResource
-from .resources import CallRouterResource
-from .resources import CompanyResource
-from .resources import ContactResource
-from .resources import DepartmentResource
-from .resources import EventSubscriptionResource
-from .resources import NumberResource
-from .resources import OfficeResource
-from .resources import RoomResource
-from .resources import SMSResource
-from .resources import StatsExportResource
-from .resources import SubscriptionResource
-from .resources import TranscriptResource
-from .resources import UserDeviceResource
-from .resources import UserResource
-from .resources import WebhookResource
+from .resources import (
+  SMSResource,
+  RoomResource,
+  UserResource,
+  CallResource,
+  NumberResource,
+  OfficeResource,
+  WebhookResource,
+  CompanyResource,
+  ContactResource,
+  CallbackResource,
+  CallCenterResource,
+  CallRouterResource,
+  DepartmentResource,
+  TranscriptResource,
+  UserDeviceResource,
+  StatsExportResource,
+  SubscriptionResource,
+  BlockedNumberResource,
+  EventSubscriptionResource
+)
+
+
+hosts = dict(
+  live='https://dialpad.com',
+  sandbox='https://sandbox.dialpad.com'
+)
 
 
 class DialpadClient(object):
   def __init__(self, token, sandbox=False, base_url=None):
-    self._session = requests.Session()
     self._token = token
-    if base_url is not None:
-      self._base_url = base_url
-    else:
-      self._base_url = 'https://sandbox.dialpad.com' if sandbox else 'https://dialpad.com'
+    self._session = requests.Session()
+    self._base_url = base_url or hosts.get('sandbox' if sandbox else 'live')
 
   def _url(self, *path):
     path = ['%s' % p for p in path]
@@ -53,23 +58,15 @@ class DialpadClient(object):
 
   def _raw_request(self, path, method='GET', data=None, headers=None):
     url = self._url(*path)
-    headers = headers or {}
-    headers['Authorization'] = 'Bearer %s' % self._token
-    if method == 'GET':
-      return self._session.get(url, params=data, headers=headers)
-
-    if method == 'POST':
-      return self._session.post(url, json=data, headers=headers)
-
-    if method == 'PUT':
-      return self._session.put(url, json=data, headers=headers)
-
-    if method == 'PATCH':
-      return self._session.patch(url, json=data, headers=headers)
-
-    if method == 'DELETE':
-      return self._session.delete(url, json=data, headers=headers)
-
+    headers = headers or dict()
+    headers.update({'Authorization': 'Bearer %s' % self._token})
+    if str(method).upper() in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
+      return getattr(self._session, str(method).lower())(
+        url,
+        headers=headers,
+        json=data if method != 'GET' else None,
+        params=data if method == 'GET' else None,
+      )
     raise ValueError('Unsupported method "%s"' % method)
 
   def request(self, path, method='GET', data=None, headers=None):
@@ -84,7 +81,8 @@ class DialpadClient(object):
     # If the response contains the 'items' key, (and maybe 'cursor'), then this is a cursorized
     # list response.
     if 'items' in response_keys and not response_keys - {'cursor', 'items'}:
-      return self._cursor_iterator(response_json, path=path, method=method, data=data, headers=headers)
+      return self._cursor_iterator(
+        response_json, path=path, method=method, data=data, headers=headers)
     return response_json
 
   @cached_property

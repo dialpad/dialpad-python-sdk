@@ -41,7 +41,7 @@ def _generate_swagger_spec():
   def _hotpatch_spec(spec):
     if isinstance(spec, dict):
       _hotpatch_spec_piece(spec)
-      for k, v in spec.iteritems():
+      for k, v in spec.items():
         _hotpatch_spec(v)
 
     elif isinstance(spec, list):

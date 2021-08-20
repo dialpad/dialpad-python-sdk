@@ -49,7 +49,7 @@ class StatsExportResource(DialpadResource):
 
     data.update(kwargs)
 
-    data = {k: v for k, v in data.iteritems() if v is not None}
+    data = {k: v for k, v in data.items() if v is not None}
     return self.request(method='POST', data=data)
 
   def get(self, export_id):
