@@ -40,3 +40,14 @@ class CallResource(DialpadResource):
     """
     return self.request(method='POST', data=dict(phone_number=phone_number, user_id=user_id,
                                                  **kwargs))
+
+  def get_info(self, call_id):
+    """Gets call status and other information.
+
+    Args:
+      call_id (int, required): The ID of the call.
+
+    See Also:
+      https://developers.dialpad.com/reference/callapi_getcallinfo
+    """
+    return self.request([call_id], method='GET')

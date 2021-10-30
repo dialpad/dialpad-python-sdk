@@ -4,6 +4,7 @@ import requests
 from cached_property import cached_property
 
 from .resources import (
+  AppSettingsResource,
   SMSResource,
   RoomResource,
   UserResource,
@@ -84,6 +85,10 @@ class DialpadClient(object):
       return self._cursor_iterator(
         response_json, path=path, method=method, data=data, headers=headers)
     return response_json
+
+  @cached_property
+  def app_settings(self):
+    return AppSettingsResource(self)
 
   @cached_property
   def blocked_number(self):

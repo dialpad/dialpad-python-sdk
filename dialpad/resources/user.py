@@ -223,3 +223,17 @@ class UserResource(DialpadResource):
       https://developers.dialpad.com/reference#users
     """
     return self.request([user_id, 'personas'], method='GET')
+
+  def toggle_do_not_disturb(self, user_id, do_not_disturb):
+    """Toggle DND status on or off for the given user.
+
+    Args:
+      user_id (int, required): The ID of the user.
+      do_not_disturb (bool, required): A boolean indicating whether to enable or disable the
+                                       "do not disturb" setting.
+
+    See Also:
+      https://developers.dialpad.com/reference/userapi_togglednd
+    """
+    return self.request([user_id, 'togglednd'], method='PATCH',
+                         data={'do_not_disturb': do_not_disturb})

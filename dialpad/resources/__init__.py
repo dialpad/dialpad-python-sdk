@@ -1,3 +1,4 @@
+from .app_settings import AppSettingsResource
 from .blocked_number import BlockedNumberResource
 from .call import CallResource
 from .call_router import CallRouterResource

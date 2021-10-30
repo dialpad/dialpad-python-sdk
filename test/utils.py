@@ -49,7 +49,7 @@ def _generate_swagger_spec():
         _hotpatch_spec(v)
 
     return spec
-  
+
   # Download the spec from dialpad.com.
   spec_json = requests.get('https://dialpad.com/static/openapi/apiv2openapi-en.json').json()
 

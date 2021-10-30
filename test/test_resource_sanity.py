@@ -17,7 +17,7 @@ import pytest
 
 from swagger_stub import swagger_stub
 
-from .utils import resource_filepath
+from .utils import resource_filepath, prepare_test_resources
 
 from dialpad.client import DialpadClient
 from dialpad import resources
@@ -32,6 +32,9 @@ from dialpad.resources.resource import DialpadResource
 #       strategy.
 @pytest.fixture(scope='module')
 def swagger_files_url():
+  # Ensure that the spec is up-to-date first.
+  prepare_test_resources()
+
   return [
     (resource_filepath('swagger_spec.json'), 'https://dialpad.com'),
   ]
@@ -61,6 +64,12 @@ class TestResourceSanity:
   """
 
   EX_METHOD_CALLS = {
+    'AppSettingsResource': {
+      'get': {
+        'target_id': '123',
+        'target_type': 'office',
+      }
+    },
     'BlockedNumberResource': {
       'list': {},
       'block_numbers': {
@@ -74,13 +83,16 @@ class TestResourceSanity:
       },
     },
     'CallResource': {
+      'get_info': {
+        'call_id': '123'
+      },
       'initiate_call': {
         'phone_number': '+12223334444',
         'user_id': '123',
         'group_id': '123',
         'group_type': 'department',
         'device_id': '123',
-      },
+      }
     },
     'CallRouterResource': {
       'list': {
@@ -140,7 +152,7 @@ class TestResourceSanity:
       'remove_operator': {
         'call_center_id': '123',
         'user_id': '123',
-      },
+      }
     },
     'CompanyResource': {
       'get': {},
@@ -546,6 +558,10 @@ class TestResourceSanity:
       },
       'get_personas': {
         'user_id': '123',
+      },
+      'toggle_do_not_disturb': {
+        'user_id': '123',
+        'do_not_disturb': True,
       },
     },
     'UserDeviceResource': {
