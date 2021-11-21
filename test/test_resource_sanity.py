@@ -92,6 +92,7 @@ class TestResourceSanity:
         'group_id': '123',
         'group_type': 'department',
         'device_id': '123',
+        'custom_data': 'example custom data',
       }
     },
     'CallRouterResource': {

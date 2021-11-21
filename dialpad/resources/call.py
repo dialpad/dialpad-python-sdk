@@ -34,6 +34,7 @@ class CallResource(DialpadResource):
       group_type (str, optional): One of "office", "department", or "callcenter", corresponding to
                                   the type of ID passed into group_type.
       device_id (str, optional): The ID of the specific user device that should ring.
+      custom_data (str, optional): Free-form extra data to associate with the call.
 
     See Also:
       https://developers.dialpad.com/reference#callapi_call
