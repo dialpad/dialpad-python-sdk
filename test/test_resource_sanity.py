@@ -133,6 +133,10 @@ class TestResourceSanity:
         'call_center_id': '123',
         'phone_number': '+12223334444',
       },
+      'validate_callback': {
+        'call_center_id': '123',
+        'phone_number': '+12223334444',
+      },
     },
     'CallCenterResource': {
       'get': {

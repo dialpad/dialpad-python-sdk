@@ -28,3 +28,22 @@ class CallbackResource(DialpadResource):
     """
     return self.request(method='POST', data=dict(call_center_id=call_center_id,
                                                  phone_number=phone_number))
+
+  def validate_callback(self, call_center_id, phone_number):
+    """Performs a dry-run of creating a callback request, but does not add it to the call center
+    queue.
+
+    This performs the same validation logic as when actually enqueuing a callback request, allowing
+    early identification of problems which would prevent a successful callback request.
+
+    Args:
+      call_center_id (str, required): The ID of the call center for which the callback would be
+                                      enqueued.
+      phone_number (str, required): The e164-formatted number that would be added to the callback
+                                    queue.
+
+    See Also:
+      https://developers.dialpad.com/reference/callapi_validatecallback
+    """
+    return self.request(['validate'], method='POST', data=dict(call_center_id=call_center_id,
+                                                               phone_number=phone_number))
