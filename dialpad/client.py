@@ -53,9 +53,10 @@ class DialpadClient(object):
       data['cursor'] = response_json['cursor']
       response = self._raw_request(path, method, data, headers)
       response.raise_for_status()
-      response_json = response.json()
-      for i in response_json['items']:
-        yield i
+      if response != []:
+        response_json = response.json()
+        for i in response_json['items']:
+          yield i
 
   def _raw_request(self, path, method='GET', data=None, headers=None):
     url = self._url(*path)
