@@ -1,0 +1,11 @@
+coverage == 5.5
+pytest
+pipenv == 2021.5.29
+pytest-sugar == 0.9.4
+pyrsistent == 0.16.1
+pytest-cov
+bump2version
+swagger-spec-validator == 2.7.3
+swagger-stub == 0.2.1
+jsonschema<4.0
+git+https://github.com/jakedialpad/swagger-parser@v1.0.1b#egg=swagger-parser
