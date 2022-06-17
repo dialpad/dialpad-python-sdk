@@ -89,7 +89,7 @@ Assuming you've already cloned the repository, all you'll need to do is install 
   ```
   Optionaly, you can specify an environment to run the tests against. For eg:
   ```shell
-  $ tox -e py38
+  $ tox -e py3
   ```
 That was easy :)
 
