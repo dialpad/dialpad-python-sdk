@@ -1,6 +1,6 @@
 coverage == 5.5
 pytest
-pipenv == 2021.5.29
+pipenv == 2022.1.8
 pytest-sugar == 0.9.4
 pyrsistent == 0.16.1
 pytest-cov
