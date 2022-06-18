@@ -209,7 +209,7 @@ tox || confirm "There are failing tests. $test_failure_prompt"
 
 # If we're *only* bumping the version, then we're safe to proceed at this point.
 if [ $__bump_only == "true" ]; then
-  pipenv run bump2version --allow-dirty $VERSION_PART
+  tox -e bump $VERSION_PART
   exit
 fi
 
@@ -221,14 +221,14 @@ if ! git pull origin master --dry-run -v 2>&1 | grep "origin/master" | grep "up 
 fi
 
 # We'll let bump2version handle the dirty-working-directory scenario.
-pipenv run bump2version $VERSION_PART || bail_out
+tox -e bump $VERSION_PART || bail_out
 
 # Now we need to build the package, so let's clear away any junk that might be lying around.
 rm -rf ./dist &> /dev/null
 rm -rf ./build &> /dev/null
 
 # The build stdout is a bit noisy, but stderr will be helpful if there's an error.
-pipenv run python ./setup.py sdist bdist_wheel > /dev/null || bail_out
+tox -e build > /dev/null || bail_out
 
 # Make sure there aren't any issues with the package.
 twine check dist/* || bail_out
