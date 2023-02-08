@@ -34,10 +34,23 @@ hosts = dict(
 
 
 class DialpadClient(object):
-  def __init__(self, token, sandbox=False, base_url=None):
+  def __init__(self, token, sandbox=False, base_url=None, company_id=None):
     self._token = token
     self._session = requests.Session()
     self._base_url = base_url or hosts.get('sandbox' if sandbox else 'live')
+    self._company_id = company_id
+
+  @property
+  def company_id(self):
+    return self._company_id
+
+  @company_id.setter
+  def company_id(self, value):
+    self._company_id = value
+
+  @company_id.deleter
+  def company_id(self):
+    del self._company_id
 
   def _url(self, *path):
     path = ['%s' % p for p in path]
@@ -60,6 +73,9 @@ class DialpadClient(object):
   def _raw_request(self, path, method='GET', data=None, headers=None):
     url = self._url(*path)
     headers = headers or dict()
+    if self.company_id:
+      headers.update({'DP-Company-ID': self.company_id})
+
     headers.update({'Authorization': 'Bearer %s' % self._token})
     if str(method).upper() in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
       return getattr(self._session, str(method).lower())(
