@@ -10,7 +10,7 @@ def readme():
 
 setup(
   name='python-dialpad',
-  version='2.2.0',
+  version='2.2.1',
   description='A python wrapper for the Dialpad REST API',
   long_description=readme(),
   long_description_content_type="text/markdown",
