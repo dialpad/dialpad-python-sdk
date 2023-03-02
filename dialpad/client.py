@@ -74,7 +74,7 @@ class DialpadClient(object):
     url = self._url(*path)
     headers = headers or dict()
     if self.company_id:
-      headers.update({'DP-Company-ID': self.company_id})
+      headers.update({'DP-Company-ID': str(self.company_id)})
 
     headers.update({'Authorization': 'Bearer %s' % self._token})
     if str(method).upper() in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
