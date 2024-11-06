@@ -4,7 +4,7 @@ A python wrapper around the Dialpad REST API
 
 This document describes the installation, usage, and development practices of this python library.
 For information about the API itself, head on over to our
-[API Documentation](https://www.dialpad.com/developers/docs/) page!
+[API Documentation](https://developers.dialpad.com/reference) page!
 
 
 ## Installation
