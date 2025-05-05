@@ -8,4 +8,8 @@ bump2version
 swagger-spec-validator == 2.7.3
 swagger-stub == 0.2.1
 jsonschema<4.0
+wheel
+cython<3.0.0
+pyyaml==5.4.1
+py
 git+https://github.com/jakedialpad/swagger-parser@v1.0.1b#egg=swagger-parser
