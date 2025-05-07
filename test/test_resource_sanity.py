@@ -490,6 +490,10 @@ class TestResourceSanity:
       },
     },
     'UserResource': {
+      'search': {
+        'query': 'test',
+        'cursor': 'iamacursor',
+      },
       'list': {
         'email': 'tmtesten@test.com',
         'state': 'suspended',

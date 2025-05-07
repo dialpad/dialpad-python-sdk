@@ -237,3 +237,27 @@ class UserResource(DialpadResource):
     """
     return self.request([user_id, 'togglednd'], method='PATCH',
                          data={'do_not_disturb': do_not_disturb})
+
+  def search(self, query, **kwargs):
+    """User -- Search
+
+    Searches for users matching a specific criteria. It matches phone numbers, emails, or name.
+    Optionally, it accepts filters to reduce the amount of final results.
+
+    - The `cursor` value is provided in the API response, and can be passed as a parameter to
+    retrieve subsequent pages of results.
+
+    Args:
+      query (str, required): A string that will be matched against user information. For phone
+                                numbers in e164 format, it is recommended to URL-encode the model
+                                term.
+      cursor (str, optional): A token used to return the next page of a previous request. Use the
+                              cursor provided in the previous response.
+      filter (str, optional): If provided, query will be performed against a smaller set of data.
+                              Format for providing filters is in the form of an array of key=value
+                              pairs. (i.e. filter=[key=value])
+
+    See Also:
+      https://developers.dialpad.com/reference/searchusers
+    """
+    return self.request(['search'], method='GET', data=dict(query=query, **kwargs))
