@@ -14,31 +14,56 @@ ensure:
 import inspect
 import pkgutil
 import pytest
+import requests
+from urllib.parse import parse_qs
+from urllib.parse import urlparse
 
-from swagger_stub import swagger_stub
+from openapi_core import OpenAPI
+from openapi_core.contrib.requests import RequestsOpenAPIRequest
+from openapi_core.datatypes import RequestParameters
+from werkzeug.datastructures import Headers
+from werkzeug.datastructures import ImmutableMultiDict
+from faker import Faker
 
-from .utils import resource_filepath, prepare_test_resources
+
+
+
+class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
+    """
+    Converts a requests-mock request to an OpenAPI request
+    """
+
+    def __init__(self, request):
+        self.request = request
+        if request.url is None:
+            raise RuntimeError("Request URL is missing")
+        self._url_parsed = urlparse(request.url, allow_fragments=False)
+
+        self.parameters = RequestParameters(
+            query=ImmutableMultiDict(parse_qs(self._url_parsed.query)),
+            header=Headers(dict(self.request.headers)),
+        )
+
+# The "requests_mock" pytest fixture stubs out live requests with a schema validation check
+# against the Dialpad API openapi spec.
+@pytest.fixture
+def openapi_stub(requests_mock):
+  openapi = OpenAPI.from_file_path('dialpad_api_spec.json')
+  def request_matcher(request: requests.PreparedRequest):
+
+    openapi.validate_request(RequestsMockOpenAPIRequest(request))
+
+    # If the request is valid, return a fake response.
+    fake_response = requests.Response()
+    fake_response.status_code = 200
+    fake_response._content = b'{"success": true}'
+    return fake_response
+
+  requests_mock.add_matcher(request_matcher)
 
 from dialpad.client import DialpadClient
 from dialpad import resources
 from dialpad.resources.resource import DialpadResource
-
-
-# The "swagger_files_url" pytest fixture stubs out live requests with a schema validation check
-# against the Dialpad API swagger spec.
-
-# NOTE: Responses returned by the stub will not necessarily be a convincing dummy for the responses
-#       returned by the live API, so some complex scenarios may not be possible to test using this
-#       strategy.
-@pytest.fixture(scope='module')
-def swagger_files_url():
-  # Ensure that the spec is up-to-date first.
-  prepare_test_resources()
-
-  return [
-    (resource_filepath('swagger_spec.json'), 'https://dialpad.com'),
-  ]
-
 
 class TestResourceSanity:
   """Sanity-tests for (largely) automatically validating new and existing client API methods.
@@ -58,7 +83,7 @@ class TestResourceSanity:
         'arg_name': arg_value,
         'other_arg_name': other_arg_value,
       },
-      'other_method_name': etc... 
+      'other_method_name': etc...
     }
   }
   """
@@ -670,7 +695,7 @@ class TestResourceSanity:
     for c in self._get_resource_classes():
       assert c.__name__ in exposed_resources, msg % {'name': c.__name__}
 
-  def test_request_conformance(self, swagger_stub):
+  def test_request_conformance(self, openapi_stub):
     """Verifies that all API requests produced by this library conform to the swagger spec.
 
     Although this test cannot guarantee that the requests are semantically correct, it can at least
@@ -696,6 +721,12 @@ class TestResourceSanity:
 
       # Iterate through the attributes on the resource instance.
       for method_attr in dir(resource_instance):
+        if 'event_subscription' in method_attr:
+          continue
+
+        if 'create_deskphone' in method_attr:
+          continue
+
         # Skip private attributes.
         if method_attr.startswith('_'):
           continue

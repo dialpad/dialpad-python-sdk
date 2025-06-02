@@ -23,10 +23,14 @@ pythonpath = ["src"]
 
 [tool.uv]
 dev-dependencies = [
+    "faker>=37.3.0",
+    "openapi-core>=0.19.5",
     "pytest>=8.4.0",
+    "requests-mock>=1.12.1",
     "six>=1.17.0",
     "swagger-parser",
     "swagger-stub>=0.2.1",
+    "urllib3>=2.4.0",
 ]
 
 [tool.uv.sources]
