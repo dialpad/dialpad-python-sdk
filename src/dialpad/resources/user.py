@@ -170,25 +170,6 @@ class UserResource(DialpadResource):
     """
     return self.request([user_id, 'deskphones'], method='GET')
 
-  def create_deskphone(self, user_id, mac_address, name, phone_type):
-    """Creates a desk phone belonging to the specified user.
-
-    Args:
-      user_id (int, required): The ID of the user.
-      mac_address (str, required): MAC address of the desk phone.
-      name (str, required): A human-readable name for the desk phone.
-      phone_type (str, required): Type (vendor) of the desk phone. One of "obi", "polycom", "sip",
-                                  "mini", "audiocodes", "yealink". Use "sip" for generic types.
-
-    See Also:
-      https://developers.dialpad.com/reference#deskphoneapi_createuserdeskphone
-    """
-    return self.request([user_id, 'deskphones'], method='POST', data={
-      'mac_address': mac_address,
-      'name': name,
-      'type': phone_type,
-    })
-
   def delete_deskphone(self, user_id, deskphone_id):
     """Deletes the specified desk phone.
 

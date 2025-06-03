@@ -23,7 +23,6 @@ from .resources import (
   StatsExportResource,
   SubscriptionResource,
   BlockedNumberResource,
-  EventSubscriptionResource
 )
 
 
@@ -137,10 +136,6 @@ class DialpadClient(object):
   @cached_property
   def department(self):
     return DepartmentResource(self)
-
-  @cached_property
-  def event_subscription(self):
-    return EventSubscriptionResource(self)
 
   @cached_property
   def number(self):

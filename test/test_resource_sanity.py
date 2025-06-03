@@ -29,20 +29,20 @@ from faker import Faker
 
 
 class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
-    """
-    Converts a requests-mock request to an OpenAPI request
-    """
+  """
+  Converts a requests-mock request to an OpenAPI request
+  """
 
-    def __init__(self, request):
-        self.request = request
-        if request.url is None:
-            raise RuntimeError("Request URL is missing")
-        self._url_parsed = urlparse(request.url, allow_fragments=False)
+  def __init__(self, request):
+    self.request = request
+    if request.url is None:
+      raise RuntimeError("Request URL is missing")
+    self._url_parsed = urlparse(request.url, allow_fragments=False)
 
-        self.parameters = RequestParameters(
-            query=ImmutableMultiDict(parse_qs(self._url_parsed.query)),
-            header=Headers(dict(self.request.headers)),
-        )
+    self.parameters = RequestParameters(
+      query=ImmutableMultiDict(parse_qs(self._url_parsed.query)),
+      header=Headers(dict(self.request.headers)),
+    )
 
 # The "requests_mock" pytest fixture stubs out live requests with a schema validation check
 # against the Dialpad API openapi spec.
@@ -253,47 +253,6 @@ class TestResourceSanity:
         'operator_type': 'room',
       },
     },
-    'EventSubscriptionResource': {
-      'list_call_event_subscriptions': {
-        'target_id': '123',
-        'target_type': 'room',
-      },
-      'get_call_event_subscription': {
-        'subscription_id': '123',
-      },
-      'put_call_event_subscription': {
-        'subscription_id': '123',
-        'url': 'test.com/subhook',
-        'secret': 'badsecret',
-        'enabled': True,
-        'group_calls_only': False,
-        'target_id': '123',
-        'target_type': 'office',
-        'call_states': ['connected', 'queued'],
-      },
-      'delete_call_event_subscription': {
-        'subscription_id': '123',
-      },
-      'list_sms_event_subscriptions': {
-        'target_id': '123',
-        'target_type': 'room',
-      },
-      'get_sms_event_subscription': {
-        'subscription_id': '123',
-      },
-      'put_sms_event_subscription': {
-        'subscription_id': '123',
-        'url': 'test.com/subhook',
-        'secret': 'badsecret',
-        'direction': 'outbound',
-        'enabled': True,
-        'target_id': '123',
-        'target_type': 'office',
-      },
-      'delete_sms_event_subscription': {
-        'subscription_id': '123',
-      },
-    },
     'NumberResource': {
       'list': {
         'status': 'available',
@@ -376,12 +335,6 @@ class TestResourceSanity:
       },
       'get_deskphones': {
         'room_id': '123',
-      },
-      'create_deskphone': {
-        'room_id': '123',
-        'mac_address': 'Tim Cook',
-        'name': 'The red one.',
-        'phone_type': 'polycom',
       },
       'delete_deskphone': {
         'room_id': '123',
@@ -576,12 +529,6 @@ class TestResourceSanity:
       'get_deskphones': {
         'user_id': '123',
       },
-      'create_deskphone': {
-        'user_id': '123',
-        'mac_address': 'Tim Cook',
-        'name': 'The red one.',
-        'phone_type': 'polycom',
-      },
       'delete_deskphone': {
         'user_id': '123',
         'deskphone_id': '123',
@@ -721,11 +668,6 @@ class TestResourceSanity:
 
       # Iterate through the attributes on the resource instance.
       for method_attr in dir(resource_instance):
-        if 'event_subscription' in method_attr:
-          continue
-
-        if 'create_deskphone' in method_attr:
-          continue
 
         # Skip private attributes.
         if method_attr.startswith('_'):

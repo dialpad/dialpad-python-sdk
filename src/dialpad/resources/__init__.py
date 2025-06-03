@@ -7,7 +7,6 @@ from .callcenter import CallCenterResource
 from .company import CompanyResource
 from .contact import ContactResource
 from .department import DepartmentResource
-from .event_subscription import EventSubscriptionResource
 from .number import NumberResource
 from .office import OfficeResource
 from .room import RoomResource
