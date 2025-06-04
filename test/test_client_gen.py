@@ -3,12 +3,16 @@
 """Tests to verify that the API client generation components are working correctly.
 """
 
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 from openapi_core import OpenAPI
 import pytest
 
 from cli.client_gen.annotation import spec_piece_to_annotation
+from cli.client_gen.resource_methods import http_method_to_func_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -54,5 +58,36 @@ class TestGenerationUtilities:
       try:
         _annotation = spec_piece_to_annotation(example_case)
       except Exception as e:
-        print(f"Error processing {example_case}: {e}")
+        logger.error(f"Error processing {example_case}: {e}")
         raise
+
+  def test_http_method_to_func_def(self, open_api_spec):
+    """Test the http_method_to_func_def function for all operations in the spec."""
+    # Iterate through all paths and their methods in the OpenAPI spec
+    for path_key, path_item_spec in (open_api_spec.spec / 'paths').items():
+      # path_item_spec is a Spec object representing a Path Item (e.g., /users/{id})
+      # It contains Operation Objects for HTTP methods like 'get', 'post', etc.
+      for http_method_key, operation_spec in path_item_spec.items():
+        # We are only interested in actual HTTP methods.
+        # Other keys like 'parameters', 'summary', 'description' might exist at this level.
+        if http_method_key.lower() not in ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']:
+          continue
+
+        # operation_spec is a Spec object representing an Operation
+        # (e.g., the details of GET /users/{id})
+        try:
+          _generated_output = http_method_to_func_def(
+            operation_spec,  # The Spec object for the specific operation
+          )
+          # For this test, we're primarily ensuring that the function doesn't crash.
+          # A more detailed test might inspect the _generated_output.
+          assert _generated_output is not None, \
+            f"http_method_to_func_def returned None for {http_method_key.upper()} {path_key}"
+
+        except Exception as e:
+          logger.error(f"Error processing operation: {http_method_key.upper()} {path_key}")
+          # Providing context about the operation that caused the error
+          # operation_spec.contents gives the raw dictionary for that part of the spec
+          logger.error(f"Operation Spec Contents: {operation_spec.contents()}")
+          logger.error(f"Exception: {e}")
+          raise
