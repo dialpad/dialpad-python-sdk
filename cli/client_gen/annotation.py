@@ -2,6 +2,8 @@ import ast
 from typing import Optional
 from jsonschema_path.paths import SchemaPath
 
+"""Utilities for converting OpenAPI schema pieces to Python type annotations."""
+
 
 def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
   """Converts an OpenAPI type+format to a Python type string"""
