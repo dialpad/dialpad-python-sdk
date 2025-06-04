@@ -11,8 +11,76 @@ def http_method_to_func_name(method_spec: SchemaPath) -> str:
 
 
 def http_method_to_func_body(method_spec: SchemaPath) -> list[ast.stmt]:
-  # TODO
-  return []
+  """Generates the body of the Python function, including a docstring."""
+  docstring_parts = []
+
+  # Operation summary and description
+  summary = method_spec.contents().get('summary')
+  description = method_spec.contents().get('description')
+  operation_id = method_spec.contents().get('operationId')
+
+  if summary:
+    docstring_parts.append(summary)
+  elif operation_id: # Fallback to operationId if summary is not present
+    docstring_parts.append(f"Corresponds to operationId: {operation_id}")
+
+  if description:
+    if summary: # Add a blank line if summary was also present
+        docstring_parts.append('')
+    docstring_parts.append(description)
+
+  # Args section
+  args_doc_lines = []
+
+  # Collect parameters
+  param_spec_paths = []
+  if 'parameters' in method_spec:
+    parameters_list_path = method_spec / 'parameters'
+    if isinstance(parameters_list_path.contents(), list):
+        param_spec_paths = list(parameters_list_path)
+
+  # Path parameters
+  path_param_specs = sorted(
+    [p for p in param_spec_paths if p['in'] == 'path'],
+    key=lambda p: p['name']
+  )
+  for p_spec in path_param_specs:
+    param_name = p_spec['name']
+    param_desc = p_spec.contents().get('description', 'No description available.')
+    args_doc_lines.append(f"    {param_name}: {param_desc}")
+
+  # Query parameters
+  query_param_specs = sorted(
+    [p for p in param_spec_paths if p['in'] == 'query'],
+    key=lambda p: p['name']
+  )
+  for p_spec in query_param_specs:
+    param_name = p_spec['name']
+    param_desc = p_spec.contents().get('description', 'No description available.')
+    args_doc_lines.append(f"    {param_name}: {param_desc}")
+
+  # Request body
+  request_body_path = method_spec / 'requestBody'
+  if request_body_path.exists():
+    rb_desc = request_body_path.contents().get('description', 'The request body.')
+    args_doc_lines.append(f"    request_body: {rb_desc}")
+
+  if args_doc_lines:
+    if docstring_parts: # Add a blank line if summary/description was present
+        docstring_parts.append('')
+    docstring_parts.append("Args:")
+    docstring_parts.extend(args_doc_lines)
+
+  # Construct the final docstring string
+  final_docstring = "\n".join(docstring_parts) if docstring_parts else "No description available."
+
+  # Create AST nodes for the docstring and a Pass statement
+  docstring_node = ast.Expr(value=ast.Constant(value=final_docstring))
+
+  return [
+    docstring_node,
+    ast.Pass()
+  ]
 
 
 def _get_python_default_value_ast(param_spec_path: SchemaPath) -> ast.expr:
