@@ -18,7 +18,7 @@ from cli.client_gen.resource_classes import resource_path_to_class_def
 from cli.client_gen.resource_modules import resource_path_to_module_def
 
 
-REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 
 
