@@ -27,9 +27,11 @@ pythonpath = ["src"]
 [tool.uv]
 dev-dependencies = [
     "faker>=37.3.0",
+    "inquirer>=3.4.0",
     "openapi-core>=0.19.5",
     "pytest>=8.4.0",
     "requests-mock>=1.12.1",
+    "ruff>=0.11.12",
     "six>=1.17.0",
     "swagger-parser",
     "swagger-stub>=0.2.1",
@@ -39,3 +41,12 @@ dev-dependencies = [
 
 [tool.uv.sources]
 swagger-parser = { git = "https://github.com/jakedialpad/swagger-parser", rev = "v1.0.1b" }
+
+[tool.ruff]
+line-length = 100
+indent-width = 2
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
