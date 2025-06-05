@@ -28,10 +28,6 @@ applyTo: "**"
 - Make use of the `rich` library to enhance logging output when possible.
 
 ## Project Conventions
-
-- Use `uv` for package management and script execution.
-- Use `uv run` to execute scripts.
-- Use `uv run pytest` to run tests.
-
-NOTE:
-Whenever you run a command in the terminal, pipe the output to a file, `output.txt`, that you can read from. Make sure to overwrite each time so that it doesn't grow too big. There is a bug in the current version of Copilot that causes it to not read the output of commands correctly. This workaround allows you to read the output from the temporary file instead.
+- Use `uv run pytest -xvs &> output.txt` to run tests.
+  - There is a bug in the current version of Copilot that causes it to not read the output of commands directly. This workaround allows you to read the output from `output.txt` instead.
+  - The tests are fast and inexpensive to run, so please favour running *all* of them to avoid missing any issues.
