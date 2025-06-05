@@ -3,6 +3,7 @@
 """Tests to verify that the API client generation components are working correctly.
 """
 
+import ast
 import logging
 import os
 
@@ -13,6 +14,7 @@ import pytest
 
 from cli.client_gen.annotation import spec_piece_to_annotation
 from cli.client_gen.resource_methods import http_method_to_func_def
+from cli.client_gen.resource_classes import resource_path_to_class_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -91,3 +93,24 @@ class TestGenerationUtilities:
           logger.error(f"Operation Spec Contents: {operation_spec.contents()}")
           logger.error(f"Exception: {e}")
           raise
+
+  def test_resource_path_to_class_def(self, open_api_spec):
+    """Test the resource_path_to_class_def function for all paths in the spec."""
+    # Iterate through all paths in the OpenAPI spec
+    for path_key, path_item_spec in (open_api_spec.spec / 'paths').items():
+      # path_item_spec is a SchemaPath object representing a Path Item (e.g., /users/{id})
+      try:
+        _generated_class_def = resource_path_to_class_def(path_item_spec)
+        # For this test, we're primarily ensuring that the function doesn't crash
+        # and returns an AST ClassDef node.
+        assert _generated_class_def is not None, \
+          f"resource_path_to_class_def returned None for path {path_key}"
+        assert isinstance(_generated_class_def, ast.ClassDef), \
+          f"resource_path_to_class_def did not return an ast.ClassDef for path {path_key}"
+
+      except Exception as e:
+        logger.error(f"Error processing path: {path_key}")
+        # Providing context about the path that caused the error
+        logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
+        logger.error(f"Exception: {e}")
+        raise
