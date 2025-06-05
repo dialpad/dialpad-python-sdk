@@ -2,6 +2,7 @@ import ast
 from typing import Annotated
 import inquirer
 import os
+import subprocess  # Add this import
 import typer
 
 from openapi_core import OpenAPI
@@ -29,11 +30,30 @@ def generate_resource_module(output_file: Annotated[str, typer.Argument(help="Th
   ]
   answers = inquirer.prompt(questions)
   if not answers:
-    return typer.echo('No selection made. Exiting.')
+    typer.echo('No selection made. Exiting.')
+    raise typer.Exit()  # Use typer.Exit for a cleaner exit
 
   module_def = resource_path_to_module_def(open_api_spec.spec / 'paths' / answers['path'])
+
+  # Ensure the output directory exists
+  output_dir = os.path.dirname(output_file)
+  if output_dir: # Check if output_dir is not an empty string (i.e., file is in current dir)
+    os.makedirs(output_dir, exist_ok=True)
+
   with open(output_file, 'w') as f:
     f.write(ast.unparse(ast.fix_missing_locations(module_def)))
+
+  typer.echo(f"Generated module: {output_file}")
+
+  # Reformat the generated file using uv ruff format
+  try:
+    subprocess.run(['uv', 'run', 'ruff', 'format', output_file], check=True)
+    typer.echo(f"Formatted {output_file} with uv ruff format.")
+  except FileNotFoundError:
+    typer.echo("uv command not found. Please ensure uv is installed and in your PATH.", err=True)
+  except subprocess.CalledProcessError as e:
+    typer.echo(f"Error formatting {output_file} with uv ruff format: {e}", err=True)
+
 
 @app.command('goodbye')
 def goodbye(name: str):
