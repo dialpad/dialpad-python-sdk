@@ -6,8 +6,11 @@ from .annotation import spec_piece_to_annotation
 
 
 def http_method_to_func_name(method_spec: SchemaPath) -> str:
-  # TODO
-  return 'tmp'
+  """
+  Converts the HTTP method in the path to the Python function name.
+  This will be the lowercase HTTP method name (get, post, delete, etc.)
+  """
+  return method_spec.parts[-1].lower()
 
 
 def http_method_to_func_body(method_spec: SchemaPath) -> list[ast.stmt]:
