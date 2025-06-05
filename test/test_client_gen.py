@@ -15,6 +15,7 @@ import pytest
 from cli.client_gen.annotation import spec_piece_to_annotation
 from cli.client_gen.resource_methods import http_method_to_func_def
 from cli.client_gen.resource_classes import resource_path_to_class_def
+from cli.client_gen.resource_modules import resource_path_to_module_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -111,6 +112,33 @@ class TestGenerationUtilities:
       except Exception as e:
         logger.error(f"Error processing path: {path_key}")
         # Providing context about the path that caused the error
+        logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
+        logger.error(f"Exception: {e}")
+        raise
+
+  def test_resource_path_to_module_def(self, open_api_spec):
+    """Test the resource_path_to_module_def function for all paths in the spec."""
+    # Iterate through all paths in the OpenAPI spec
+    for path_key, path_item_spec in (open_api_spec.spec / 'paths').items():
+      # path_item_spec is a SchemaPath object representing a Path Item
+      try:
+        _generated_module_def = resource_path_to_module_def(path_item_spec)
+        # Ensure the function doesn't crash and returns an AST Module node.
+        assert _generated_module_def is not None, \
+          f"resource_path_to_module_def returned None for path {path_key}"
+        assert isinstance(_generated_module_def, ast.Module), \
+          f"resource_path_to_module_def did not return an ast.Module for path {path_key}"
+
+        # Check that the module body contains at least an import and a class definition
+        assert len(_generated_module_def.body) >= 2, \
+          f"Module for path {path_key} does not contain enough statements (expected at least 2)."
+        assert isinstance(_generated_module_def.body[0], ast.ImportFrom), \
+          f"First statement in module for path {path_key} is not an ast.ImportFrom."
+        assert isinstance(_generated_module_def.body[1], ast.ClassDef), \
+          f"Second statement in module for path {path_key} is not an ast.ClassDef."
+
+      except Exception as e:
+        logger.error(f"Error processing path for module generation: {path_key}")
         logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
         logger.error(f"Exception: {e}")
         raise
