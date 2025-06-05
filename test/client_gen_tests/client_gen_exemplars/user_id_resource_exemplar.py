@@ -4,7 +4,7 @@ from dialpad.resources import DialpadResource
 class ApiV2UsersIdResource(DialpadResource):
   """Resource for the path /api/v2/users/{id}"""
 
-  def tmp(self, id: str) -> UserProto:
+  def delete(self, id: str) -> UserProto:
     """User -- Delete
 
     Deletes a user by id.
@@ -17,7 +17,7 @@ class ApiV2UsersIdResource(DialpadResource):
         id: The user's id. ('me' can be used if you are using a user level API key)"""
     pass
 
-  def tmp(self, id: str) -> UserProto:
+  def get(self, id: str) -> UserProto:
     """User -- Get
 
     Gets a user by id.
@@ -30,7 +30,7 @@ class ApiV2UsersIdResource(DialpadResource):
         id: The user's id. ('me' can be used if you are using a user level API key)"""
     pass
 
-  def tmp(self, id: str, request_body: UpdateUserMessage) -> UserProto:
+  def patch(self, id: str, request_body: UpdateUserMessage) -> UserProto:
     """User -- Update
 
     Updates the provided fields for an existing user.
