@@ -17,6 +17,7 @@ applyTo: "**"
 - Use `f-strings` for string formatting.
 - Use two spaces for indentation.
 - Use concise and correct type annotations as much as possible.
+- Prefer early-returns over if-else constructs.
 - Follow functional programming principles where possible.
 - Ensure code is compatible with Python 3.9+.
 
