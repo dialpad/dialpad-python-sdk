@@ -33,14 +33,10 @@ def _get_property_fields(
     # Create property path to get the annotation
     prop_path = object_schema / 'properties' / prop_name
 
-    # For TypedDict fields, we need to handle Optional vs NotRequired differently
-    # A field can be omitted (NotRequired) and/or contain None (Optional)
-    is_nullable = prop_dict.get('nullable', False)
-
     # Use schema_dict_to_annotation with appropriate flags
     annotation_expr = annotation.schema_dict_to_annotation(
       prop_dict,
-      override_nullable=is_nullable,
+      override_nullable=False, # The vast majority of properties are improperly marked as nullable
       override_omissible=not is_required
     )
 
