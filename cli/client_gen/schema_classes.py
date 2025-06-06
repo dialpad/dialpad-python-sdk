@@ -64,11 +64,19 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
   # Create class body
   class_body = []
 
-  # Add docstring if description exists
-  if 'description' in schema_dict:
-    class_body.append(
-      ast.Expr(value=ast.Constant(value=schema_dict['description']))
-    )
+  # Add docstring from schema description or title
+  docstring = schema_dict.get('description', '')
+  if not docstring and 'title' in schema_dict:
+    docstring = schema_dict['title']
+
+  # If no description available, provide a generic docstring
+  if not docstring:
+    docstring = f'TypedDict representation of the {class_name} schema.'
+
+  # Add docstring as first element in class body
+  class_body.append(
+    ast.Expr(value=ast.Constant(value=docstring))
+  )
 
   # Add class annotations for each field
   for field_name, field_type in field_items:
@@ -82,7 +90,7 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
     )
 
   # If no fields were found, add a pass statement to avoid syntax error
-  if not class_body:
+  if len(class_body) == 1:  # Only the docstring is present
     class_body.append(ast.Pass())
 
   # Create the TypedDict base class

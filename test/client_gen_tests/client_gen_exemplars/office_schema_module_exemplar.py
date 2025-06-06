@@ -5,6 +5,8 @@ from dialpad.schemas.plan import BillingContactMessage, BillingPointOfContactMes
 
 
 class E911Message(TypedDict):
+  """E911 address."""
+
   address: Optional[str]
   address2: NotRequired[Optional[str]]
   city: Optional[str]
@@ -14,6 +16,8 @@ class E911Message(TypedDict):
 
 
 class CreateOfficeMessage(TypedDict):
+  """Secondary Office creation."""
+
   annual_commit_monthly_billing: Optional[bool]
   auto_call_recording: NotRequired[Optional[bool]]
   billing_address: Optional[BillingContactMessage]
@@ -150,6 +154,8 @@ class CreateOfficeMessage(TypedDict):
 
 
 class E911GetProto(TypedDict):
+  """E911 address."""
+
   address: NotRequired[Optional[str]]
   address2: NotRequired[Optional[str]]
   city: NotRequired[Optional[str]]
@@ -159,6 +165,8 @@ class E911GetProto(TypedDict):
 
 
 class E911UpdateMessage(TypedDict):
+  """TypedDict representation of the E911UpdateMessage schema."""
+
   address: Optional[str]
   address2: NotRequired[Optional[str]]
   city: Optional[str]
@@ -170,11 +178,15 @@ class E911UpdateMessage(TypedDict):
 
 
 class OffDutyStatusesProto(TypedDict):
+  """Off-duty statuses."""
+
   id: NotRequired[Optional[int]]
   off_duty_statuses: NotRequired[Optional[list[str]]]
 
 
 class OfficeSettings(TypedDict):
+  """TypedDict representation of the OfficeSettings schema."""
+
   allow_device_guest_login: NotRequired[Optional[bool]]
   block_caller_id_disabled: NotRequired[Optional[bool]]
   bridged_target_recording_allowed: NotRequired[Optional[bool]]
@@ -185,6 +197,8 @@ class OfficeSettings(TypedDict):
 
 
 class OfficeProto(TypedDict):
+  """Office."""
+
   availability_status: NotRequired[
     Optional[Literal['closed', 'holiday_closed', 'holiday_open', 'open']]
   ]
@@ -229,10 +243,14 @@ class OfficeProto(TypedDict):
 
 
 class OfficeCollection(TypedDict):
+  """Collection of offices."""
+
   cursor: NotRequired[Optional[str]]
   items: NotRequired[Optional[list[OfficeProto]]]
 
 
 class OfficeUpdateResponse(TypedDict):
+  """Office update."""
+
   office: NotRequired[Optional[OfficeProto]]
   plan: NotRequired[Optional[PlanProto]]
