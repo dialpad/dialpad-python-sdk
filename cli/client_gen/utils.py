@@ -1,7 +1,11 @@
 import ast
 import os
+import rich
 import subprocess
 import typer
+
+from rich.markdown import Markdown
+
 
 def write_python_file(filepath: str, module_node: ast.Module) -> None:
   """Writes an AST module to a Python file, and reformats it appropriately with ruff."""
@@ -16,8 +20,7 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
 
   # Reformat the generated file using uv ruff format
   try:
-    subprocess.run(['uv', 'run', 'ruff', 'format', filepath], check=True)
-    typer.echo(f"Formatted {filepath} with uv ruff format.")
+    subprocess.run(['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True)
   except FileNotFoundError:
     typer.echo("uv command not found. Please ensure uv is installed and in your PATH.", err=True)
     raise typer.Exit(1)
@@ -25,3 +28,5 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
     typer.echo(f"Error formatting {filepath} with uv ruff format: {e}", err=True)
     # This error doesn't necessarily mean the file is invalid, so we can still continue
     # optimistically here.
+
+  rich.print(Markdown(f"Generated `{filepath}`."))
