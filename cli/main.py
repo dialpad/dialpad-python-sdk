@@ -11,6 +11,7 @@ SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 from cli.client_gen.resource_modules import resource_path_to_module_def
 from cli.client_gen.schema_modules import schemas_to_module_def
 from cli.client_gen.utils import write_python_file
+from cli.client_gen.schema_packages import schemas_to_package_directory
 
 
 app = typer.Typer()
@@ -103,6 +104,21 @@ def generate_schema_module(
 
   typer.echo(f"Generated module for path '{schema_module_path}': {output_file}")
 
+
+@app.command('gen-schema-package')
+def generate_schema_package(
+  output_dir: Annotated[str, typer.Argument(help="The name of the output directory to write the schema package.")],
+):
+  """Write the OpenAPI schema components as TypedDict schemas within a Python package hierarchy."""
+  open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
+
+  # Gather all the schema components from the OpenAPI spec
+  all_schemas = [v for _k, v in (open_api_spec.spec / 'components' / 'schemas').items()]
+
+  # Write them to the specified output directory
+  schemas_to_package_directory(all_schemas, output_dir)
+
+  typer.echo(f"Schema package generated at '{output_dir}'")
 
 if __name__ == "__main__":
   app()
