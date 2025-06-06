@@ -16,6 +16,7 @@ from cli.client_gen.annotation import spec_piece_to_annotation
 from cli.client_gen.resource_methods import http_method_to_func_def
 from cli.client_gen.resource_classes import resource_path_to_class_def
 from cli.client_gen.resource_modules import resource_path_to_module_def
+from cli.client_gen.schema_classes import schema_to_typed_dict_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -140,5 +141,44 @@ class TestGenerationUtilities:
       except Exception as e:
         logger.error(f"Error processing path for module generation: {path_key}")
         logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
+        logger.error(f"Exception: {e}")
+        raise
+
+  def test_schema_to_typed_dict_def(self, open_api_spec):
+    """Test the schema_to_typed_dict_def function for all schemas in the spec."""
+    # Get the components/schemas section which contains all schema definitions
+    if 'components' not in open_api_spec.spec or 'schemas' not in (open_api_spec.spec / 'components'):
+      pytest.skip("No schemas found in the OpenAPI spec")
+    
+    schemas = open_api_spec.spec / 'components' / 'schemas'
+    
+    # Iterate through all schema definitions
+    for schema_name, schema in schemas.items():
+      try:
+        # Generate TypedDict definition from the schema
+        typed_dict_def = schema_to_typed_dict_def(schema)
+        
+        # Verify the function doesn't crash and returns an AST ClassDef node
+        assert typed_dict_def is not None, \
+          f"schema_to_typed_dict_def returned None for schema {schema_name}"
+        assert isinstance(typed_dict_def, ast.ClassDef), \
+          f"schema_to_typed_dict_def did not return an ast.ClassDef for schema {schema_name}"
+        
+        # Verify the class has TypedDict as a base class
+        assert len(typed_dict_def.bases) > 0, \
+          f"TypedDict class for schema {schema_name} has no base classes"
+        assert any(
+          isinstance(base, ast.Name) and base.id == 'TypedDict' 
+          for base in typed_dict_def.bases
+        ), f"TypedDict class for schema {schema_name} does not inherit from TypedDict"
+        
+        # Check that the class has at least a body (could be just a pass statement)
+        assert len(typed_dict_def.body) > 0, \
+          f"TypedDict class for schema {schema_name} has an empty body"
+        
+      except Exception as e:
+        logger.error(f"Error processing schema: {schema_name}")
+        # Providing context about the schema that caused the error
+        logger.error(f"Schema Contents: {schema.contents()}")
         logger.error(f"Exception: {e}")
         raise

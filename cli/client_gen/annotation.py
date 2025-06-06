@@ -15,6 +15,8 @@ def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
     ('string', 'byte'): 'str', # TODO: We expect these to be b-64 strings... we can probably bake a solution into the client lib so that this can be typed as bytes on the method itself
     ('string', 'date-time'): 'str', # TODO: We could probably bake the ISO-str conversion into the client lib here too
     ('boolean', None): 'bool',
+    ('object', None): 'dict', # There are a few cases where there are genuine free-form dicts(such as app settings)
+    ('number', 'double'): 'float',
   }
   if (s_type, s_format) in s_mapping:
     return s_mapping[(s_type, s_format)]
