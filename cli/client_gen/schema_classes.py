@@ -13,11 +13,11 @@ def _extract_schema_title(object_schema: SchemaPath) -> str:
 def _get_property_fields(
   object_schema: SchemaPath,
   required_props: Set[str]
-) -> List[Tuple[str, ast.expr]]:
+) -> List[Tuple[str, ast.expr, str]]:
   """
   Extract property fields from schema and create appropriate annotations.
 
-  Returns a list of (field_name, annotation) tuples.
+  Returns a list of (field_name, annotation, description) tuples.
   """
   schema_dict = object_schema.contents()
   fields = []
@@ -44,7 +44,10 @@ def _get_property_fields(
       override_omissible=not is_required
     )
 
-    fields.append((prop_name, annotation_expr))
+    # Get the field description from the spec
+    description = prop_dict.get('description', '')
+
+    fields.append((prop_name, annotation_expr, description))
 
   return fields
 
@@ -78,8 +81,9 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
     ast.Expr(value=ast.Constant(value=docstring))
   )
 
-  # Add class annotations for each field
-  for field_name, field_type in field_items:
+  # Add class annotations for each field along with field descriptions as string literals
+  for field_name, field_type, field_description in field_items:
+    # Add the field annotation
     class_body.append(
       ast.AnnAssign(
         target=ast.Name(id=field_name, ctx=ast.Store()),
@@ -88,6 +92,14 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
         simple=1
       )
     )
+
+    # Only add field description if it's not empty
+    if field_description:
+      # Add field description as a string literal right after the field annotation
+      # This is not standard, but VSCode will interpret it as a field docstring
+      class_body.append(
+        ast.Expr(value=ast.Constant(value=field_description))
+      )
 
   # If no fields were found, add a pass statement to avoid syntax error
   if len(class_body) == 1:  # Only the docstring is present
