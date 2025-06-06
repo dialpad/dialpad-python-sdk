@@ -1,6 +1,7 @@
 from typing import Annotated
 import inquirer
 import os
+import re
 import typer
 
 from openapi_core import OpenAPI
@@ -119,6 +120,28 @@ def generate_schema_package(
   schemas_to_package_directory(all_schemas, output_dir)
 
   typer.echo(f"Schema package generated at '{output_dir}'")
+
+
+@app.command('preprocess-spec')
+def reformat_spec():
+  """Applies some preprocessing to the OpenAPI spec."""
+  # This is extremely hackish, but gets the job done for now...
+  with open(SPEC_FILE, 'r') as f:
+    spec_file_contents = f.read()
+
+  replace_ops = [
+    (r'protos(\.\w+\.\w+)', r'schemas\1'),
+    (r'frontend\.schemas(\.\w+\.\w+)', r'schemas\1'),
+  ]
+
+  for pattern, replacement in replace_ops:
+    spec_file_contents = re.sub(pattern, replacement, spec_file_contents)
+
+  # Write the modified contents back to the file
+  with open(SPEC_FILE, 'w') as f:
+    f.write(spec_file_contents)
+
+  typer.echo(f"Reformatted OpenAPI spec at '{SPEC_FILE}'")
 
 if __name__ == "__main__":
   app()
