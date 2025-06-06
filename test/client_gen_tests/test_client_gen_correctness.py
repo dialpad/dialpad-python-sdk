@@ -9,6 +9,7 @@ import os
 import tempfile
 import subprocess
 import difflib
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,7 @@ from cli.client_gen.annotation import spec_piece_to_annotation
 from cli.client_gen.resource_methods import http_method_to_func_def
 from cli.client_gen.resource_classes import resource_path_to_class_def
 from cli.client_gen.resource_modules import resource_path_to_module_def
+from cli.client_gen.schema_modules import schemas_to_module_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -41,8 +43,14 @@ class TestGenerationUtilityBehaviour:
   """Tests for the correctness of client generation utilities by means of comparison against
   desired exemplar outputs."""
 
-  def _verify_module_exemplar(self, open_api_spec, spec_path: str, filename: str):
-    """Helper function to verify a module exemplar against the generated, ruff-formatted code."""
+  def _verify_against_exemplar(self, cli_command: List[str], filename: str) -> None:
+    """
+    Common verification helper that compares CLI-generated output against an exemplar file.
+
+    Args:
+      cli_command: The CLI command to run as a list of strings
+      filename: The exemplar file to compare against
+    """
     exemplar_file_path = exemplar_file(filename)
     with open(exemplar_file_path, 'r', encoding='utf-8') as f:
       expected_content = f.read()
@@ -56,18 +64,20 @@ class TestGenerationUtilityBehaviour:
         # File is automatically created but we don't need to write anything to it
 
       # Run the CLI command to generate the module and format it
-      cli_command = ['uv', 'run', 'cli', 'gen-module', tmp_file_path, '--api-path', spec_path]
-      process = subprocess.run(cli_command, capture_output=True, text=True, check=False, encoding='utf-8')
+      # Insert the tmp_file_path at the end of the command.
+      cmd_with_output = cli_command.copy()
+      cmd_with_output.append(tmp_file_path)
+
+      process = subprocess.run(cmd_with_output, capture_output=True, text=True, check=False, encoding='utf-8')
 
       if process.returncode != 0:
         error_message = (
-            f"CLI module generation failed for {spec_path}.\n"
-            f"Command: {' '.join(cli_command)}\n"
+            f"CLI generation failed for command: {' '.join(cmd_with_output)}\n"
             f"stderr:\n{process.stderr}\n"
             f"stdout:\n{process.stdout}"
         )
         logger.error(error_message)
-        assert process.returncode == 0, f"CLI module generation failed. Stderr: {process.stderr}"
+        assert process.returncode == 0, f"CLI generation failed. Stderr: {process.stderr}"
 
       # Read the generated code from the temporary file
       with open(tmp_file_path, 'r', encoding='utf-8') as f:
@@ -79,13 +89,13 @@ class TestGenerationUtilityBehaviour:
 
     # Compare the exemplar content with the generated content
     if expected_content == generated_code:
-      return True  # Test passes, explicit is better than implicit
+      return  # Test passes, explicit is better than implicit
 
     diff_lines = list(difflib.unified_diff(
         expected_content.splitlines(keepends=True),
         generated_code.splitlines(keepends=True),
         fromfile=f'exemplar: {filename}',
-        tofile=f'generated (from CLI for {spec_path})'
+        tofile=f'generated (from CLI: {" ".join(cli_command)})'
     ))
     diff_output = "".join(diff_lines)
 
@@ -96,7 +106,7 @@ class TestGenerationUtilityBehaviour:
       # Only print if there's actual diff content to avoid empty rich blocks
       if diff_output.strip():
         console = Console(stderr=True) # Print to stderr for pytest capture
-        console.print(f"[bold red]Diff for {spec_path} vs {filename}:[/bold red]")
+        console.print(f"[bold red]Diff for {' '.join(cli_command)} vs {filename}:[/bold red]")
         # Using "diff" lexer for syntax highlighting
         syntax = Syntax(diff_output, "diff", theme="monokai", line_numbers=False, background_color="default")
         console.print(syntax)
@@ -106,14 +116,27 @@ class TestGenerationUtilityBehaviour:
       # Catch any other exception during rich printing to avoid masking the main assertion
       logger.warning(f"Failed to print rich diff: {e}. Proceeding with plain text diff.")
 
-
     assertion_message = (
-        f"Generated code for {spec_path} does not match exemplar {filename}.\n"
+        f"Generated code for command '{' '.join(cli_command)}' does not match exemplar {filename}.\n"
         f"Plain text diff (see stderr for rich diff if 'rich' is installed and no errors occurred):\n{diff_output}"
     )
     assert False, assertion_message
 
+  def _verify_module_exemplar(self, open_api_spec, spec_path: str, filename: str):
+    """Helper function to verify a resource module exemplar against the generated code."""
+    cli_command = ['uv', 'run', 'cli', 'gen-module', '--api-path', spec_path]
+    self._verify_against_exemplar(cli_command, filename)
+
+  def _verify_schema_module_exemplar(self, open_api_spec, schema_module_path: str, filename: str):
+    """Helper function to verify a schema module exemplar against the generated code."""
+    cli_command = ['uv', 'run', 'cli', 'gen-schema-module', '--schema-module-path', schema_module_path]
+    self._verify_against_exemplar(cli_command, filename)
+
   def test_user_api_exemplar(self, open_api_spec):
     """Test the /api/v2/users/{id} endpoint."""
     self._verify_module_exemplar(open_api_spec, '/api/v2/users/{id}', 'user_id_resource_exemplar.py')
+
+  def test_office_schema_module_exemplar(self, open_api_spec):
+    """Test the office.py schema module."""
+    self._verify_schema_module_exemplar(open_api_spec, 'protos.office', 'office_schema_module_exemplar.py')
 
