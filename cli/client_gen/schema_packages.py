@@ -33,7 +33,7 @@ def schemas_to_package_directory(schemas: list[SchemaPath], output_dir: str, dep
   # Okay, now we can create any module files that need to be created.
   for group_name, m_schemas in schema_groups['modules'].items():
     module_def = schemas_to_module_def(m_schemas)
-    write_python_file(os.path.join(output_dir, 'modules', f'{group_name}.py'), module_def)
+    write_python_file(os.path.join(output_dir, f'{group_name}.py'), module_def)
 
   # And now we can recurse on any sub-packages that need to be created.
   for group_name, p_schemas in schema_groups['packages'].items():
