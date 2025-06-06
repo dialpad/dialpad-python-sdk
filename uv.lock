@@ -565,7 +565,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "cached-property", specifier = ">=2.0.1" },
-    { name = "requests" },
+    { name = "requests", specifier = ">=2.28.0" },
 ]
 
 [package.metadata.requires-dev]
