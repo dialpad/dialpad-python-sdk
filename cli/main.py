@@ -1,8 +1,6 @@
-import ast
 from typing import Annotated
 import inquirer
 import os
-import subprocess  # Add this import
 import typer
 
 from openapi_core import OpenAPI
@@ -12,6 +10,7 @@ SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 
 from cli.client_gen.resource_modules import resource_path_to_module_def
 from cli.client_gen.schema_modules import schemas_to_module_def
+from cli.client_gen.utils import write_python_file
 
 
 app = typer.Typer()
@@ -52,25 +51,9 @@ def generate_resource_module(
     api_path = answers['path']
 
   module_def = resource_path_to_module_def(open_api_spec.spec / 'paths' / api_path)
-
-  # Ensure the output directory exists
-  output_dir = os.path.dirname(output_file)
-  if output_dir: # Check if output_dir is not an empty string (i.e., file is in current dir)
-    os.makedirs(output_dir, exist_ok=True)
-
-  with open(output_file, 'w') as f:
-    f.write(ast.unparse(ast.fix_missing_locations(module_def)))
+  write_python_file(output_file, module_def)
 
   typer.echo(f"Generated module for path '{api_path}': {output_file}")
-
-  # Reformat the generated file using uv ruff format
-  try:
-    subprocess.run(['uv', 'run', 'ruff', 'format', output_file], check=True)
-    typer.echo(f"Formatted {output_file} with uv ruff format.")
-  except FileNotFoundError:
-    typer.echo("uv command not found. Please ensure uv is installed and in your PATH.", err=True)
-  except subprocess.CalledProcessError as e:
-    typer.echo(f"Error formatting {output_file} with uv ruff format: {e}", err=True)
 
 
 @app.command('gen-schema-module')
@@ -116,25 +99,9 @@ def generate_schema_module(
   schema_specs = [s for k, s in all_schemas.items() if k.startswith(schema_module_path)]
 
   module_def = schemas_to_module_def(schema_specs)
-
-  # Ensure the output directory exists
-  output_dir = os.path.dirname(output_file)
-  if output_dir: # Check if output_dir is not an empty string (i.e., file is in current dir)
-    os.makedirs(output_dir, exist_ok=True)
-
-  with open(output_file, 'w') as f:
-    f.write(ast.unparse(ast.fix_missing_locations(module_def)))
+  write_python_file(output_file, module_def)
 
   typer.echo(f"Generated module for path '{schema_module_path}': {output_file}")
-
-  # Reformat the generated file using uv ruff format
-  try:
-    subprocess.run(['uv', 'run', 'ruff', 'format', output_file], check=True)
-    typer.echo(f"Formatted {output_file} with uv ruff format.")
-  except FileNotFoundError:
-    typer.echo("uv command not found. Please ensure uv is installed and in your PATH.", err=True)
-  except subprocess.CalledProcessError as e:
-    typer.echo(f"Error formatting {output_file} with uv ruff format: {e}", err=True)
 
 
 if __name__ == "__main__":
