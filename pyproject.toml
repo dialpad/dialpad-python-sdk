@@ -23,7 +23,7 @@ packages = ["src/dialpad"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-xs"
+addopts = "-xs --showlocals"
 
 [tool.uv]
 dev-dependencies = [
