@@ -92,13 +92,7 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
   return ast.ClassDef(
     name=class_name,
     bases=[typed_dict_base],
-    keywords=[
-      # Set total=False if we have any optional fields
-      ast.keyword(
-        arg='total',
-        value=ast.Constant(value=len(required_props) == len(field_items))
-      )
-    ],
+    keywords=[],
     body=class_body,
     decorator_list=[]
   )
