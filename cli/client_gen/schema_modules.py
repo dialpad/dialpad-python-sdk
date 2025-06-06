@@ -98,12 +98,18 @@ def schemas_to_module_def(schemas: List[SchemaPath]) -> ast.Module:
     ast.ImportFrom(
       module='typing',
       names=[
-        ast.alias(name='TypedDict', asname=None),
         ast.alias(name='Optional', asname=None),
         ast.alias(name='List', asname=None),
         ast.alias(name='Dict', asname=None),
         ast.alias(name='Union', asname=None),
-        ast.alias(name='Literal', asname=None),
+        ast.alias(name='Literal', asname=None)
+      ],
+      level=0  # Absolute import
+    ),
+    ast.ImportFrom(
+      module='typing_extensions',
+      names=[
+        ast.alias(name='TypedDict', asname=None),
         ast.alias(name='NotRequired', asname=None)
       ],
       level=0  # Absolute import
