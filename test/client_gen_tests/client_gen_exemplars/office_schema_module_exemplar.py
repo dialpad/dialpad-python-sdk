@@ -1,5 +1,7 @@
 from typing import Optional, List, Dict, Union, Literal
 from typing_extensions import TypedDict, NotRequired
+from dialpad.schemas.group import RoutingOptions, VoiceIntelligence
+from dialpad.schemas.plan import BillingContactMessage, BillingPointOfContactMessage, PlanProto
 
 
 class E911Message(TypedDict):
