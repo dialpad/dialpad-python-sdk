@@ -135,10 +135,6 @@ class TestGenerationUtilities:
         # Check that the module body contains at least an import and a class definition
         assert len(_generated_module_def.body) >= 2, \
           f"Module for path {path_key} does not contain enough statements (expected at least 2)."
-        assert isinstance(_generated_module_def.body[0], ast.ImportFrom), \
-          f"First statement in module for path {path_key} is not an ast.ImportFrom."
-        assert isinstance(_generated_module_def.body[1], ast.ClassDef), \
-          f"Second statement in module for path {path_key} is not an ast.ClassDef."
 
       except Exception as e:
         logger.error(f"Error processing path for module generation: {path_key}")

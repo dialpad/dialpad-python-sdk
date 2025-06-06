@@ -1,4 +1,6 @@
+from typing import Optional, List, Dict, Union, Literal
 from dialpad.resources import DialpadResource
+from dialpad.schemas.user import UpdateUserMessage, UserProto
 
 
 class ApiV2UsersIdResource(DialpadResource):
