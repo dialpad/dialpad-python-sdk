@@ -7,7 +7,7 @@ from . import annotation
 
 def _extract_schema_title(object_schema: SchemaPath) -> str:
   """Extracts the title from a schema, generating a default if not present."""
-  return object_schema.parts[-1]
+  return object_schema.parts[-1].split('.')[-1]
 
 
 def _get_property_fields(
