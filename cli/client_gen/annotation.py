@@ -44,11 +44,12 @@ def enum_to_py_type(enum_list: list) -> str:
 def create_annotation(py_type: str, nullable: bool, omissible: bool) -> ast.Name:
   """Creates an ast.Name annotation with the given name and type"""
   id_str = py_type
-  if omissible:
-    id_str = f'NotRequired[{id_str}]'
 
   if nullable:
     id_str = f'Optional[{id_str}]'
+
+  if omissible:
+    id_str = f'NotRequired[{id_str}]'
 
   return ast.Name(id=id_str, ctx=ast.Load())
 
