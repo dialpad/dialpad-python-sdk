@@ -6,6 +6,7 @@
 import ast
 import logging
 import os
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ from cli.client_gen.resource_methods import http_method_to_func_def
 from cli.client_gen.resource_classes import resource_path_to_class_def
 from cli.client_gen.resource_modules import resource_path_to_module_def
 from cli.client_gen.schema_classes import schema_to_typed_dict_def
+from cli.client_gen.schema_modules import schemas_to_module_def
 
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -149,36 +151,93 @@ class TestGenerationUtilities:
     # Get the components/schemas section which contains all schema definitions
     if 'components' not in open_api_spec.spec or 'schemas' not in (open_api_spec.spec / 'components'):
       pytest.skip("No schemas found in the OpenAPI spec")
-    
+
     schemas = open_api_spec.spec / 'components' / 'schemas'
-    
+
     # Iterate through all schema definitions
     for schema_name, schema in schemas.items():
       try:
         # Generate TypedDict definition from the schema
         typed_dict_def = schema_to_typed_dict_def(schema)
-        
+
         # Verify the function doesn't crash and returns an AST ClassDef node
         assert typed_dict_def is not None, \
           f"schema_to_typed_dict_def returned None for schema {schema_name}"
         assert isinstance(typed_dict_def, ast.ClassDef), \
           f"schema_to_typed_dict_def did not return an ast.ClassDef for schema {schema_name}"
-        
+
         # Verify the class has TypedDict as a base class
         assert len(typed_dict_def.bases) > 0, \
           f"TypedDict class for schema {schema_name} has no base classes"
         assert any(
-          isinstance(base, ast.Name) and base.id == 'TypedDict' 
+          isinstance(base, ast.Name) and base.id == 'TypedDict'
           for base in typed_dict_def.bases
         ), f"TypedDict class for schema {schema_name} does not inherit from TypedDict"
-        
+
         # Check that the class has at least a body (could be just a pass statement)
         assert len(typed_dict_def.body) > 0, \
           f"TypedDict class for schema {schema_name} has an empty body"
-        
+
       except Exception as e:
         logger.error(f"Error processing schema: {schema_name}")
         # Providing context about the schema that caused the error
         logger.error(f"Schema Contents: {schema.contents()}")
         logger.error(f"Exception: {e}")
+        raise
+
+  def test_schemas_to_module_def(self, open_api_spec):
+    """Test the schemas_to_module_def function with appropriate schema groupings."""
+    # Get the components/schemas section which contains all schema definitions
+    if 'components' not in open_api_spec.spec or 'schemas' not in (open_api_spec.spec / 'components'):
+      pytest.skip("No schemas found in the OpenAPI spec")
+
+    all_schemas = open_api_spec.spec / 'components' / 'schemas'
+
+    # Group schemas by their module prefix (e.g., 'protos.office.X' goes to 'office' module)
+    grouped_schemas = {}
+
+    # First, group schemas by module name
+    for schema_name, schema in all_schemas.items():
+      # Extract the module path from the schema name
+      module_path = '.'.join(schema_name.split('.')[:-1])
+      if module_path not in grouped_schemas:
+        grouped_schemas[module_path] = []
+      grouped_schemas[module_path].append(schema)
+
+    # Test each module group separately
+    for module_path, schemas in grouped_schemas.items():
+      try:
+        # Skip if module has no schemas (shouldn't happen but just in case)
+        if not schemas:
+          continue
+
+        # Generate module definition from the schema group
+        module_def = schemas_to_module_def(schemas)
+
+        # Verify the function returns an AST Module node
+        assert module_def is not None, \
+          f"schemas_to_module_def returned None for module {module_path}"
+        assert isinstance(module_def, ast.Module), \
+          f"schemas_to_module_def did not return an ast.Module for module {module_path}"
+
+        # Check that the module has at least an import statement and a class definition
+        assert len(module_def.body) >= 2, \
+          f"Module {module_path} does not contain enough statements (expected at least 2)."
+
+
+      except Exception as e:
+        logger.error(f"Error processing schemas for module: {module_path}")
+        logger.error(f"Number of schemas in module: {len(schemas)}")
+        logger.error(f"Schema names: {[s.parts[-1] for s in schemas]}")
+        logger.error(f"Exception: {e}")
+        raise
+
+    # If we have no grouped schemas, test with all schemas as one module
+    if not grouped_schemas:
+      try:
+        all_schema_list = list(all_schemas.values())
+        module_def = schemas_to_module_def(all_schema_list)
+        assert isinstance(module_def, ast.Module), "Failed to generate module with all schemas"
+      except Exception as e:
+        logger.error(f"Error processing all schemas together: {e}")
         raise
