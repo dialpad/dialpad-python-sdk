@@ -12,6 +12,7 @@ SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 from cli.client_gen.resource_modules import resource_path_to_module_def
 from cli.client_gen.schema_modules import schemas_to_module_def
 from cli.client_gen.utils import write_python_file
+from cli.client_gen.module_mapping import update_module_mapping
 from cli.client_gen.schema_packages import schemas_to_package_directory
 
 
@@ -142,6 +143,16 @@ def reformat_spec():
     f.write(spec_file_contents)
 
   typer.echo(f"Reformatted OpenAPI spec at '{SPEC_FILE}'")
+
+
+@app.command('update-resource-module-mapping')
+def update_resource_module_mapping(
+  interactive: Annotated[bool, typer.Option(help="Update resource module mapping interactively")] = False
+):
+  """Updates the resource module mapping with any new paths and operations found in the OpenAPI spec."""
+
+  open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
+  update_module_mapping(open_api_spec.spec, interactive=interactive)
 
 if __name__ == "__main__":
   app()

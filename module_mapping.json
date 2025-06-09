@@ -1,0 +1,8 @@
+{
+  "/api/v2/numbers/format": {
+    "post": {
+      "resource_class": "NumberResource",
+      "method_name": "format_number"
+    }
+  }
+}
