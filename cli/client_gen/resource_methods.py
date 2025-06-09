@@ -13,8 +13,102 @@ def http_method_to_func_name(method_spec: SchemaPath) -> str:
   return method_spec.parts[-1].lower()
 
 
+def _is_collection_response(method_spec: SchemaPath) -> bool:
+  """
+  Determines if a method response is a collection (array) that should use iter_request.
+  Returns True if the 200 response is an object with an 'items' property that's an array.
+  """
+  response_type = spec_piece_to_annotation(method_spec / 'responses')
+  return response_type.id.startswith('Iterator[')
+
+
+def _build_method_call_args(method_spec: SchemaPath) -> list[ast.expr]:
+  """Build the argument expressions for the request/iter_request method call."""
+  # Get HTTP method name (GET, POST, etc.)
+  http_method = method_spec.parts[-1].upper()
+
+  # Create method argument
+  method_arg = ast.keyword(
+    arg='method',
+    value=ast.Constant(value=http_method)
+  )
+
+  args = [method_arg]
+
+  # Collect parameters for the request
+  param_spec_paths = []
+  if 'parameters' in method_spec:
+    parameters_list_path = method_spec / 'parameters'
+    if isinstance(parameters_list_path.contents(), list):
+      param_spec_paths = list(parameters_list_path)
+
+  # Process path parameters to build replacement dict for sub_path
+  path_params = [p for p in param_spec_paths if p['in'] == 'path']
+  if path_params:
+    # If we have path parameters, we need to format them into the path string
+    # We'll create a sub_path argument that formats the path
+    params_dict = {}
+    for param in path_params:
+      param_name = param['name']
+      params_dict[param_name] = ast.Name(id=param_name, ctx=ast.Load())
+
+    # Create sub_path argument with f-string formatting
+    sub_path_arg = ast.keyword(
+      arg='sub_path',
+      value=ast.Constant(value=None)  # Default is None - actual path will be in resource class
+    )
+    args.append(sub_path_arg)
+
+  # Process query parameters
+  query_params = [p for p in param_spec_paths if p['in'] == 'query']
+  if query_params:
+    # Create a params dictionary for the query parameters
+    params_dict_elements = []
+    for param in query_params:
+      param_name = param['name']
+      # Only include the parameter if it's not None
+      params_dict_elements.append(
+        ast.IfExp(
+          test=ast.Compare(
+            left=ast.Name(id=param_name, ctx=ast.Load()),
+            ops=[ast.IsNot()],
+            comparators=[ast.Constant(value=None)]
+          ),
+          body=ast.Tuple(
+            elts=[
+              ast.Constant(value=param_name),
+              ast.Name(id=param_name, ctx=ast.Load())
+            ],
+            ctx=ast.Load()
+          ),
+          orelse=ast.Constant(value=None)
+        )
+      )
+
+    # Create params argument with dictionary comprehension filtering out None values
+    params_arg = ast.keyword(
+      arg='params',
+      value=ast.Dict(
+        keys=[ast.Constant(value=p['name']) for p in query_params],
+        values=[ast.Name(id=p['name'], ctx=ast.Load()) for p in query_params]
+      )
+    )
+    args.append(params_arg)
+
+  # Add request body if present
+  has_request_body = 'requestBody' in method_spec.contents()
+  if has_request_body:
+    body_arg = ast.keyword(
+      arg='body',
+      value=ast.Name(id='request_body', ctx=ast.Load())
+    )
+    args.append(body_arg)
+
+  return args
+
+
 def http_method_to_func_body(method_spec: SchemaPath) -> list[ast.stmt]:
-  """Generates the body of the Python function, including a docstring."""
+  """Generates the body of the Python function, including a docstring and request call."""
   docstring_parts = []
 
   # Operation summary and description
@@ -74,16 +168,53 @@ def http_method_to_func_body(method_spec: SchemaPath) -> list[ast.stmt]:
     docstring_parts.append("Args:")
     docstring_parts.extend(args_doc_lines)
 
+  # Returns section
+  responses_path = method_spec / 'responses'
+  if '200' in responses_path:
+    resp_200 = responses_path / '200'
+    if 'description' in resp_200:
+      desc_200 = resp_200.contents()['description']
+      if docstring_parts:
+        docstring_parts.append('')
+      docstring_parts.append(f"Returns:")
+
+      # Check if this is a collection response
+      is_collection = _is_collection_response(method_spec)
+      if is_collection:
+        # Update the return description to indicate it's an iterator
+        docstring_parts.append(f"    An iterator of items from {desc_200}")
+      else:
+        docstring_parts.append(f"    {desc_200}")
+
   # Construct the final docstring string
   final_docstring = "\n".join(docstring_parts) if docstring_parts else "No description available."
 
-  # Create AST nodes for the docstring and a Pass statement
+  # Create docstring node
   docstring_node = ast.Expr(value=ast.Constant(value=final_docstring))
 
-  return [
-    docstring_node,
-    ast.Pass()
-  ]
+  # Determine if this is a collection response method
+  is_collection = _is_collection_response(method_spec)
+
+  # Build method call arguments
+  call_args = _build_method_call_args(method_spec)
+
+  # Create the appropriate request method call
+  method_name = 'iter_request' if is_collection else 'request'
+
+  request_call = ast.Return(
+    value=ast.Call(
+      func=ast.Attribute(
+        value=ast.Name(id='self', ctx=ast.Load()),
+        attr=method_name,
+        ctx=ast.Load()
+      ),
+      args=[],
+      keywords=call_args
+    )
+  )
+
+  # Put it all together
+  return [docstring_node, request_call]
 
 
 def _get_python_default_value_ast(param_spec_path: SchemaPath) -> ast.expr:

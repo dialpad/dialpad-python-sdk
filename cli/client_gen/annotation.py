@@ -1,5 +1,5 @@
 import ast
-from typing import Optional
+from typing import Optional, Iterator, Union, Literal
 from jsonschema_path.paths import SchemaPath
 
 """Utilities for converting OpenAPI schema pieces to Python type annotations."""
@@ -114,6 +114,44 @@ def schema_dict_to_annotation(schema_dict: dict, override_nullable:Optional[bool
   )
 
 
+def _is_collection_schema(schema_dict: dict) -> bool:
+  """
+  Determines if a schema represents a collection (paginated response with items).
+  Returns True if the schema is an object with an 'items' property that's an array.
+  """
+  if schema_dict.get('type') == 'object' and 'properties' in schema_dict:
+    properties = schema_dict.get('properties', {})
+    if 'items' in properties and properties['items'].get('type') == 'array':
+      return True
+  return False
+
+
+def _get_collection_item_type(schema_dict: dict) -> str:
+  """
+  Extracts the item type from a collection schema.
+  For collections, returns the type of items in the array.
+  """
+  if not _is_collection_schema(schema_dict):
+    return None
+
+  # Get the items property schema (which is an array)
+  items_prop = schema_dict['properties']['items']
+
+  # Extract the item type from the array items schema
+  if 'items' in items_prop:
+    item_type_schema = items_prop['items']
+
+    # Handle '$ref' case - most common for collection items
+    if '$ref' in item_type_schema:
+      return item_type_schema['$ref'].split('.')[-1]
+
+    # Handle other cases if needed
+    inner_type = schema_dict_to_annotation(item_type_schema)
+    return inner_type.id
+
+  return None
+
+
 def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
   """Converts requestBody, responses, property, or parameter elements to the appropriate ast.Name annotation"""
   spec_dict = spec_piece.contents()
@@ -147,7 +185,22 @@ def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
       if 'content' not in spec_dict['200']:
         return create_annotation(py_type='None', nullable=False, omissible=False)
 
-      return schema_dict_to_annotation(spec_dict['200']['content']['application/json']['schema'])
+      response_schema = spec_dict['200']['content']['application/json']['schema']
+
+      dereffed_response_schema = (spec_piece / '200' / 'content' / 'application/json' / 'schema').contents()
+
+      # Check if this is a collection response and modify the type accordingly
+      if _is_collection_schema(dereffed_response_schema):
+        item_type = _get_collection_item_type(dereffed_response_schema)
+        if item_type:
+          # Return Iterator[ItemType] instead of the Collection type
+          return create_annotation(
+            py_type=f'Iterator[{item_type}]',
+            nullable=False,
+            omissible=False
+          )
+
+      return schema_dict_to_annotation(response_schema)
 
     return create_annotation(py_type='None', nullable=False, omissible=False)
 

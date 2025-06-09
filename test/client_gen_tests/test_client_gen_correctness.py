@@ -135,8 +135,8 @@ class TestGenerationUtilityBehaviour:
     self._verify_against_exemplar(schemas_to_module_def, schema_specs, filename)
 
   def test_user_api_exemplar(self, open_api_spec):
-    """Test the /api/v2/users/{id} endpoint."""
-    self._verify_module_exemplar(open_api_spec, '/api/v2/users/{id}', 'user_id_resource_exemplar.py')
+    """Test the /api/v2/users endpoint."""
+    self._verify_module_exemplar(open_api_spec, '/api/v2/users', 'user_resource_exemplar.py')
 
   def test_office_schema_module_exemplar(self, open_api_spec):
     """Test the office.py schema module."""

@@ -70,12 +70,13 @@ def resource_path_to_module_def(resource_path: SchemaPath) -> ast.Module:
         ast.alias(name='List', asname=None),
         ast.alias(name='Dict', asname=None),
         ast.alias(name='Union', asname=None),
-        ast.alias(name='Literal', asname=None)
+        ast.alias(name='Literal', asname=None),
+        ast.alias(name='Iterator', asname=None)
       ],
       level=0  # Absolute import
     ),
     ast.ImportFrom(
-      module='dialpad.resources',
+      module='dialpad.resources.base',
       names=[ast.alias(name='DialpadResource', asname=None)],
       level=0  # Absolute import
     )
