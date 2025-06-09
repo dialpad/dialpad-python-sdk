@@ -1,8 +1,24 @@
 {
   "/api/v2/numbers/format": {
     "post": {
-      "resource_class": "NumberResource",
+      "resource_class": "NumbersResource",
       "method_name": "format_number"
+    }
+  },
+  "/api/v2/accesscontrolpolicies/{id}/assign": {
+    "post": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "assign"
+    }
+  },
+  "/api/v2/accesscontrolpolicies": {
+    "get": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "create"
     }
   }
 }

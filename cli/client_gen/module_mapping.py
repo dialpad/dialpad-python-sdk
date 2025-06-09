@@ -109,9 +109,10 @@ def update_module_mapping(api_spec: SchemaPath, interactive: bool = False):
       suggested_method_name = get_suggested_method_name(module_mapping, api_path, http_method)
 
       if interactive:
+        console.print('\n\n')
         console.print(Panel(
           f"[bold]New API endpoint:[/bold] {api_path} [{http_method.upper()}]",
-          subtitle=method_entry.get('summary', 'No summary available')
+          subtitle=method_entry.contents().get('summary', 'No summary available')
         ))
 
         # Prompt for class name
