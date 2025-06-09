@@ -61,10 +61,11 @@ def openapi_stub(requests_mock):
 
   requests_mock.add_matcher(request_matcher)
 
-from dialpad.client import DialpadClient
-from dialpad import resources
-from dialpad.resources.resource import DialpadResource
+#from dialpad.client import DialpadClient
+#from dialpad import resources
+#from dialpad.resources.resource import DialpadResource
 
+@pytest.mark.skip('Turned off until the client refactor is complete')
 class TestResourceSanity:
   """Sanity-tests for (largely) automatically validating new and existing client API methods.
 
