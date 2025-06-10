@@ -88,23 +88,6 @@ def _build_method_call_args(
     if isinstance(parameters_list_path.contents(), list):
       param_spec_paths = list(parameters_list_path)
 
-  # Process path parameters to build replacement dict for sub_path
-  path_params = [p for p in param_spec_paths if p['in'] == 'path']
-  if path_params:
-    # If we have path parameters, we need to format them into the path string
-    # We'll create a sub_path argument that formats the path
-    params_dict = {}
-    for param in path_params:
-      param_name = param['name']
-      params_dict[param_name] = ast.Name(id=param_name, ctx=ast.Load())
-
-    # Create sub_path argument with f-string formatting
-    sub_path_arg = ast.keyword(
-      arg='sub_path',
-      value=ast.Constant(value=None),  # Default is None - actual path will be in resource class
-    )
-    args.append(sub_path_arg)
-
   # Process query parameters
   query_params = [p for p in param_spec_paths if p['in'] == 'query']
   if query_params:

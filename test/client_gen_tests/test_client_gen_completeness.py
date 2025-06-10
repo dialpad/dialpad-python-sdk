@@ -7,16 +7,26 @@ import ast
 import logging
 import os
 import re
+import json
+from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
 from openapi_core import OpenAPI
 import pytest
+from jsonschema_path import SchemaPath
 
 from cli.client_gen.annotation import spec_piece_to_annotation
 from cli.client_gen.resource_methods import http_method_to_func_def
-from cli.client_gen.resource_classes import resource_path_to_class_def
-from cli.client_gen.resource_modules import resource_path_to_module_def
+from cli.client_gen.resource_classes import (
+    resource_path_to_class_def,
+    resource_class_to_class_def
+)
+from cli.client_gen.resource_modules import (
+    resource_class_to_module_def
+)
+from cli.client_gen.module_mapping import load_module_mapping, ModuleMappingEntry
+from cli.client_gen.resource_packages import _group_operations_by_class
 from cli.client_gen.schema_classes import schema_to_typed_dict_def
 from cli.client_gen.schema_modules import schemas_to_module_def
 
@@ -29,6 +39,24 @@ SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 def open_api_spec():
   """Loads the OpenAPI specification from the file."""
   return OpenAPI.from_file_path(SPEC_FILE)
+
+
+@pytest.fixture(scope="module")
+def schema_path_spec():
+  """Loads the OpenAPI specification as a SchemaPath object."""
+  with open(SPEC_FILE, 'r') as f:
+    spec_dict = json.load(f)
+  return SchemaPath.from_dict(spec_dict)
+
+
+@pytest.fixture(scope="module")
+def module_mapping():
+  """Loads the module mapping configuration."""
+  try:
+    return load_module_mapping()
+  except Exception as e:
+    pytest.skip(f"Could not load module mapping: {e}")
+    return {}
 
 
 class TestGenerationUtilities:
@@ -115,29 +143,6 @@ class TestGenerationUtilities:
       except Exception as e:
         logger.error(f"Error processing path: {path_key}")
         # Providing context about the path that caused the error
-        logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
-        logger.error(f"Exception: {e}")
-        raise
-
-  def test_resource_path_to_module_def(self, open_api_spec):
-    """Test the resource_path_to_module_def function for all paths in the spec."""
-    # Iterate through all paths in the OpenAPI spec
-    for path_key, path_item_spec in (open_api_spec.spec / 'paths').items():
-      # path_item_spec is a SchemaPath object representing a Path Item
-      try:
-        _generated_module_def = resource_path_to_module_def(path_item_spec)
-        # Ensure the function doesn't crash and returns an AST Module node.
-        assert _generated_module_def is not None, \
-          f"resource_path_to_module_def returned None for path {path_key}"
-        assert isinstance(_generated_module_def, ast.Module), \
-          f"resource_path_to_module_def did not return an ast.Module for path {path_key}"
-
-        # Check that the module body contains at least an import and a class definition
-        assert len(_generated_module_def.body) >= 2, \
-          f"Module for path {path_key} does not contain enough statements (expected at least 2)."
-
-      except Exception as e:
-        logger.error(f"Error processing path for module generation: {path_key}")
         logger.error(f"Path Item Spec Contents: {path_item_spec.contents()}")
         logger.error(f"Exception: {e}")
         raise
@@ -236,4 +241,134 @@ class TestGenerationUtilities:
         assert isinstance(module_def, ast.Module), "Failed to generate module with all schemas"
       except Exception as e:
         logger.error(f"Error processing all schemas together: {e}")
+        raise
+
+  def test_group_operations_by_class(self, schema_path_spec, module_mapping):
+    """Test the _group_operations_by_class function for grouping API operations by class."""
+    # Skip test if mapping not available
+    if not module_mapping:
+      pytest.skip("Module mapping not available")
+
+    # Get operations grouped by class
+    grouped_operations = _group_operations_by_class(schema_path_spec, module_mapping)
+
+    # Check that we have at least one group
+    assert grouped_operations, "No operations were grouped by class"
+
+    # Check that each group contains operations
+    for class_name, operations in grouped_operations.items():
+      assert class_name, f"Empty class name found in grouped operations"
+      assert operations, f"No operations found for class {class_name}"
+
+      # Check the structure of each operation tuple
+      for operation_tuple in operations:
+        assert len(operation_tuple) == 3, f"Operation tuple should have 3 elements, found {len(operation_tuple)}"
+        operation_spec, http_method, api_path = operation_tuple
+
+        # Check that operation_spec is a SchemaPath
+        assert isinstance(operation_spec, SchemaPath), f"Operation spec is not a SchemaPath for {class_name}"
+
+        # Check that http_method is a valid HTTP method
+        assert http_method.lower() in ['get', 'put', 'post', 'delete', 'patch', 'options', 'head', 'trace'], \
+          f"Invalid HTTP method {http_method} for {class_name}"
+
+        # Check that api_path is a string that starts with '/'
+        assert isinstance(api_path, str) and api_path.startswith('/'), \
+          f"API path {api_path} for {class_name} is not valid"
+
+  def test_resource_class_to_class_def(self, schema_path_spec, module_mapping):
+    """Test the resource_class_to_class_def function for all mapped classes."""
+    # Skip test if mapping not available
+    if not module_mapping:
+      pytest.skip("Module mapping not available")
+
+    # Get operations grouped by class
+    grouped_operations = _group_operations_by_class(schema_path_spec, module_mapping)
+
+    # Test each class definition generation
+    for class_name, operations in grouped_operations.items():
+      try:
+        # Add the method name to each operation
+        operations_with_methods = []
+        for op_spec, http_method, api_path in operations:
+          method_name = module_mapping[api_path][http_method]['method_name']
+          operations_with_methods.append((op_spec, method_name, api_path))
+
+        # Generate class definition from the operations
+        class_def = resource_class_to_class_def(class_name, operations_with_methods)
+
+        # Verify basic structure
+        assert class_def is not None, f"resource_class_to_class_def returned None for {class_name}"
+        assert isinstance(class_def, ast.ClassDef), f"Not a ClassDef for {class_name}"
+        assert class_def.name == class_name, f"Name mismatch: {class_def.name} vs {class_name}"
+
+        # Check base class is DialpadResource
+        assert len(class_def.bases) > 0, f"No base class for {class_name}"
+        assert isinstance(class_def.bases[0], ast.Name), f"Base is not a Name for {class_name}"
+        assert class_def.bases[0].id == 'DialpadResource', f"Not extending DialpadResource: {class_def.bases[0].id}"
+
+        # Check body has at least a docstring
+        assert len(class_def.body) > 0, f"No body statements for {class_name}"
+        assert isinstance(class_def.body[0], ast.Expr), f"First statement not Expr for {class_name}"
+        assert isinstance(class_def.body[0].value, ast.Constant), f"First statement not docstring for {class_name}"
+
+      except Exception as e:
+        logger.error(f"Error processing class: {class_name}")
+        logger.error(f"Number of operations: {len(operations)}")
+        logger.error(f"Exception: {e}")
+        raise
+
+  def test_resource_class_to_module_def(self, schema_path_spec, module_mapping):
+    """Test the resource_class_to_module_def function for all mapped classes."""
+    # Skip test if mapping not available
+    if not module_mapping:
+      pytest.skip("Module mapping not available")
+
+    # Get operations grouped by class
+    grouped_operations = _group_operations_by_class(schema_path_spec, module_mapping)
+
+    # Test generating a module for each class
+    for class_name, operations in grouped_operations.items():
+      try:
+        # Add the method name to each operation
+        operations_with_methods = []
+        for op_spec, http_method, api_path in operations:
+          method_name = module_mapping[api_path][http_method]['method_name']
+          operations_with_methods.append((op_spec, method_name, api_path))
+
+        # Generate module definition
+        module_def = resource_class_to_module_def(class_name, operations_with_methods, schema_path_spec)
+
+        # Verify basic structure
+        assert module_def is not None, f"resource_class_to_module_def returned None for {class_name}"
+        assert isinstance(module_def, ast.Module), f"Not a Module for {class_name}"
+
+        # Check that the module has at least import statements and a class definition
+        assert len(module_def.body) >= 2, f"Module for {class_name} has too few statements"
+
+        # Check for typing imports
+        has_typing_import = any(
+          isinstance(node, ast.ImportFrom) and node.module == 'typing'
+          for node in module_def.body
+        )
+        assert has_typing_import, f"No typing import for {class_name}"
+
+        # Check for DialpadResource import
+        has_resource_import = any(
+          isinstance(node, ast.ImportFrom) and
+          node.module == 'dialpad.resources.base' and
+          any(alias.name == 'DialpadResource' for alias in node.names)
+          for node in module_def.body
+        )
+        assert has_resource_import, f"No DialpadResource import for {class_name}"
+
+        # Check that the class definition is included
+        class_defs = [node for node in module_def.body if isinstance(node, ast.ClassDef)]
+        assert len(class_defs) == 1, f"Expected 1 class in module for {class_name}, found {len(class_defs)}"
+        assert class_defs[0].name == class_name, f"Class name mismatch: {class_defs[0].name} vs {class_name}"
+
+      except Exception as e:
+        logger.error(f"Error processing module for class: {class_name}")
+        logger.error(f"Number of operations: {len(operations)}")
+        logger.error(f"Exception: {e}")
         raise
