@@ -8,59 +8,16 @@ from openapi_core import OpenAPI
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
+CLIENT_DIR = os.path.join(REPO_ROOT, 'src', 'dialpad')
 
-from cli.client_gen.resource_modules import resource_path_to_module_def
 from cli.client_gen.schema_modules import schemas_to_module_def
 from cli.client_gen.utils import write_python_file
 from cli.client_gen.module_mapping import update_module_mapping
 from cli.client_gen.schema_packages import schemas_to_package_directory
+from cli.client_gen.resource_packages import resources_to_package_directory
 
 
 app = typer.Typer()
-
-
-@app.command('gen-module')
-def generate_resource_module(
-  output_file: Annotated[
-    str, typer.Argument(help='The name of the output file to write the resource module.')
-  ],
-  api_path: Annotated[
-    str, typer.Option(help='Optional API resource path to generate module from')
-  ] = None,
-):
-  """Prompts the user to select a resource path, and then generates a Python resource module from the OpenAPI specification."""
-  open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
-
-  # Get all available paths from the spec
-  available_paths = (open_api_spec.spec / 'paths').keys()
-
-  # If api_path is provided, validate it exists in the spec
-  if api_path:
-    if api_path not in available_paths:
-      typer.echo(f"Warning: The specified API path '{api_path}' was not found in the spec.")
-      typer.echo('Please select a valid path from the list below.')
-      api_path = None
-
-  # If no valid api_path was provided, use the interactive prompt
-  if not api_path:
-    questions = [
-      inquirer.List(
-        'path',
-        message='Select the resource path to convert to a module',
-        choices=available_paths,
-      ),
-    ]
-    answers = inquirer.prompt(questions)
-    if not answers:
-      typer.echo('No selection made. Exiting.')
-      raise typer.Exit()  # Use typer.Exit for a cleaner exit
-
-    api_path = answers['path']
-
-  module_def = resource_path_to_module_def(open_api_spec.spec / 'paths' / api_path)
-  write_python_file(output_file, module_def)
-
-  typer.echo(f"Generated module for path '{api_path}': {output_file}")
 
 
 @app.command('gen-schema-module')
@@ -167,6 +124,21 @@ def update_resource_module_mapping(
 
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
   update_module_mapping(open_api_spec.spec, interactive=interactive)
+
+@app.command('generate-client')
+def generate_client():
+  """Regenerates all the client components from the OpenAPI spec."""
+  open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
+
+  # Gather all the schema components from the OpenAPI spec
+  all_schemas = [v for _k, v in (open_api_spec.spec / 'components' / 'schemas').items()]
+
+  # Write the generated schema package to the client directory
+  schemas_to_package_directory(all_schemas, CLIENT_DIR)
+
+  # Write the generated resource modules to the client directory
+  resources_to_package_directory(open_api_spec.spec, os.path.join(CLIENT_DIR, 'resources'))
+
 
 
 if __name__ == '__main__':

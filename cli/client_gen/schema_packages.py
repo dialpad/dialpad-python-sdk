@@ -15,9 +15,11 @@ def schemas_to_package_directory(
     os.makedirs(output_dir)
 
   # Next, we'll need to seed it with an __init__.py file to make it a package.
-  init_file_path = os.path.join(output_dir, '__init__.py')
-  with open(init_file_path, 'w') as f:
-    f.write('# This is an auto-generated schema package. Please do not edit it directly.\n')
+  # Although, we'll skip this at depth 0, since we'll actually be injecting this into the root package.
+  if depth > 0:
+    init_file_path = os.path.join(output_dir, '__init__.py')
+    with open(init_file_path, 'w') as f:
+      f.write('# This is an auto-generated schema package. Please do not edit it directly.\n')
 
   # Now we'll need to sift through the schemas and group them by path prefix.
   schema_groups = {
