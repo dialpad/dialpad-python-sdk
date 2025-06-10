@@ -1,18 +1,24 @@
 import ast
-from typing import Dict, Set
+from typing import Dict, List, Set, Tuple
 from jsonschema_path.paths import SchemaPath
-from .resource_classes import resource_path_to_class_def
+from .resource_classes import resource_class_to_class_def
 
 """Utilities for converting OpenAPI schema pieces to Python Resource modules."""
 
-def _extract_schema_dependencies(resource_path: SchemaPath) -> Dict[str, Set[str]]:
-  """
-  Extract schema dependencies from a resource path that need to be imported.
 
-  Returns a dictionary mapping import paths to sets of schema names to import from that path.
+def _extract_schema_dependencies(
+  operations_list: List[Tuple[SchemaPath, str, str]],
+) -> Dict[str, Set[str]]:
+  """
+  Extract schema dependencies from a list of operations that need to be imported.
+
+  Args:
+      operations_list: List of (operation_spec_path, target_method_name, api_path) tuples
+
+  Returns:
+      A dictionary mapping import paths to sets of schema names to import from that path.
   """
   imports_needed: Dict[str, Set[str]] = {}
-  path_item_dict = resource_path.contents()
 
   # Helper function to scan for schema references in a dict
   def scan_for_refs(obj: dict) -> None:
@@ -47,18 +53,32 @@ def _extract_schema_dependencies(resource_path: SchemaPath) -> Dict[str, Set[str
           if isinstance(item, dict):
             scan_for_refs(item)
 
-  # Scan all HTTP methods in the resource path
-  for key, value in path_item_dict.items():
-    if isinstance(value, dict):
-      scan_for_refs(value)
+  # Scan all operations in the list
+  for operation_spec_path, _, _ in operations_list:
+    # Get the operation spec contents
+    operation_dict = operation_spec_path.contents()
+    if isinstance(operation_dict, dict):
+      scan_for_refs(operation_dict)
 
   return imports_needed
 
-def resource_path_to_module_def(resource_path: SchemaPath) -> ast.Module:
-  """Converts an OpenAPI resource path to a Python module definition (ast.Module)."""
 
+def resource_class_to_module_def(
+  class_name: str, operations_list: List[Tuple[SchemaPath, str, str]], api_spec: SchemaPath
+) -> ast.Module:
+  """
+  Converts a resource class specification to a Python module definition (ast.Module).
+
+  Args:
+      class_name: The name of the resource class (e.g., 'UsersResource')
+      operations_list: List of (operation_spec_path, target_method_name, api_path) tuples for this class
+      api_spec: The full API spec SchemaPath (for context)
+
+  Returns:
+      An ast.Module containing the resource class definition with all operations
+  """
   # Extract schema dependencies for imports
-  schema_dependencies = _extract_schema_dependencies(resource_path)
+  schema_dependencies = _extract_schema_dependencies(operations_list)
 
   # Create import statements list, starting with the base resource import
   import_statements = [
@@ -71,15 +91,16 @@ def resource_path_to_module_def(resource_path: SchemaPath) -> ast.Module:
         ast.alias(name='Dict', asname=None),
         ast.alias(name='Union', asname=None),
         ast.alias(name='Literal', asname=None),
-        ast.alias(name='Iterator', asname=None)
+        ast.alias(name='Iterator', asname=None),
+        ast.alias(name='Any', asname=None),
       ],
-      level=0  # Absolute import
+      level=0,  # Absolute import
     ),
     ast.ImportFrom(
       module='dialpad.resources.base',
       names=[ast.alias(name='DialpadResource', asname=None)],
-      level=0  # Absolute import
-    )
+      level=0,  # Absolute import
+    ),
   ]
 
   # Add imports for schema dependencies
@@ -88,12 +109,12 @@ def resource_path_to_module_def(resource_path: SchemaPath) -> ast.Module:
       ast.ImportFrom(
         module=import_path,
         names=[ast.alias(name=name, asname=None) for name in sorted(schema_names)],
-        level=0  # Absolute import
+        level=0,  # Absolute import
       )
     )
 
-  # Generate the class definition using resource_path_to_class_def
-  class_definition = resource_path_to_class_def(resource_path)
+  # Generate the class definition using resource_class_to_class_def
+  class_definition = resource_class_to_class_def(class_name, operations_list)
 
   # Construct the ast.Module with imports and class definition
   module_body = import_statements + [class_definition]
