@@ -5,7 +5,10 @@ from .utils import write_python_file
 
 """Utilities for converting an OpenAPI schema collection into a Python schema package."""
 
-def schemas_to_package_directory(schemas: list[SchemaPath], output_dir: str, depth: int=0) -> None:
+
+def schemas_to_package_directory(
+  schemas: list[SchemaPath], output_dir: str, depth: int = 0
+) -> None:
   """Converts a list of OpenAPI schemas to a Python package directory structure."""
   # We'll start by creating the output directory if it doesn't already exist.
   if not os.path.exists(output_dir):

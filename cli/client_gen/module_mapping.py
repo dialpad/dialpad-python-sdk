@@ -35,7 +35,9 @@ def load_module_mapping() -> dict[str, dict[str, ModuleMappingEntry]]:
     return json.load(f)
 
 
-def get_suggested_class_name(current_mapping: dict[str, dict[str, ModuleMappingEntry]], api_path: str) -> str:
+def get_suggested_class_name(
+  current_mapping: dict[str, dict[str, ModuleMappingEntry]], api_path: str
+) -> str:
   """Gets a suggested class name for a resource class, given the current mapping and the relevant SchemaPath."""
   # Find the longest prefix match in the current mapping
   longest_prefix = ''
@@ -64,10 +66,12 @@ def get_suggested_class_name(current_mapping: dict[str, dict[str, ModuleMappingE
 
   # Convert to camel case and append "Resource"
   class_name = ''.join(p.capitalize() for p in last_part.replace('-', '_').split('_'))
-  return f"{class_name}Resource"
+  return f'{class_name}Resource'
 
 
-def get_suggested_method_name(current_mapping: dict[str, dict[str, ModuleMappingEntry]], api_path: str, http_method: str) -> str:
+def get_suggested_method_name(
+  current_mapping: dict[str, dict[str, ModuleMappingEntry]], api_path: str, http_method: str
+) -> str:
   """Gets a suggested method name for a resource class, given the current mapping and the relevant SchemaPath."""
   http_method = http_method.lower()
 
@@ -110,21 +114,23 @@ def update_module_mapping(api_spec: SchemaPath, interactive: bool = False):
 
       if interactive:
         console.print('\n\n')
-        console.print(Panel(
-          f"[bold]New API endpoint:[/bold] {api_path} [{http_method.upper()}]",
-          subtitle=method_entry.contents().get('summary', 'No summary available')
-        ))
+        console.print(
+          Panel(
+            f'[bold]New API endpoint:[/bold] {api_path} [{http_method.upper()}]',
+            subtitle=method_entry.contents().get('summary', 'No summary available'),
+          )
+        )
 
         # Prompt for class name
         class_name_prompt = Text()
-        class_name_prompt.append("Resource class name: ")
-        class_name_prompt.append(f"(default: {suggested_class_name})", style="dim")
+        class_name_prompt.append('Resource class name: ')
+        class_name_prompt.append(f'(default: {suggested_class_name})', style='dim')
         resource_class = Prompt.ask(class_name_prompt, default=suggested_class_name)
 
         # Prompt for method name
         method_name_prompt = Text()
-        method_name_prompt.append("Method name: ")
-        method_name_prompt.append(f"(default: {suggested_method_name})", style="dim")
+        method_name_prompt.append('Method name: ')
+        method_name_prompt.append(f'(default: {suggested_method_name})', style='dim')
         method_name = Prompt.ask(method_name_prompt, default=suggested_method_name)
       else:
         resource_class = suggested_class_name
@@ -133,7 +139,7 @@ def update_module_mapping(api_spec: SchemaPath, interactive: bool = False):
       # Add the entry to the module mapping
       module_mapping[api_path][http_method] = {
         'resource_class': resource_class,
-        'method_name': method_name
+        'method_name': method_name,
       }
 
       added_entries.append((api_path, http_method, resource_class, method_name))
@@ -143,8 +149,8 @@ def update_module_mapping(api_spec: SchemaPath, interactive: bool = False):
     json.dump(module_mapping, f, indent=2)
 
   if added_entries:
-    console.print(f"[green]Added {len(added_entries)} new mapping entries:[/green]")
+    console.print(f'[green]Added {len(added_entries)} new mapping entries:[/green]')
     for api_path, http_method, resource_class, method_name in added_entries:
-      console.print(f"  {api_path} [{http_method.upper()}] -> {resource_class}.{method_name}")
+      console.print(f'  {api_path} [{http_method.upper()}] -> {resource_class}.{method_name}')
   else:
-    console.print("[green]No new mapping entries needed.[/green]")
+    console.print('[green]No new mapping entries needed.[/green]')

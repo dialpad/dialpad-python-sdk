@@ -5,14 +5,14 @@ from . import annotation
 
 """Utilities for converting OpenAPI object schemas into TypedDict definitions."""
 
+
 def _extract_schema_title(object_schema: SchemaPath) -> str:
   """Extracts the title from a schema, generating a default if not present."""
   return object_schema.parts[-1].split('.')[-1]
 
 
 def _get_property_fields(
-  object_schema: SchemaPath,
-  required_props: Set[str]
+  object_schema: SchemaPath, required_props: Set[str]
 ) -> List[Tuple[str, ast.expr, str]]:
   """
   Extract property fields from schema and create appropriate annotations.
@@ -36,8 +36,8 @@ def _get_property_fields(
     # Use schema_dict_to_annotation with appropriate flags
     annotation_expr = annotation.schema_dict_to_annotation(
       prop_dict,
-      override_nullable=False, # The vast majority of properties are improperly marked as nullable
-      override_omissible=not is_required
+      override_nullable=False,  # The vast majority of properties are improperly marked as nullable
+      override_omissible=not is_required,
     )
 
     # Get the field description from the spec
@@ -46,6 +46,7 @@ def _get_property_fields(
     fields.append((prop_name, annotation_expr, description))
 
   return fields
+
 
 def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
   """Converts an OpenAPI object schema to a TypedDict definition (ast.ClassDef)."""
@@ -73,19 +74,14 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
     docstring = f'TypedDict representation of the {class_name} schema.'
 
   # Add docstring as first element in class body
-  class_body.append(
-    ast.Expr(value=ast.Constant(value=docstring))
-  )
+  class_body.append(ast.Expr(value=ast.Constant(value=docstring)))
 
   # Add class annotations for each field along with field descriptions as string literals
   for field_name, field_type, field_description in field_items:
     # Add the field annotation
     class_body.append(
       ast.AnnAssign(
-        target=ast.Name(id=field_name, ctx=ast.Store()),
-        annotation=field_type,
-        value=None,
-        simple=1
+        target=ast.Name(id=field_name, ctx=ast.Store()), annotation=field_type, value=None, simple=1
       )
     )
 
@@ -93,9 +89,7 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
     if field_description:
       # Add field description as a string literal right after the field annotation
       # This is not standard, but VSCode will interpret it as a field docstring
-      class_body.append(
-        ast.Expr(value=ast.Constant(value=field_description))
-      )
+      class_body.append(ast.Expr(value=ast.Constant(value=field_description)))
 
   # If no fields were found, add a pass statement to avoid syntax error
   if len(class_body) == 1:  # Only the docstring is present
@@ -106,9 +100,5 @@ def schema_to_typed_dict_def(object_schema: SchemaPath) -> ast.ClassDef:
 
   # Create class definition with TypedDict inheritance
   return ast.ClassDef(
-    name=class_name,
-    bases=[typed_dict_base],
-    keywords=[],
-    body=class_body,
-    decorator_list=[]
+    name=class_name, bases=[typed_dict_base], keywords=[], body=class_body, decorator_list=[]
   )

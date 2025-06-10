@@ -12,7 +12,7 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
 
   # Ensure the output directory exists
   output_dir = os.path.dirname(filepath)
-  if output_dir: # Check if output_dir is not an empty string (i.e., file is in current dir)
+  if output_dir:  # Check if output_dir is not an empty string (i.e., file is in current dir)
     os.makedirs(output_dir, exist_ok=True)
 
   with open(filepath, 'w') as f:
@@ -20,13 +20,15 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
 
   # Reformat the generated file using uv ruff format
   try:
-    subprocess.run(['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True)
+    subprocess.run(
+      ['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True
+    )
   except FileNotFoundError:
-    typer.echo("uv command not found. Please ensure uv is installed and in your PATH.", err=True)
+    typer.echo('uv command not found. Please ensure uv is installed and in your PATH.', err=True)
     raise typer.Exit(1)
   except subprocess.CalledProcessError as e:
-    typer.echo(f"Error formatting {filepath} with uv ruff format: {e}", err=True)
+    typer.echo(f'Error formatting {filepath} with uv ruff format: {e}', err=True)
     # This error doesn't necessarily mean the file is invalid, so we can still continue
     # optimistically here.
 
-  rich.print(Markdown(f"Generated `{filepath}`."))
+  rich.print(Markdown(f'Generated `{filepath}`.'))

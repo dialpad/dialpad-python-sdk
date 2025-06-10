@@ -12,10 +12,19 @@ def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
     ('integer', 'int32'): 'int',
     ('integer', 'int64'): 'int',
     ('string', None): 'str',
-    ('string', 'byte'): 'str', # TODO: We expect these to be b-64 strings... we can probably bake a solution into the client lib so that this can be typed as bytes on the method itself
-    ('string', 'date-time'): 'str', # TODO: We could probably bake the ISO-str conversion into the client lib here too
+    (
+      'string',
+      'byte',
+    ): 'str',  # TODO: We expect these to be b-64 strings... we can probably bake a solution into the client lib so that this can be typed as bytes on the method itself
+    (
+      'string',
+      'date-time',
+    ): 'str',  # TODO: We could probably bake the ISO-str conversion into the client lib here too
     ('boolean', None): 'bool',
-    ('object', None): 'dict', # There are a few cases where there are genuine free-form dicts(such as app settings)
+    (
+      'object',
+      None,
+    ): 'dict',  # There are a few cases where there are genuine free-form dicts(such as app settings)
     ('number', 'double'): 'float',
   }
   if (s_type, s_format) in s_mapping:
@@ -54,7 +63,11 @@ def create_annotation(py_type: str, nullable: bool, omissible: bool) -> ast.Name
   return ast.Name(id=id_str, ctx=ast.Load())
 
 
-def schema_dict_to_annotation(schema_dict: dict, override_nullable:Optional[bool]=None, override_omissible:Optional[bool]=None) -> ast.Name:
+def schema_dict_to_annotation(
+  schema_dict: dict,
+  override_nullable: Optional[bool] = None,
+  override_omissible: Optional[bool] = None,
+) -> ast.Name:
   """Converts a schema dict to the appropriate ast.Name annotation."""
   # If we've been given an explicit override, then we'll take it as canon.
   nullable = override_nullable
@@ -71,17 +84,13 @@ def schema_dict_to_annotation(schema_dict: dict, override_nullable:Optional[bool
   # Handle enums specially.
   if 'enum' in schema_dict:
     return create_annotation(
-      py_type=enum_to_py_type(schema_dict['enum']),
-      nullable=nullable,
-      omissible=omissible
+      py_type=enum_to_py_type(schema_dict['enum']), nullable=nullable, omissible=omissible
     )
 
   # Same with '$ref' -- we want to treat this as an imported annotation type
   if '$ref' in schema_dict:
     return create_annotation(
-      py_type=schema_dict['$ref'].split('.')[-1],
-      nullable=nullable,
-      omissible=omissible
+      py_type=schema_dict['$ref'].split('.')[-1], nullable=nullable, omissible=omissible
     )
 
   # Array types we'll need to be a bit careful with.
@@ -91,26 +100,25 @@ def schema_dict_to_annotation(schema_dict: dict, override_nullable:Optional[bool
 
     # Now we'll wrap that annotation type with `list`
     return create_annotation(
-      py_type=f'list[{inner_type.id}]',
-      nullable=nullable,
-      omissible=omissible
+      py_type=f'list[{inner_type.id}]', nullable=nullable, omissible=omissible
     )
 
   # oneOfs also need to be handled specially.
   if 'oneOf' in schema_dict:
-    inner_types = [schema_dict_to_annotation(one_of_schema) for one_of_schema in schema_dict['oneOf']]
+    inner_types = [
+      schema_dict_to_annotation(one_of_schema) for one_of_schema in schema_dict['oneOf']
+    ]
     return create_annotation(
       py_type=f'Union[{", ".join([inner_type.id for inner_type in inner_types])}]',
       nullable=nullable,
-      omissible=omissible
+      omissible=omissible,
     )
-
 
   # Otherwise, we'll treat it as a simple type.
   return create_annotation(
     py_type=spec_type_to_py_type(schema_dict['type'], schema_dict.get('format', None)),
     nullable=nullable,
-    omissible=omissible
+    omissible=omissible,
   )
 
 
@@ -187,7 +195,9 @@ def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
 
       response_schema = spec_dict['200']['content']['application/json']['schema']
 
-      dereffed_response_schema = (spec_piece / '200' / 'content' / 'application/json' / 'schema').contents()
+      dereffed_response_schema = (
+        spec_piece / '200' / 'content' / 'application/json' / 'schema'
+      ).contents()
 
       # Check if this is a collection response and modify the type accordingly
       if _is_collection_schema(dereffed_response_schema):
@@ -195,9 +205,7 @@ def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
         if item_type:
           # Return Iterator[ItemType] instead of the Collection type
           return create_annotation(
-            py_type=f'Iterator[{item_type}]',
-            nullable=False,
-            omissible=False
+            py_type=f'Iterator[{item_type}]', nullable=False, omissible=False
           )
 
       return schema_dict_to_annotation(response_schema)

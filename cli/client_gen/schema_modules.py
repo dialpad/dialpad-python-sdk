@@ -3,9 +3,11 @@ from typing import Dict, List, Set, Tuple
 from jsonschema_path.paths import SchemaPath
 from .schema_classes import schema_to_typed_dict_def
 
+
 def _extract_schema_title(schema: SchemaPath) -> str:
   """Extracts the title from a schema."""
   return schema.parts[-1]
+
 
 def _find_schema_dependencies(schema: SchemaPath) -> Set[str]:
   """
@@ -41,6 +43,7 @@ def _find_schema_dependencies(schema: SchemaPath) -> Set[str]:
   # Start scanning the schema
   scan_for_refs(schema_dict)
   return dependencies
+
 
 def _extract_external_dependencies(schemas: List[SchemaPath]) -> Dict[str, Set[str]]:
   """
@@ -97,6 +100,7 @@ def _extract_external_dependencies(schemas: List[SchemaPath]) -> Dict[str, Set[s
 
   return imports_needed
 
+
 def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
   """
   Sort schemas to ensure dependencies are defined before they are referenced.
@@ -143,6 +147,7 @@ def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
   # Return schemas in sorted order
   return [schema_titles[title] for title in sorted_titles]
 
+
 def schemas_to_module_def(schemas: List[SchemaPath]) -> ast.Module:
   """Converts a list of OpenAPI colocated schemas to a Python module definition (ast.Module)."""
   # First, sort schemas to handle dependencies correctly
@@ -161,18 +166,15 @@ def schemas_to_module_def(schemas: List[SchemaPath]) -> ast.Module:
         ast.alias(name='List', asname=None),
         ast.alias(name='Dict', asname=None),
         ast.alias(name='Union', asname=None),
-        ast.alias(name='Literal', asname=None)
+        ast.alias(name='Literal', asname=None),
       ],
-      level=0  # Absolute import
+      level=0,  # Absolute import
     ),
     ast.ImportFrom(
       module='typing_extensions',
-      names=[
-        ast.alias(name='TypedDict', asname=None),
-        ast.alias(name='NotRequired', asname=None)
-      ],
-      level=0  # Absolute import
-    )
+      names=[ast.alias(name='TypedDict', asname=None), ast.alias(name='NotRequired', asname=None)],
+      level=0,  # Absolute import
+    ),
   ]
 
   # Add imports for external dependencies
@@ -181,7 +183,7 @@ def schemas_to_module_def(schemas: List[SchemaPath]) -> ast.Module:
       ast.ImportFrom(
         module=import_path,
         names=[ast.alias(name=name, asname=None) for name in sorted(schema_names)],
-        level=0  # Absolute import
+        level=0,  # Absolute import
       )
     )
 
