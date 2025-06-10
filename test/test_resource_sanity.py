@@ -26,8 +26,6 @@ from werkzeug.datastructures import ImmutableMultiDict
 from faker import Faker
 
 
-
-
 class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
   """
   Converts a requests-mock request to an OpenAPI request
@@ -36,7 +34,7 @@ class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
   def __init__(self, request):
     self.request = request
     if request.url is None:
-      raise RuntimeError("Request URL is missing")
+      raise RuntimeError('Request URL is missing')
     self._url_parsed = urlparse(request.url, allow_fragments=False)
 
     self.parameters = RequestParameters(
@@ -44,13 +42,14 @@ class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
       header=Headers(dict(self.request.headers)),
     )
 
+
 # The "requests_mock" pytest fixture stubs out live requests with a schema validation check
 # against the Dialpad API openapi spec.
 @pytest.fixture
 def openapi_stub(requests_mock):
   openapi = OpenAPI.from_file_path('dialpad_api_spec.json')
-  def request_matcher(request: requests.PreparedRequest):
 
+  def request_matcher(request: requests.PreparedRequest):
     openapi.validate_request(RequestsMockOpenAPIRequest(request))
 
     # If the request is valid, return a fake response.
@@ -61,9 +60,11 @@ def openapi_stub(requests_mock):
 
   requests_mock.add_matcher(request_matcher)
 
-#from dialpad.client import DialpadClient
-#from dialpad import resources
-#from dialpad.resources.resource import DialpadResource
+
+# from dialpad.client import DialpadClient
+# from dialpad import resources
+# from dialpad.resources.resource import DialpadResource
+
 
 @pytest.mark.skip('Turned off until the client refactor is complete')
 class TestResourceSanity:
@@ -98,20 +99,12 @@ class TestResourceSanity:
     },
     'BlockedNumberResource': {
       'list': {},
-      'block_numbers': {
-        'numbers': ['+12223334444']
-      },
-      'unblock_numbers': {
-        'numbers': ['+12223334444']
-      },
-      'get': {
-        'number': '+12223334444'
-      },
+      'block_numbers': {'numbers': ['+12223334444']},
+      'unblock_numbers': {'numbers': ['+12223334444']},
+      'get': {'number': '+12223334444'},
     },
     'CallResource': {
-      'get_info': {
-        'call_id': '123'
-      },
+      'get_info': {'call_id': '123'},
       'initiate_call': {
         'phone_number': '+12223334444',
         'user_id': '123',
@@ -119,7 +112,7 @@ class TestResourceSanity:
         'group_type': 'department',
         'device_id': '123',
         'custom_data': 'example custom data',
-      }
+      },
     },
     'CallRouterResource': {
       'list': {
@@ -183,7 +176,7 @@ class TestResourceSanity:
       'remove_operator': {
         'call_center_id': '123',
         'user_id': '123',
-      }
+      },
     },
     'CompanyResource': {
       'get': {},
@@ -625,8 +618,10 @@ class TestResourceSanity:
     """
     exposed_resources = dir(resources)
 
-    msg = '"%s" module is present in the resources directory, but is not imported in ' \
-          'resources/__init__.py'
+    msg = (
+      '"%s" module is present in the resources directory, but is not imported in '
+      'resources/__init__.py'
+    )
 
     for modname in self._get_resource_submodule_names():
       assert modname in exposed_resources, msg % modname
@@ -637,8 +632,10 @@ class TestResourceSanity:
     """
     exposed_resources = dir(resources)
 
-    msg = '"%(name)s" resource class is present in the resources package, but is not exposed ' \
-          'directly as resources.%(name)s via resources/__init__.py'
+    msg = (
+      '"%(name)s" resource class is present in the resources package, but is not exposed '
+      'directly as resources.%(name)s via resources/__init__.py'
+    )
 
     for c in self._get_resource_classes():
       assert c.__name__ in exposed_resources, msg % {'name': c.__name__}
@@ -664,12 +661,10 @@ class TestResourceSanity:
       if not isinstance(resource_instance, DialpadResource):
         continue
 
-      print('\nVerifying request format of %s methods' %
-            resource_instance.__class__.__name__)
+      print('\nVerifying request format of %s methods' % resource_instance.__class__.__name__)
 
       # Iterate through the attributes on the resource instance.
       for method_attr in dir(resource_instance):
-
         # Skip private attributes.
         if method_attr.startswith('_'):
           continue

@@ -3,14 +3,17 @@ import requests
 from typing import Optional, Iterator
 
 
-hosts = dict(
-  live='https://dialpad.com',
-  sandbox='https://sandbox.dialpad.com'
-)
+hosts = dict(live='https://dialpad.com', sandbox='https://sandbox.dialpad.com')
 
 
 class DialpadClient(object):
-  def __init__(self, token: str, sandbox: bool=False, base_url: Optional[str]=None, company_id: Optional[str]=None):
+  def __init__(
+    self,
+    token: str,
+    sandbox: bool = False,
+    base_url: Optional[str] = None,
+    company_id: Optional[str] = None,
+  ):
     self._token = token
     self._session = requests.Session()
     self._base_url = base_url or hosts.get('sandbox' if sandbox else 'live')
@@ -31,7 +34,14 @@ class DialpadClient(object):
   def _url(self, path: str) -> str:
     return f'{self._base_url}/{path.lstrip("/")}'
 
-  def _raw_request(self, method: str = 'GET', sub_path: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None, headers: Optional[dict] = None) -> requests.Response:
+  def _raw_request(
+    self,
+    method: str = 'GET',
+    sub_path: Optional[str] = None,
+    params: Optional[dict] = None,
+    body: Optional[dict] = None,
+    headers: Optional[dict] = None,
+  ) -> requests.Response:
     url = self._url(sub_path)
     headers = headers or dict()
     if self.company_id:
@@ -47,15 +57,18 @@ class DialpadClient(object):
       )
     raise ValueError('Unsupported method "%s"' % method)
 
-  def iter_request(self, method: str = 'GET', sub_path: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None, headers: Optional[dict] = None) -> Iterator[dict]:
+  def iter_request(
+    self,
+    method: str = 'GET',
+    sub_path: Optional[str] = None,
+    params: Optional[dict] = None,
+    body: Optional[dict] = None,
+    headers: Optional[dict] = None,
+  ) -> Iterator[dict]:
     # Ensure that we have a mutable copy of params.
     params = dict(params or {})
     response = self._raw_request(
-      method=method,
-      sub_path=sub_path,
-      params=params,
-      body=body,
-      headers=headers
+      method=method, sub_path=sub_path, params=params, body=body, headers=headers
     )
     response.raise_for_status()
 
@@ -69,11 +82,7 @@ class DialpadClient(object):
     while response_json.get('cursor', None):
       params['cursor'] = response_json['cursor']
       response = self._raw_request(
-        method=method,
-        sub_path=sub_path,
-        params=params,
-        body=body,
-        headers=headers
+        method=method, sub_path=sub_path, params=params, body=body, headers=headers
       )
       response.raise_for_status()
       if response.status_code == 204:  # No Content
@@ -83,14 +92,16 @@ class DialpadClient(object):
       if 'items' in response_json:
         yield from (response_json['items'] or [])
 
-
-  def request(self, method: str = 'GET', sub_path: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None, headers: Optional[dict] = None) -> dict:
+  def request(
+    self,
+    method: str = 'GET',
+    sub_path: Optional[str] = None,
+    params: Optional[dict] = None,
+    body: Optional[dict] = None,
+    headers: Optional[dict] = None,
+  ) -> dict:
     response = self._raw_request(
-      method=method,
-      sub_path=sub_path,
-      params=params,
-      body=body,
-      headers=headers
+      method=method, sub_path=sub_path, params=params, body=body, headers=headers
     )
     response.raise_for_status()
 

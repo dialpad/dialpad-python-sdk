@@ -21,8 +21,12 @@ app = typer.Typer()
 
 @app.command('gen-module')
 def generate_resource_module(
-  output_file: Annotated[str, typer.Argument(help="The name of the output file to write the resource module.")],
-  api_path: Annotated[str, typer.Option(help="Optional API resource path to generate module from")] = None
+  output_file: Annotated[
+    str, typer.Argument(help='The name of the output file to write the resource module.')
+  ],
+  api_path: Annotated[
+    str, typer.Option(help='Optional API resource path to generate module from')
+  ] = None,
 ):
   """Prompts the user to select a resource path, and then generates a Python resource module from the OpenAPI specification."""
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
@@ -34,7 +38,7 @@ def generate_resource_module(
   if api_path:
     if api_path not in available_paths:
       typer.echo(f"Warning: The specified API path '{api_path}' was not found in the spec.")
-      typer.echo("Please select a valid path from the list below.")
+      typer.echo('Please select a valid path from the list below.')
       api_path = None
 
   # If no valid api_path was provided, use the interactive prompt
@@ -61,8 +65,12 @@ def generate_resource_module(
 
 @app.command('gen-schema-module')
 def generate_schema_module(
-  output_file: Annotated[str, typer.Argument(help="The name of the output file to write the schema module.")],
-  schema_module_path: Annotated[str, typer.Option(help="Optional schema module path to be generated e.g. protos.office")] = None
+  output_file: Annotated[
+    str, typer.Argument(help='The name of the output file to write the schema module.')
+  ],
+  schema_module_path: Annotated[
+    str, typer.Option(help='Optional schema module path to be generated e.g. protos.office')
+  ] = None,
 ):
   """Prompts the user to select a schema module path, and then generates the Python module from the OpenAPI specification."""
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
@@ -78,8 +86,10 @@ def generate_schema_module(
   # If schema_module_path is provided, validate it exists in the spec
   if schema_module_path:
     if schema_module_path not in schema_module_paths:
-      typer.echo(f"Warning: The specified schema module path '{schema_module_path}' was not found in the spec.")
-      typer.echo("Please select a valid path from the list below.")
+      typer.echo(
+        f"Warning: The specified schema module path '{schema_module_path}' was not found in the spec."
+      )
+      typer.echo('Please select a valid path from the list below.')
       schema_module_path = None
 
   # If no valid schema_module_path was provided, use the interactive prompt
@@ -109,7 +119,9 @@ def generate_schema_module(
 
 @app.command('gen-schema-package')
 def generate_schema_package(
-  output_dir: Annotated[str, typer.Argument(help="The name of the output directory to write the schema package.")],
+  output_dir: Annotated[
+    str, typer.Argument(help='The name of the output directory to write the schema package.')
+  ],
 ):
   """Write the OpenAPI schema components as TypedDict schemas within a Python package hierarchy."""
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
@@ -147,12 +159,15 @@ def reformat_spec():
 
 @app.command('update-resource-module-mapping')
 def update_resource_module_mapping(
-  interactive: Annotated[bool, typer.Option(help="Update resource module mapping interactively")] = False
+  interactive: Annotated[
+    bool, typer.Option(help='Update resource module mapping interactively')
+  ] = False,
 ):
   """Updates the resource module mapping with any new paths and operations found in the OpenAPI spec."""
 
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
   update_module_mapping(open_api_spec.spec, interactive=interactive)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
   app()
