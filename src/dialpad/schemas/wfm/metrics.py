@@ -2,15 +2,6 @@ from typing import Optional, List, Dict, Union, Literal
 from typing_extensions import TypedDict, NotRequired
 
 
-class ActivityType(TypedDict):
-  """Type information for an activity."""
-
-  name: NotRequired[str]
-  'The display name of the activity.'
-  type: NotRequired[str]
-  'The type of the activity, could be task or break.'
-
-
 class TimeInterval(TypedDict):
   """Represents a time period with start and end timestamps."""
 
@@ -18,6 +9,15 @@ class TimeInterval(TypedDict):
   'The end timestamp (exclusive) in ISO-8601 format.'
   start: NotRequired[str]
   'The start timestamp (inclusive) in ISO-8601 format.'
+
+
+class ActivityType(TypedDict):
+  """Type information for an activity."""
+
+  name: NotRequired[str]
+  'The display name of the activity.'
+  type: NotRequired[str]
+  'The type of the activity, could be task or break.'
 
 
 class ActivityMetrics(TypedDict):
@@ -75,15 +75,6 @@ class AgentInfo(TypedDict):
   'The display name of the agent.'
 
 
-class OccupancyInfo(TypedDict):
-  """Information about occupancy metrics."""
-
-  percentage: NotRequired[float]
-  'The occupancy percentage (between 0 and 1).'
-  seconds_lost: NotRequired[int]
-  'The number of seconds lost.'
-
-
 class StatusTimeInfo(TypedDict):
   """Information about time spent in a specific status."""
 
@@ -106,6 +97,15 @@ class DialpadTimeInStatus(TypedDict):
   'Time spent in unavailable status.'
   wrapup: NotRequired[StatusTimeInfo]
   'Time spent in wrapup status.'
+
+
+class OccupancyInfo(TypedDict):
+  """Information about occupancy metrics."""
+
+  percentage: NotRequired[float]
+  'The occupancy percentage (between 0 and 1).'
+  seconds_lost: NotRequired[int]
+  'The number of seconds lost.'
 
 
 class AgentMetrics(TypedDict):

@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.wfm.metrics import ActivityMetricsResponse
+from dialpad.schemas.wfm.metrics import ActivityMetrics, ActivityMetricsResponse
 
 
 class WFMActivityMetricsResource(DialpadResource):

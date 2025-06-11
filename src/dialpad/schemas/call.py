@@ -22,6 +22,13 @@ class AddCallLabelsMessage(TypedDict):
   'The list of labels to attach to the call'
 
 
+class NumberTransferDestination(TypedDict):
+  """TypedDict representation of the NumberTransferDestination schema."""
+
+  number: str
+  'The phone number which the call should be transferred to.'
+
+
 class TargetTransferDestination(TypedDict):
   """TypedDict representation of the TargetTransferDestination schema."""
 
@@ -29,13 +36,6 @@ class TargetTransferDestination(TypedDict):
   'The ID of the target that will be used to transfer the call.'
   target_type: Literal['callcenter', 'department', 'office', 'user']
   'Type of target that will be used to transfer the call.'
-
-
-class NumberTransferDestination(TypedDict):
-  """TypedDict representation of the NumberTransferDestination schema."""
-
-  number: str
-  'The phone number which the call should be transferred to.'
 
 
 class AddParticipantMessage(TypedDict):

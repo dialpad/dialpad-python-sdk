@@ -1,10 +1,12 @@
 from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.coaching_team import CoachingTeamCollection
+from dialpad.schemas.coaching_team import CoachingTeamCollection, CoachingTeamProto
 from dialpad.schemas.group import (
   AddOperatorMessage,
   CallCenterCollection,
+  CallCenterProto,
   DepartmentCollection,
+  DepartmentProto,
   OperatorCollection,
   RemoveOperatorMessage,
   UserOrRoomProto,

@@ -18,6 +18,7 @@ from dialpad.schemas.user import (
   E911UpdateMessage,
   MoveOfficeMessage,
   PersonaCollection,
+  PersonaProto,
   SetStatusMessage,
   SetStatusProto,
   ToggleDNDMessage,

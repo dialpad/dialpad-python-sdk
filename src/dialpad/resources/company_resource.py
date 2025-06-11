@@ -1,7 +1,7 @@
 from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.company import CompanyProto
-from dialpad.schemas.sms_opt_out import SmsOptOutListProto
+from dialpad.schemas.sms_opt_out import SmsOptOutEntryProto, SmsOptOutListProto
 
 
 class CompanyResource(DialpadResource):

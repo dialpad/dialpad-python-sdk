@@ -2,22 +2,6 @@ from typing import Optional, List, Dict, Union, Literal
 from typing_extensions import TypedDict, NotRequired
 
 
-class TollfreeLineType(TypedDict):
-  """Tollfree fax line assignment."""
-
-  type: str
-  'Type of line.'
-
-
-class SearchLineType(TypedDict):
-  """Search fax line assignment."""
-
-  area_code: str
-  "An area code in which to find an available phone number for assignment. If there is no area code provided, office's area code will be used."
-  type: str
-  'Type of line.'
-
-
 class Target(TypedDict):
   """TypedDict representation of the Target schema."""
 
@@ -27,11 +11,27 @@ class Target(TypedDict):
   'Type of the target to assign the fax line to.'
 
 
+class TollfreeLineType(TypedDict):
+  """Tollfree fax line assignment."""
+
+  type: str
+  'Type of line.'
+
+
 class ReservedLineType(TypedDict):
   """Reserved number fax line assignment."""
 
   number: str
   'A phone number to assign. (e164-formatted)'
+  type: str
+  'Type of line.'
+
+
+class SearchLineType(TypedDict):
+  """Search fax line assignment."""
+
+  area_code: str
+  "An area code in which to find an available phone number for assignment. If there is no area code provided, office's area code will be used."
   type: str
   'Type of line.'
 

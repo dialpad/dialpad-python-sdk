@@ -1,10 +1,24 @@
 import ast
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 from jsonschema_path.paths import SchemaPath
+from .annotation import _get_collection_item_type
 from .resource_classes import resource_class_to_class_def
+from .resource_methods import _is_collection_response
 
 """Utilities for converting OpenAPI schema pieces to Python Resource modules."""
 
+def _ref_value_to_import_path(ref_value: str) -> Optional[Tuple[str, str]]:
+  # Extract the schema name from the reference
+  if ref_value.startswith('#/components/schemas/'):
+    schema_name = ref_value.split('/')[-1]
+
+    # Convert schema name to import path
+    # e.g., "schemas.targets.office.OfficeSchema" → "dialpad.schemas.targets.office", "OfficeSchema"
+    parts = schema_name.split('.')
+    if len(parts) > 1:
+      import_path = 'dialpad.' + '.'.join(parts[:-1])
+      class_name = parts[-1]
+      return import_path, class_name
 
 def _extract_schema_dependencies(
   operations_list: List[Tuple[SchemaPath, str, str]],
@@ -28,21 +42,14 @@ def _extract_schema_dependencies(
     # Check if this is a $ref to a schema
     if '$ref' in obj and isinstance(obj['$ref'], str):
       ref_value = obj['$ref']
-      # Extract the schema name from the reference
-      if ref_value.startswith('#/components/schemas/'):
-        schema_name = ref_value.split('/')[-1]
+      import_tuple = _ref_value_to_import_path(ref_value)
+      if import_tuple:
+        import_path, class_name = import_tuple
 
-        # Convert schema name to import path
-        # e.g., "schemas.targets.office.OfficeSchema" → "dialpad.schemas.targets.office", "OfficeSchema"
-        parts = schema_name.split('.')
-        if len(parts) > 1:
-          import_path = 'dialpad.' + '.'.join(parts[:-1])
-          class_name = parts[-1]
-
-          # Add to imports mapping
-          if import_path not in imports_needed:
-            imports_needed[import_path] = set()
-          imports_needed[import_path].add(class_name)
+        # Add to imports mapping
+        if import_path not in imports_needed:
+          imports_needed[import_path] = set()
+        imports_needed[import_path].add(class_name)
 
     # Recursively check all dictionary values
     for value in obj.values():
@@ -59,6 +66,23 @@ def _extract_schema_dependencies(
     operation_dict = operation_spec_path.contents()
     if isinstance(operation_dict, dict):
       scan_for_refs(operation_dict)
+
+    # Special-case collection responses so that we import the inner type rather than the collection
+    # type.
+    if 'responses' not in operation_spec_path:
+      continue
+
+    if _is_collection_response(operation_spec_path):
+      dereffed_response_schema = (
+        operation_spec_path / 'responses' / '200' / 'content' / 'application/json' / 'schema'
+      ).contents()
+      item_ref_value = dereffed_response_schema['properties']['items']['items']['$ref']
+      item_import_tuple = _ref_value_to_import_path(item_ref_value)
+      if item_import_tuple:
+        item_import_path, item_class_name = item_import_tuple
+        if item_import_path not in imports_needed:
+          imports_needed[item_import_path] = set()
+        imports_needed[item_import_path].add(item_class_name)
 
   return imports_needed
 

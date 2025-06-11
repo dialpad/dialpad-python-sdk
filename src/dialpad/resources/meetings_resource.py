@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.uberconference.meeting import MeetingSummaryCollection
+from dialpad.schemas.uberconference.meeting import MeetingSummaryCollection, MeetingSummaryProto
 
 
 class MeetingsResource(DialpadResource):
