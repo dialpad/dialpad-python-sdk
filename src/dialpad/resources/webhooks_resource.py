@@ -1,6 +1,7 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.webhook import CreateWebhook, UpdateWebhook, WebhookCollection, WebhookProto
+from dialpad.schemas.webhook import CreateWebhook, UpdateWebhook, WebhookProto
 
 
 class WebhooksResource(DialpadResource):

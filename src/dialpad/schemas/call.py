@@ -1,5 +1,7 @@
-from typing import Optional, List, Dict, Union, Literal
-from typing_extensions import TypedDict, NotRequired
+from typing import Literal, Union
+
+from typing_extensions import NotRequired, TypedDict
+
 from dialpad.schemas.breadcrumbs import ApiCallRouterBreadcrumb
 from dialpad.schemas.userdevice import UserDeviceProto
 

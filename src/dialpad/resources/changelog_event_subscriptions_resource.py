@@ -1,7 +1,7 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.change_log_event_subscription import (
-  ChangeLogEventSubscriptionCollection,
   ChangeLogEventSubscriptionProto,
   CreateChangeLogEventSubscription,
   UpdateChangeLogEventSubscription,

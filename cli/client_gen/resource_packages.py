@@ -141,7 +141,6 @@ def resources_to_package_directory(
 
   with open(init_file_path, 'w') as f:
     f.write('# This is an auto-generated resource package. Please do not edit it directly.\n\n')
-    f.write('from typing import Optional, Iterator\n\n')
 
     # Create a mapping from snake_case module name to its original ClassName
     # to ensure correct import statements in __init__.py

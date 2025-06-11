@@ -21,6 +21,9 @@ from openapi_core.contrib.requests import RequestsOpenAPIRequest
 from openapi_core.datatypes import RequestParameters
 from werkzeug.datastructures import Headers, ImmutableMultiDict
 
+from dialpad.client import DialpadClient
+from dialpad.resources.base import DialpadResource
+
 from .utils import generate_faked_kwargs
 
 logger = logging.getLogger(__name__)
@@ -59,10 +62,6 @@ def openapi_stub(requests_mock):
     return fake_response
 
   requests_mock.add_matcher(request_matcher)
-
-
-from dialpad.client import DialpadClient
-from dialpad.resources.base import DialpadResource
 
 
 class TestClientResourceMethods:

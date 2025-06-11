@@ -7,8 +7,6 @@ import json
 import logging
 import os
 
-logger = logging.getLogger(__name__)
-
 import pytest
 from jsonschema_path import SchemaPath
 from openapi_core import OpenAPI
@@ -21,6 +19,8 @@ from cli.client_gen.resource_modules import resource_class_to_module_def
 from cli.client_gen.resource_packages import _group_operations_by_class
 from cli.client_gen.schema_classes import schema_to_typed_dict_def
 from cli.client_gen.schema_modules import schemas_to_module_def
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')

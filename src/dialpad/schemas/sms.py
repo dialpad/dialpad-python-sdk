@@ -1,5 +1,6 @@
-from typing import Optional, List, Dict, Union, Literal
-from typing_extensions import TypedDict, NotRequired
+from typing import Literal
+
+from typing_extensions import NotRequired, TypedDict
 
 
 class SMSProto(TypedDict):

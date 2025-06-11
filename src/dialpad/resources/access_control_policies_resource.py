@@ -1,10 +1,9 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.access_control_policies import (
   AssignmentPolicyMessage,
   CreatePolicyMessage,
-  PoliciesCollection,
-  PolicyAssignmentCollection,
   PolicyAssignmentProto,
   PolicyProto,
   UnassignmentPolicyMessage,

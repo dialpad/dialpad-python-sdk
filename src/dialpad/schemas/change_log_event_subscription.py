@@ -1,5 +1,5 @@
-from typing import Optional, List, Dict, Union, Literal
-from typing_extensions import TypedDict, NotRequired
+from typing_extensions import NotRequired, TypedDict
+
 from dialpad.schemas.webhook import WebhookProto
 from dialpad.schemas.websocket import WebsocketProto
 

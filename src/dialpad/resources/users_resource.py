@@ -1,4 +1,5 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Literal, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.call import (
   ActiveCallProto,
@@ -9,7 +10,7 @@ from dialpad.schemas.call import (
   UpdateActiveCallMessage,
 )
 from dialpad.schemas.caller_id import CallerIdProto, SetCallerIdMessage
-from dialpad.schemas.deskphone import DeskPhone, DeskPhoneCollection
+from dialpad.schemas.deskphone import DeskPhone
 from dialpad.schemas.number import AssignNumberMessage, NumberProto, UnassignNumberMessage
 from dialpad.schemas.office import E911GetProto
 from dialpad.schemas.screen_pop import InitiateScreenPopMessage, InitiateScreenPopResponse
@@ -17,14 +18,12 @@ from dialpad.schemas.user import (
   CreateUserMessage,
   E911UpdateMessage,
   MoveOfficeMessage,
-  PersonaCollection,
   PersonaProto,
   SetStatusMessage,
   SetStatusProto,
   ToggleDNDMessage,
   ToggleDNDProto,
   UpdateUserMessage,
-  UserCollection,
   UserProto,
 )
 

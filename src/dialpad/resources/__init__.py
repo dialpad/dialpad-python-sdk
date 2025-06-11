@@ -1,7 +1,5 @@
 # This is an auto-generated resource package. Please do not edit it directly.
 
-from typing import Optional, Iterator
-
 from .access_control_policies_resource import AccessControlPoliciesResource
 from .agent_status_event_subscriptions_resource import AgentStatusEventSubscriptionsResource
 from .app_settings_resource import AppSettingsResource

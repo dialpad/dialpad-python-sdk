@@ -1,12 +1,12 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.deskphone import DeskPhone, DeskPhoneCollection
+from dialpad.schemas.deskphone import DeskPhone
 from dialpad.schemas.number import AssignNumberMessage, NumberProto, UnassignNumberMessage
 from dialpad.schemas.room import (
   CreateInternationalPinProto,
   CreateRoomMessage,
   InternationalPinProto,
-  RoomCollection,
   RoomProto,
   UpdateRoomMessage,
 )

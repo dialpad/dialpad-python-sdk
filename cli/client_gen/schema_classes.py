@@ -32,9 +32,6 @@ def _get_property_fields(
     # Determine if property is required
     is_required = prop_name in required_props
 
-    # Create property path to get the annotation
-    prop_path = object_schema / 'properties' / prop_name
-
     # Use schema_dict_to_annotation with appropriate flags
     annotation_expr = annotation.schema_dict_to_annotation(
       prop_dict,

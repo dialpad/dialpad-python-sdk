@@ -1,5 +1,7 @@
-from typing import Optional, List, Dict, Union, Literal
-from typing_extensions import TypedDict, NotRequired
+from typing import Literal
+
+from typing_extensions import NotRequired, TypedDict
+
 from dialpad.schemas.group import RoutingOptions, VoiceIntelligence
 from dialpad.schemas.plan import BillingContactMessage, BillingPointOfContactMessage, PlanProto
 

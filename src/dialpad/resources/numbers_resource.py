@@ -1,10 +1,10 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.e164_format import FormatNumberResponse
 from dialpad.schemas.number import (
   AssignNumberTargetGenericMessage,
   AssignNumberTargetMessage,
-  NumberCollection,
   NumberProto,
   SwapNumberMessage,
 )

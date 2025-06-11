@@ -13,6 +13,9 @@ def reformat_python_file(filepath: str) -> None:
     subprocess.run(
       ['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True
     )
+    subprocess.run(
+      ['uv', 'run', 'ruff', 'check', '--fix', filepath], check=True, capture_output=True, text=True
+    )
   except FileNotFoundError:
     typer.echo('uv command not found. Please ensure uv is installed and in your PATH.', err=True)
     raise typer.Exit(1)

@@ -47,7 +47,21 @@ swagger-parser = { git = "https://github.com/jakedialpad/swagger-parser", rev = 
 line-length = 100
 indent-width = 2
 
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+]
+ignore = ["E501"]  # line-too-long
+
 [tool.ruff.format]
 quote-style = "single"
 indent-style = "space"
 docstring-code-format = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["dialpad", "cli"]
+force-single-line = false
+split-on-trailing-comma = true

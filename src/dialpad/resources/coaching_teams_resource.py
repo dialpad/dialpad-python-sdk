@@ -1,8 +1,7 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.coaching_team import (
-  CoachingTeamCollection,
-  CoachingTeamMemberCollection,
   CoachingTeamMemberMessage,
   CoachingTeamMemberProto,
   CoachingTeamProto,

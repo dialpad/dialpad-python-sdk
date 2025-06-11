@@ -1,6 +1,5 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.sms import SMSProto, SendSMSMessage
+from dialpad.schemas.sms import SendSMSMessage, SMSProto
 
 
 class SmsResource(DialpadResource):

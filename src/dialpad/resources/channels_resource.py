@@ -1,9 +1,9 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.channel import ChannelCollection, ChannelProto, CreateChannelMessage
+from dialpad.schemas.channel import ChannelProto, CreateChannelMessage
 from dialpad.schemas.member_channel import (
   AddChannelMemberMessage,
-  MembersCollection,
   MembersProto,
   RemoveChannelMemberMessage,
 )

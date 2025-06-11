@@ -1,9 +1,9 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
+from typing import Iterator, Optional
+
 from dialpad.resources.base import DialpadResource
 from dialpad.schemas.websocket import (
   CreateWebsocket,
   UpdateWebsocket,
-  WebsocketCollection,
   WebsocketProto,
 )
 

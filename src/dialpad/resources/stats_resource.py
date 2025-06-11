@@ -1,6 +1,5 @@
-from typing import Optional, List, Dict, Union, Literal, Iterator, Any
 from dialpad.resources.base import DialpadResource
-from dialpad.schemas.stats import ProcessStatsMessage, ProcessingProto, StatsProto
+from dialpad.schemas.stats import ProcessingProto, ProcessStatsMessage, StatsProto
 
 
 class StatsResource(DialpadResource):
