@@ -171,4 +171,3 @@ def resources_to_package_directory(
   reformat_python_file(init_file_path)
 
   rich.print(Markdown(f'Resource package generated at `{output_dir}`.'))
-

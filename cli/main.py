@@ -125,6 +125,7 @@ def update_resource_module_mapping(
   open_api_spec = OpenAPI.from_file_path(SPEC_FILE)
   update_module_mapping(open_api_spec.spec, interactive=interactive)
 
+
 @app.command('generate-client')
 def generate_client():
   """Regenerates all the client components from the OpenAPI spec."""
@@ -138,7 +139,6 @@ def generate_client():
 
   # Write the generated resource modules to the client directory
   resources_to_package_directory(open_api_spec.spec, os.path.join(CLIENT_DIR, 'resources'))
-
 
 
 if __name__ == '__main__':

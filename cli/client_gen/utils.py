@@ -10,7 +10,9 @@ from rich.markdown import Markdown
 def reformat_python_file(filepath: str) -> None:
   """Reformats a Python file using ruff."""
   try:
-    subprocess.run(['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True)
+    subprocess.run(
+      ['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True
+    )
   except FileNotFoundError:
     typer.echo('uv command not found. Please ensure uv is installed and in your PATH.', err=True)
     raise typer.Exit(1)
