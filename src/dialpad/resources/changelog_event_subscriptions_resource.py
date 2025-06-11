@@ -37,7 +37,9 @@ class ChangelogEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(
+      method='POST', sub_path='/api/v2/subscriptions/changelog', body=request_body
+    )
 
   def delete(self, id: int) -> ChangeLogEventSubscriptionProto:
     """Change Log -- Delete
@@ -57,7 +59,7 @@ class ChangelogEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/changelog/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/changelog/{id}')
 
   def get(self, id: int) -> ChangeLogEventSubscriptionProto:
     """Change Log -- Get
@@ -77,7 +79,7 @@ class ChangelogEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/changelog/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/changelog/{id}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[ChangeLogEventSubscriptionProto]:
     """Change Log -- List
@@ -97,7 +99,9 @@ class ChangelogEventSubscriptionsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/subscriptions/changelog', params={'cursor': cursor}
+    )
 
   def partial_update(
     self, id: str, request_body: UpdateChangeLogEventSubscription
@@ -121,5 +125,5 @@ class ChangelogEventSubscriptionsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/subscriptions/changelog/{{id}}{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/subscriptions/changelog/{id}', body=request_body
     )

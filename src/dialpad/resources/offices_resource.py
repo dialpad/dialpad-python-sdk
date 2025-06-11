@@ -57,7 +57,7 @@ class OfficesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/offices/{{id}}/operators{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/offices/{id}/operators', body=request_body
     )
 
   def assign_number(self, id: int, request_body: AssignNumberMessage) -> NumberProto:
@@ -76,7 +76,7 @@ class OfficesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/offices/{{id}}/assign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/offices/{id}/assign_number', body=request_body
     )
 
   def create(self, request_body: CreateOfficeMessage) -> OfficeUpdateResponse:
@@ -91,7 +91,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/offices', body=request_body)
 
   def get(self, id: int) -> OfficeProto:
     """Office -- Get
@@ -107,7 +107,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/offices/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{id}')
 
   def get_billing_plan(self, office_id: int) -> PlanProto:
     """Billing Plan -- Get
@@ -123,7 +123,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/offices/{{office_id}}/plan{office_id}')
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{office_id}/plan')
 
   def get_e911_address(self, id: int) -> E911GetProto:
     """E911 Address -- Get
@@ -139,7 +139,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/offices/{{id}}/e911{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{id}/e911')
 
   def list(
     self, active_only: Optional[bool] = None, cursor: Optional[str] = None
@@ -158,7 +158,11 @@ class OfficesResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'active_only': active_only})
+    return self._iter_request(
+      method='GET',
+      sub_path='/api/v2/offices',
+      params={'cursor': cursor, 'active_only': active_only},
+    )
 
   def list_available_licenses(self, office_id: int) -> AvailableLicensesProto:
     """Licenses -- List Available
@@ -174,9 +178,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='GET', sub_path=f'/api/v2/offices/{{office_id}}/available_licenses{office_id}'
-    )
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{office_id}/available_licenses')
 
   def list_call_centers(
     self, office_id: int, cursor: Optional[str] = None
@@ -194,9 +196,7 @@ class OfficesResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET',
-      sub_path=f'/api/v2/offices/{{office_id}}/callcenters{office_id}',
-      params={'cursor': cursor},
+      method='GET', sub_path=f'/api/v2/offices/{office_id}/callcenters', params={'cursor': cursor}
     )
 
   def list_coaching_teams(
@@ -215,9 +215,7 @@ class OfficesResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET',
-      sub_path=f'/api/v2/offices/{{office_id}}/teams{office_id}',
-      params={'cursor': cursor},
+      method='GET', sub_path=f'/api/v2/offices/{office_id}/teams', params={'cursor': cursor}
     )
 
   def list_departments(
@@ -236,9 +234,7 @@ class OfficesResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET',
-      sub_path=f'/api/v2/offices/{{office_id}}/departments{office_id}',
-      params={'cursor': cursor},
+      method='GET', sub_path=f'/api/v2/offices/{office_id}/departments', params={'cursor': cursor}
     )
 
   def list_offduty_statuses(self, id: int) -> OffDutyStatusesProto:
@@ -253,7 +249,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/offices/{{id}}/offdutystatuses{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{id}/offdutystatuses')
 
   def list_operators(self, id: int) -> OperatorCollection:
     """Operator -- List
@@ -267,7 +263,7 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/offices/{{id}}/operators{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/offices/{id}/operators')
 
   def remove_operator(self, id: int, request_body: RemoveOperatorMessage) -> UserOrRoomProto:
     """Operator -- Remove
@@ -285,7 +281,7 @@ class OfficesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='DELETE', sub_path=f'/api/v2/offices/{{id}}/operators{id}', body=request_body
+      method='DELETE', sub_path=f'/api/v2/offices/{id}/operators', body=request_body
     )
 
   def unassign_number(self, id: int, request_body: UnassignNumberMessage) -> NumberProto:
@@ -304,7 +300,7 @@ class OfficesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/offices/{{id}}/unassign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/offices/{id}/unassign_number', body=request_body
     )
 
   def update_e911_address(self, id: int, request_body: E911UpdateMessage) -> E911GetProto:
@@ -322,6 +318,4 @@ class OfficesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PUT', sub_path=f'/api/v2/offices/{{id}}/e911{id}', body=request_body
-    )
+    return self._request(method='PUT', sub_path=f'/api/v2/offices/{id}/e911', body=request_body)

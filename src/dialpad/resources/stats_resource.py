@@ -24,7 +24,7 @@ class StatsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/stats/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/stats/{id}')
 
   def initiate_processing(self, request_body: ProcessStatsMessage) -> ProcessingProto:
     """Stats -- Initiate Processing
@@ -42,4 +42,4 @@ class StatsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/stats', body=request_body)

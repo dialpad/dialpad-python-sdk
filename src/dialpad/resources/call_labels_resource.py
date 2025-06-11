@@ -23,4 +23,4 @@ class CallLabelsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', params={'limit': limit})
+    return self._request(method='GET', sub_path='/api/v2/calllabels', params={'limit': limit})

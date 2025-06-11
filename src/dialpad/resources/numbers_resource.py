@@ -38,7 +38,7 @@ class NumbersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/numbers/{{number}}/assign{number}', body=request_body
+      method='POST', sub_path=f'/api/v2/numbers/{number}/assign', body=request_body
     )
 
   def auto_assign(self, request_body: AssignNumberTargetGenericMessage) -> NumberProto:
@@ -56,7 +56,7 @@ class NumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/numbers/assign', body=request_body)
 
   def format_number(
     self, country_code: Optional[str] = None, number: Optional[str] = None
@@ -75,7 +75,11 @@ class NumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', params={'country_code': country_code, 'number': number})
+    return self._request(
+      method='POST',
+      sub_path='/api/v2/numbers/format',
+      params={'country_code': country_code, 'number': number},
+    )
 
   def get(self, number: str) -> NumberProto:
     """Dialpad Number -- Get
@@ -93,7 +97,7 @@ class NumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/numbers/{{number}}{number}')
+    return self._request(method='GET', sub_path=f'/api/v2/numbers/{number}')
 
   def list(
     self, cursor: Optional[str] = None, status: Optional[str] = None
@@ -114,7 +118,9 @@ class NumbersResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'status': status})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/numbers', params={'cursor': cursor, 'status': status}
+    )
 
   def swap(self, request_body: SwapNumberMessage) -> NumberProto:
     """Dialpad Number -- Swap
@@ -134,7 +140,7 @@ class NumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/numbers/swap', body=request_body)
 
   def unassign(self, number: str, release: Optional[bool] = None) -> NumberProto:
     """Dialpad Number -- Unassign
@@ -152,5 +158,5 @@ class NumbersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='DELETE', sub_path=f'/api/v2/numbers/{{number}}{number}', params={'release': release}
+      method='DELETE', sub_path=f'/api/v2/numbers/{number}', params={'release': release}
     )

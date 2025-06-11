@@ -28,7 +28,7 @@ class CallReviewShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/callreviewsharelink', body=request_body)
 
   def delete(self, id: str) -> CallReviewShareLink:
     """Call Review Sharelink -- Delete
@@ -44,7 +44,7 @@ class CallReviewShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/callreviewsharelink/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/callreviewsharelink/{id}')
 
   def get(self, id: str) -> CallReviewShareLink:
     """Call Review Sharelink -- Get
@@ -60,7 +60,7 @@ class CallReviewShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/callreviewsharelink/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/callreviewsharelink/{id}')
 
   def update(self, id: str, request_body: UpdateCallReviewShareLink) -> CallReviewShareLink:
     """Call Review Sharelink -- Update
@@ -78,5 +78,5 @@ class CallReviewShareLinksResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PUT', sub_path=f'/api/v2/callreviewsharelink/{{id}}{id}', body=request_body
+      method='PUT', sub_path=f'/api/v2/callreviewsharelink/{id}', body=request_body
     )

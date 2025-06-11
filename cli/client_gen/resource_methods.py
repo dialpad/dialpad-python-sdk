@@ -50,35 +50,41 @@ def _build_method_call_args(
     # This is a path with parameters that needs formatting
     # We'll need to create a formatted string as the sub_path
 
-    # Extract path parameter names
-    path_params = re.findall(r'\{([^}]+)\}', api_path)
+    # Parse the path into alternating constant and parameter parts
+    # For '/users/{user_id}/posts/{post_id}' we get:
+    # constants: ['/users/', '/posts/', '']
+    # params: ['user_id', 'post_id']
+    parts = re.split(r'\{([^}]+)\}', api_path)
 
-    # Create a path formatting expression
-    # For path '/users/{user_id}' we need f'/users/{user_id}'
-    if path_params:
-      # Use an f-string with the path and format parameters
-      formatted_path = api_path
-      for param in path_params:
-        formatted_path = formatted_path.replace(f'{{{param}}}', '{' + param + '}')
+    # Create the f-string AST values by alternating constants and formatted values
+    fstring_values = []
+    for i, part in enumerate(parts):
+      if i % 2 == 0:
+        # Even indices are constant string parts
+        if part:  # Only add non-empty constants
+          fstring_values.append(ast.Constant(value=part))
+      else:
+        # Odd indices are parameter names
+        fstring_values.append(
+          ast.FormattedValue(
+            value=ast.Name(id=part, ctx=ast.Load()),
+            conversion=-1,  # No conversion specified
+            format_spec=None,
+          )
+        )
 
-      sub_path_arg = ast.keyword(
-        arg='sub_path',
-        value=ast.JoinedStr(
-          values=[ast.Constant(value=formatted_path)]
-          + [
-            ast.FormattedValue(
-              value=ast.Name(id=param, ctx=ast.Load()),
-              conversion=-1,  # No conversion specified
-              format_spec=None,
-            )
-            for param in path_params
-          ]
-        ),
-      )
-    else:
-      # Fixed path, no parameters
-      sub_path_arg = ast.keyword(arg='sub_path', value=ast.Constant(value=api_path))
+    sub_path_arg = ast.keyword(
+      arg='sub_path',
+      value=ast.JoinedStr(values=fstring_values),
+    )
+  elif api_path:
+    # Fixed path, no parameters
+    sub_path_arg = ast.keyword(arg='sub_path', value=ast.Constant(value=api_path))
+  else:
+    # No API path provided
+    sub_path_arg = None
 
+  if sub_path_arg:
     args.append(sub_path_arg)
 
   # Collect parameters for the request

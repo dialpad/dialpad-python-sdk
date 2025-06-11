@@ -28,7 +28,7 @@ class RecordingShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/recordingsharelink', body=request_body)
 
   def delete(self, id: str) -> RecordingShareLink:
     """Recording Sharelink -- Delete
@@ -44,7 +44,7 @@ class RecordingShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/recordingsharelink/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/recordingsharelink/{id}')
 
   def get(self, id: str) -> RecordingShareLink:
     """Recording Sharelink -- Get
@@ -60,7 +60,7 @@ class RecordingShareLinksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/recordingsharelink/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/recordingsharelink/{id}')
 
   def update(self, id: str, request_body: UpdateRecordingShareLink) -> RecordingShareLink:
     """Recording Sharelink -- Update
@@ -78,5 +78,5 @@ class RecordingShareLinksResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PUT', sub_path=f'/api/v2/recordingsharelink/{{id}}{id}', body=request_body
+      method='PUT', sub_path=f'/api/v2/recordingsharelink/{id}', body=request_body
     )

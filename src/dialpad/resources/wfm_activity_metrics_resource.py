@@ -34,5 +34,6 @@ class WFMActivityMetricsResource(DialpadResource):
         An iterator of items from A successful response"""
     return self._iter_request(
       method='GET',
+      sub_path='/api/v2/wfm/metrics/activity',
       params={'ids': ids, 'emails': emails, 'cursor': cursor, 'end': end, 'start': start},
     )

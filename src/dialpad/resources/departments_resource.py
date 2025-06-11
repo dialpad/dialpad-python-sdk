@@ -36,7 +36,7 @@ class DepartmentsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/departments/{{id}}/operators{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/departments/{id}/operators', body=request_body
     )
 
   def create(self, request_body: CreateDepartmentMessage) -> DepartmentProto:
@@ -55,7 +55,7 @@ class DepartmentsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/departments', body=request_body)
 
   def delete(self, id: int) -> DepartmentProto:
     """Departments-- Delete
@@ -71,7 +71,7 @@ class DepartmentsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/departments/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/departments/{id}')
 
   def get(self, id: int) -> DepartmentProto:
     """Department -- Get
@@ -85,7 +85,7 @@ class DepartmentsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/departments/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/departments/{id}')
 
   def list(
     self,
@@ -107,7 +107,9 @@ class DepartmentsResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', params={'cursor': cursor, 'office_id': office_id, 'name_search': name_search}
+      method='GET',
+      sub_path='/api/v2/departments',
+      params={'cursor': cursor, 'office_id': office_id, 'name_search': name_search},
     )
 
   def list_operators(self, id: int) -> OperatorCollection:
@@ -122,7 +124,7 @@ class DepartmentsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/departments/{{id}}/operators{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/departments/{id}/operators')
 
   def partial_update(self, id: int, request_body: UpdateDepartmentMessage) -> DepartmentProto:
     """Departments-- Update
@@ -139,9 +141,7 @@ class DepartmentsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/departments/{{id}}{id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/departments/{id}', body=request_body)
 
   def remove_operator(self, id: int, request_body: RemoveOperatorMessage) -> UserOrRoomProto:
     """Operator -- Remove
@@ -159,5 +159,5 @@ class DepartmentsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='DELETE', sub_path=f'/api/v2/departments/{{id}}/operators{id}', body=request_body
+      method='DELETE', sub_path=f'/api/v2/departments/{id}/operators', body=request_body
     )

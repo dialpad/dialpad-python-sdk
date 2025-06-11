@@ -26,7 +26,7 @@ class WebhooksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/webhooks', body=request_body)
 
   def delete(self, id: int) -> WebhookProto:
     """Webhook -- Delete
@@ -42,7 +42,7 @@ class WebhooksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/webhooks/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/webhooks/{id}')
 
   def get(self, id: int) -> WebhookProto:
     """Webhook -- Get
@@ -58,7 +58,7 @@ class WebhooksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/webhooks/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/webhooks/{id}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[WebhookProto]:
     """Webhook -- List
@@ -74,7 +74,7 @@ class WebhooksResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(method='GET', sub_path='/api/v2/webhooks', params={'cursor': cursor})
 
   def partial_update(self, id: str, request_body: UpdateWebhook) -> WebhookProto:
     """Webhook -- Update
@@ -91,4 +91,4 @@ class WebhooksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PATCH', sub_path=f'/api/v2/webhooks/{{id}}{id}', body=request_body)
+    return self._request(method='PATCH', sub_path=f'/api/v2/webhooks/{id}', body=request_body)

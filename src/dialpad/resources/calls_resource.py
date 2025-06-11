@@ -42,7 +42,7 @@ class CallsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/call/{{id}}/participants/add{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/call/{id}/participants/add', body=request_body
     )
 
   def get(self, id: int) -> CallProto:
@@ -57,7 +57,7 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/call/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/call/{id}')
 
   def hangup_call(self, id: int) -> None:
     """Call Actions -- Hang up
@@ -71,7 +71,7 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PUT', sub_path=f'/api/v2/call/{{id}}/actions/hangup{id}')
+    return self._request(method='PUT', sub_path=f'/api/v2/call/{id}/actions/hangup')
 
   def initiate_ivr_call(self, request_body: OutboundIVRMessage) -> InitiatedIVRCallProto:
     """Call -- Initiate IVR Call
@@ -89,7 +89,9 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(
+      method='POST', sub_path='/api/v2/call/initiate_ivr_call', body=request_body
+    )
 
   def initiate_ring_call(self, request_body: RingCallMessage) -> RingCallProto:
     """Call -- Initiate via Ring
@@ -105,7 +107,7 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/call', body=request_body)
 
   def list(
     self,
@@ -156,6 +158,7 @@ class CallsResource(DialpadResource):
         An iterator of items from A successful response"""
     return self._iter_request(
       method='GET',
+      sub_path='/api/v2/call',
       params={
         'cursor': cursor,
         'started_after': started_after,
@@ -180,9 +183,7 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PUT', sub_path=f'/api/v2/call/{{id}}/labels{id}', body=request_body
-    )
+    return self._request(method='PUT', sub_path=f'/api/v2/call/{id}/labels', body=request_body)
 
   def transfer(self, id: int, request_body: TransferCallMessage) -> TransferredCallProto:
     """Call -- Transfer
@@ -197,9 +198,7 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='POST', sub_path=f'/api/v2/call/{{id}}/transfer{id}', body=request_body
-    )
+    return self._request(method='POST', sub_path=f'/api/v2/call/{id}/transfer', body=request_body)
 
   def unpark(self, id: int, request_body: UnparkCallMessage) -> RingCallProto:
     """Call -- Unpark
@@ -214,6 +213,4 @@ class CallsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='POST', sub_path=f'/api/v2/call/{{id}}/unpark{id}', body=request_body
-    )
+    return self._request(method='POST', sub_path=f'/api/v2/call/{id}/unpark', body=request_body)

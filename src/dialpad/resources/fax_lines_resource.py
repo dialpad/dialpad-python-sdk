@@ -25,4 +25,4 @@ class FaxLinesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/faxline', body=request_body)

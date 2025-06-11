@@ -39,6 +39,7 @@ class OAuth2Resource(DialpadResource):
         state: Unpredictable token to prevent CSRF."""
     return self._request(
       method='GET',
+      sub_path='/oauth2/authorize',
       params={
         'code_challenge_method': code_challenge_method,
         'code_challenge': code_challenge,
@@ -54,7 +55,7 @@ class OAuth2Resource(DialpadResource):
     """Token -- Deauthorize
 
     Revokes oauth2 tokens for a given oauth app."""
-    return self._request(method='POST')
+    return self._request(method='POST', sub_path='/oauth2/deauthorize')
 
   def redeem_token(
     self, request_body: Union[AuthorizationCodeGrantBodySchema, RefreshTokenGrantBodySchema]
@@ -68,4 +69,4 @@ class OAuth2Resource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/oauth2/token', body=request_body)

@@ -45,7 +45,7 @@ class CallCentersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/callcenters/{{id}}/operators{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/callcenters/{id}/operators', body=request_body
     )
 
   def create(self, request_body: CreateCallCenterMessage) -> CallCenterProto:
@@ -62,7 +62,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/callcenters', body=request_body)
 
   def delete(self, id: int) -> CallCenterProto:
     """Call Centers -- Delete
@@ -78,7 +78,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/callcenters/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/callcenters/{id}')
 
   def get(self, id: int) -> CallCenterProto:
     """Call Centers -- Get
@@ -92,7 +92,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{id}')
 
   def get_operator_skill_level(self, call_center_id: int, user_id: int) -> OperatorSkillLevelProto:
     """Operator -- Get Skill Level
@@ -108,8 +108,7 @@ class CallCentersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='GET',
-      sub_path=f'/api/v2/callcenters/{{call_center_id}}/operators/{{user_id}}/skill{call_center_id}{user_id}',
+      method='GET', sub_path=f'/api/v2/callcenters/{call_center_id}/operators/{user_id}/skill'
     )
 
   def get_status(self, id: int) -> CallCenterStatusProto:
@@ -126,7 +125,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{{id}}/status{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{id}/status')
 
   def list(
     self,
@@ -149,7 +148,9 @@ class CallCentersResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', params={'cursor': cursor, 'office_id': office_id, 'name_search': name_search}
+      method='GET',
+      sub_path='/api/v2/callcenters',
+      params={'cursor': cursor, 'office_id': office_id, 'name_search': name_search},
     )
 
   def list_operators(self, id: int) -> OperatorCollection:
@@ -164,7 +165,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{{id}}/operators{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/callcenters/{id}/operators')
 
   def partial_update(self, id: int, request_body: UpdateCallCenterMessage) -> CallCenterProto:
     """Call Centers -- Update
@@ -181,9 +182,7 @@ class CallCentersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/callcenters/{{id}}{id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/callcenters/{id}', body=request_body)
 
   def remove_operator(
     self, id: int, request_body: RemoveCallCenterOperatorMessage
@@ -205,7 +204,7 @@ class CallCentersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='DELETE', sub_path=f'/api/v2/callcenters/{{id}}/operators{id}', body=request_body
+      method='DELETE', sub_path=f'/api/v2/callcenters/{id}/operators', body=request_body
     )
 
   def update_operator_skill_level(
@@ -226,6 +225,6 @@ class CallCentersResource(DialpadResource):
         A successful response"""
     return self._request(
       method='PATCH',
-      sub_path=f'/api/v2/callcenters/{{call_center_id}}/operators/{{user_id}}/skill{call_center_id}{user_id}',
+      sub_path=f'/api/v2/callcenters/{call_center_id}/operators/{user_id}/skill',
       body=request_body,
     )

@@ -66,7 +66,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/users/{{id}}/assign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/users/{id}/assign_number', body=request_body
     )
 
   def create(self, request_body: CreateUserMessage) -> UserProto:
@@ -83,7 +83,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/users', body=request_body)
 
   def delete(self, id: str) -> UserProto:
     """User -- Delete
@@ -99,7 +99,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/users/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/users/{id}')
 
   def delete_deskphone(self, id: str, parent_id: int) -> None:
     """Desk Phone -- Delete
@@ -114,9 +114,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='DELETE', sub_path=f'/api/v2/users/{{parent_id}}/deskphones/{{id}}{parent_id}{id}'
-    )
+    return self._request(method='DELETE', sub_path=f'/api/v2/users/{parent_id}/deskphones/{id}')
 
   def get(self, id: str) -> UserProto:
     """User -- Get
@@ -132,7 +130,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/users/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/users/{id}')
 
   def get_caller_id(self, id: str) -> CallerIdProto:
     """Caller ID -- Get
@@ -148,7 +146,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/users/{{id}}/caller_id{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/users/{id}/caller_id')
 
   def get_deskphone(self, id: str, parent_id: int) -> DeskPhone:
     """Desk Phone -- Get
@@ -163,9 +161,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='GET', sub_path=f'/api/v2/users/{{parent_id}}/deskphones/{{id}}{parent_id}{id}'
-    )
+    return self._request(method='GET', sub_path=f'/api/v2/users/{parent_id}/deskphones/{id}')
 
   def get_e911_address(self, id: int) -> E911GetProto:
     """E911 Address -- Get
@@ -181,7 +177,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/users/{{id}}/e911{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/users/{id}/e911')
 
   def initiate_call(self, id: str, request_body: InitiateCallMessage) -> InitiatedCallProto:
     """Call -- Initiate
@@ -197,7 +193,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/users/{{id}}/initiate_call{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/users/{id}/initiate_call', body=request_body
     )
 
   def list(
@@ -236,6 +232,7 @@ class UsersResource(DialpadResource):
         An iterator of items from A successful response"""
     return self._iter_request(
       method='GET',
+      sub_path='/api/v2/users',
       params={
         'cursor': cursor,
         'state': state,
@@ -257,9 +254,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(
-      method='GET', sub_path=f'/api/v2/users/{{parent_id}}/deskphones{parent_id}'
-    )
+    return self._iter_request(method='GET', sub_path=f'/api/v2/users/{parent_id}/deskphones')
 
   def list_personas(self, id: str) -> Iterator[PersonaProto]:
     """Persona -- List
@@ -277,7 +272,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', sub_path=f'/api/v2/users/{{id}}/personas{id}')
+    return self._iter_request(method='GET', sub_path=f'/api/v2/users/{id}/personas')
 
   def move_office(self, id: str, request_body: MoveOfficeMessage) -> UserProto:
     """User -- Switch Office
@@ -295,7 +290,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/users/{{id}}/move_office{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/users/{id}/move_office', body=request_body
     )
 
   def partial_update(self, id: str, request_body: UpdateUserMessage) -> UserProto:
@@ -313,7 +308,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PATCH', sub_path=f'/api/v2/users/{{id}}{id}', body=request_body)
+    return self._request(method='PATCH', sub_path=f'/api/v2/users/{id}', body=request_body)
 
   def set_caller_id(self, id: str, request_body: SetCallerIdMessage) -> CallerIdProto:
     """Caller ID -- POST
@@ -330,9 +325,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='POST', sub_path=f'/api/v2/users/{{id}}/caller_id{id}', body=request_body
-    )
+    return self._request(method='POST', sub_path=f'/api/v2/users/{id}/caller_id', body=request_body)
 
   def set_e911_address(self, id: int, request_body: E911UpdateMessage) -> E911GetProto:
     """E911 Address -- Update
@@ -349,7 +342,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PUT', sub_path=f'/api/v2/users/{{id}}/e911{id}', body=request_body)
+    return self._request(method='PUT', sub_path=f'/api/v2/users/{id}/e911', body=request_body)
 
   def toggle_active_call_recording(
     self, id: int, request_body: UpdateActiveCallMessage
@@ -369,7 +362,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/users/{{id}}/activecall{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/users/{id}/activecall', body=request_body
     )
 
   def toggle_active_call_vi(self, id: int, request_body: ToggleViMessage) -> ToggleViProto:
@@ -385,9 +378,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/users/{{id}}/togglevi{id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/users/{id}/togglevi', body=request_body)
 
   def toggle_dnd(self, id: str, request_body: ToggleDNDMessage) -> ToggleDNDProto:
     """Do Not Disturb -- Toggle
@@ -405,7 +396,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/users/{{id}}/togglednd{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/users/{id}/togglednd', body=request_body
     )
 
   def trigger_screenpop(
@@ -425,9 +416,7 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='POST', sub_path=f'/api/v2/users/{{id}}/screenpop{id}', body=request_body
-    )
+    return self._request(method='POST', sub_path=f'/api/v2/users/{id}/screenpop', body=request_body)
 
   def unassign_number(self, id: int, request_body: UnassignNumberMessage) -> NumberProto:
     """Dialpad Number -- Unassign
@@ -445,7 +434,7 @@ class UsersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/users/{{id}}/unassign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/users/{id}/unassign_number', body=request_body
     )
 
   def update_user_status(self, id: int, request_body: SetStatusMessage) -> SetStatusProto:
@@ -461,6 +450,4 @@ class UsersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/users/{{id}}/status{id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/users/{id}/status', body=request_body)

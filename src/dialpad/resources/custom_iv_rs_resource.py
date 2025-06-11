@@ -123,7 +123,7 @@ class CustomIVRsResource(DialpadResource):
         A successful response"""
     return self._request(
       method='PATCH',
-      sub_path=f'/api/v2/customivrs/{{target_type}}/{{target_id}}/{{ivr_type}}{target_type}{target_id}{ivr_type}',
+      sub_path=f'/api/v2/customivrs/{target_type}/{target_id}/{ivr_type}',
       body=request_body,
     )
 
@@ -141,7 +141,7 @@ class CustomIVRsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/customivrs', body=request_body)
 
   def list(
     self,
@@ -177,7 +177,9 @@ class CustomIVRsResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', params={'cursor': cursor, 'target_type': target_type, 'target_id': target_id}
+      method='GET',
+      sub_path='/api/v2/customivrs',
+      params={'cursor': cursor, 'target_type': target_type, 'target_id': target_id},
     )
 
   def partial_update(
@@ -195,9 +197,7 @@ class CustomIVRsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/customivrs/{{ivr_id}}{ivr_id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/customivrs/{ivr_id}', body=request_body)
 
   def unassign(
     self,
@@ -302,6 +302,6 @@ class CustomIVRsResource(DialpadResource):
         A successful response"""
     return self._request(
       method='DELETE',
-      sub_path=f'/api/v2/customivrs/{{target_type}}/{{target_id}}/{{ivr_type}}{target_type}{target_id}{ivr_type}',
+      sub_path=f'/api/v2/customivrs/{target_type}/{target_id}/{ivr_type}',
       body=request_body,
     )

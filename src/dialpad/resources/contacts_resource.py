@@ -28,7 +28,7 @@ class ContactsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/contacts', body=request_body)
 
   def create_or_update(self, request_body: CreateContactMessageWithUid) -> ContactProto:
     """Contact -- Create or Update
@@ -42,7 +42,7 @@ class ContactsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PUT', body=request_body)
+    return self._request(method='PUT', sub_path='/api/v2/contacts', body=request_body)
 
   def delete(self, id: str) -> ContactProto:
     """Contact -- Delete
@@ -56,7 +56,7 @@ class ContactsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/contacts/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/contacts/{id}')
 
   def get(self, id: str) -> ContactProto:
     """Contact -- Get
@@ -72,7 +72,7 @@ class ContactsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/contacts/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/contacts/{id}')
 
   def list(
     self,
@@ -96,7 +96,9 @@ class ContactsResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', params={'cursor': cursor, 'include_local': include_local, 'owner_id': owner_id}
+      method='GET',
+      sub_path='/api/v2/contacts',
+      params={'cursor': cursor, 'include_local': include_local, 'owner_id': owner_id},
     )
 
   def partial_update(self, id: str, request_body: UpdateContactMessage) -> ContactProto:
@@ -112,4 +114,4 @@ class ContactsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PATCH', sub_path=f'/api/v2/contacts/{{id}}{id}', body=request_body)
+    return self._request(method='PATCH', sub_path=f'/api/v2/contacts/{id}', body=request_body)

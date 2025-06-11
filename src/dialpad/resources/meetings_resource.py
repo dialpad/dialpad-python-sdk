@@ -26,4 +26,8 @@ class MeetingsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'room_id': room_id})
+    return self._iter_request(
+      method='GET',
+      sub_path='/api/v2/conference/meetings',
+      params={'cursor': cursor, 'room_id': room_id},
+    )

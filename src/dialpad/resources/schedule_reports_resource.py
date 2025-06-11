@@ -30,7 +30,7 @@ class ScheduleReportsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/schedulereports', body=request_body)
 
   def delete(self, id: int) -> ScheduleReportsStatusEventSubscriptionProto:
     """Schedule reports -- Delete
@@ -46,7 +46,7 @@ class ScheduleReportsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/schedulereports/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/schedulereports/{id}')
 
   def get(self, id: int) -> ScheduleReportsStatusEventSubscriptionProto:
     """Schedule reports -- Get
@@ -62,7 +62,7 @@ class ScheduleReportsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/schedulereports/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/schedulereports/{id}')
 
   def list(
     self, cursor: Optional[str] = None
@@ -80,7 +80,9 @@ class ScheduleReportsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/schedulereports', params={'cursor': cursor}
+    )
 
   def partial_update(
     self, id: int, request_body: ProcessScheduleReportsMessage
@@ -100,5 +102,5 @@ class ScheduleReportsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/schedulereports/{{id}}{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/schedulereports/{id}', body=request_body
     )

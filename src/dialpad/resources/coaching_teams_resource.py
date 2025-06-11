@@ -33,7 +33,7 @@ class CoachingTeamsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/coachingteams/{{id}}/members{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/coachingteams/{id}/members', body=request_body
     )
 
   def get(self, id: int) -> CoachingTeamProto:
@@ -48,7 +48,7 @@ class CoachingTeamsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/coachingteams/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/coachingteams/{id}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[CoachingTeamProto]:
     """Coaching Team -- List
@@ -62,7 +62,9 @@ class CoachingTeamsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/coachingteams', params={'cursor': cursor}
+    )
 
   def list_members(self, id: int) -> Iterator[CoachingTeamMemberProto]:
     """Coaching Team -- List Members
@@ -76,4 +78,4 @@ class CoachingTeamsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', sub_path=f'/api/v2/coachingteams/{{id}}/members{id}')
+    return self._iter_request(method='GET', sub_path=f'/api/v2/coachingteams/{id}/members')

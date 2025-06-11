@@ -24,7 +24,7 @@ class CompanyResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET')
+    return self._request(method='GET', sub_path='/api/v2/company')
 
   def get_sms_opt_out_list(
     self,
@@ -52,6 +52,6 @@ class CompanyResource(DialpadResource):
         An iterator of items from A successful response"""
     return self._iter_request(
       method='GET',
-      sub_path=f'/api/v2/company/{{id}}/smsoptout{id}',
+      sub_path=f'/api/v2/company/{id}/smsoptout',
       params={'a2p_campaign_id': a2p_campaign_id, 'cursor': cursor, 'opt_out_state': opt_out_state},
     )

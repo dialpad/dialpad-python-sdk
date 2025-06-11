@@ -29,7 +29,7 @@ class BlockedNumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/blockednumbers/add', body=request_body)
 
   def get(self, number: str) -> BlockedNumber:
     """Blocked Number -- Get
@@ -43,7 +43,7 @@ class BlockedNumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/blockednumbers/{{number}}{number}')
+    return self._request(method='GET', sub_path=f'/api/v2/blockednumbers/{number}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[BlockedNumber]:
     """Blocked Numbers -- List
@@ -57,7 +57,9 @@ class BlockedNumbersResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/blockednumbers', params={'cursor': cursor}
+    )
 
   def remove(self, request_body: RemoveBlockedNumbersProto) -> None:
     """Blocked Number -- Remove
@@ -71,4 +73,4 @@ class BlockedNumbersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/blockednumbers/remove', body=request_body)

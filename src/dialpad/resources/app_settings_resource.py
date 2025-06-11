@@ -40,4 +40,8 @@ class AppSettingsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', params={'target_id': target_id, 'target_type': target_type})
+    return self._request(
+      method='GET',
+      sub_path='/api/v2/app/settings',
+      params={'target_id': target_id, 'target_type': target_type},
+    )

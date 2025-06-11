@@ -24,7 +24,7 @@ class TranscriptsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/transcripts/{{call_id}}{call_id}')
+    return self._request(method='GET', sub_path=f'/api/v2/transcripts/{call_id}')
 
   def get_url(self, call_id: int) -> TranscriptUrlProto:
     """Call Transcript -- Get URL
@@ -40,4 +40,4 @@ class TranscriptsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/transcripts/{{call_id}}/url{call_id}')
+    return self._request(method='GET', sub_path=f'/api/v2/transcripts/{call_id}/url')

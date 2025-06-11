@@ -21,9 +21,7 @@ class CallCenterOperatorsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='GET', sub_path=f'/api/v2/callcenters/operators/{{id}}/dutystatus{id}'
-    )
+    return self._request(method='GET', sub_path=f'/api/v2/callcenters/operators/{id}/dutystatus')
 
   def update_duty_status(
     self, id: int, request_body: UpdateOperatorDutyStatusMessage
@@ -41,7 +39,5 @@ class CallCenterOperatorsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH',
-      sub_path=f'/api/v2/callcenters/operators/{{id}}/dutystatus{id}',
-      body=request_body,
+      method='PATCH', sub_path=f'/api/v2/callcenters/operators/{id}/dutystatus', body=request_body
     )

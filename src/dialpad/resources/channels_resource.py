@@ -33,7 +33,7 @@ class ChannelsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/channels/{{id}}/members{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/channels/{id}/members', body=request_body
     )
 
   def create(self, request_body: CreateChannelMessage) -> ChannelProto:
@@ -50,7 +50,7 @@ class ChannelsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/channels', body=request_body)
 
   def delete(self, id: int) -> None:
     """Channel -- Delete
@@ -66,7 +66,7 @@ class ChannelsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/channels/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/channels/{id}')
 
   def get(self, id: int) -> ChannelProto:
     """Channel -- Get
@@ -82,7 +82,7 @@ class ChannelsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/channels/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/channels/{id}')
 
   def list(
     self, cursor: Optional[str] = None, state: Optional[str] = None
@@ -101,7 +101,9 @@ class ChannelsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'state': state})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/channels', params={'cursor': cursor, 'state': state}
+    )
 
   def list_members(self, id: int, cursor: Optional[str] = None) -> Iterator[MembersProto]:
     """Members -- List
@@ -119,7 +121,7 @@ class ChannelsResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', sub_path=f'/api/v2/channels/{{id}}/members{id}', params={'cursor': cursor}
+      method='GET', sub_path=f'/api/v2/channels/{id}/members', params={'cursor': cursor}
     )
 
   def remove_member(self, id: int, request_body: RemoveChannelMemberMessage) -> None:
@@ -138,5 +140,5 @@ class ChannelsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='DELETE', sub_path=f'/api/v2/channels/{{id}}/members{id}', body=request_body
+      method='DELETE', sub_path=f'/api/v2/channels/{id}/members', body=request_body
     )

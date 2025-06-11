@@ -37,7 +37,7 @@ class SmsEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/subscriptions/sms', body=request_body)
 
   def delete(self, id: int) -> SmsEventSubscriptionProto:
     """SMS Event -- Delete
@@ -55,7 +55,7 @@ class SmsEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/sms/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/sms/{id}')
 
   def get(self, id: int) -> SmsEventSubscriptionProto:
     """SMS Event -- Get
@@ -73,7 +73,7 @@ class SmsEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/sms/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/sms/{id}')
 
   def list(
     self,
@@ -113,7 +113,9 @@ class SmsEventSubscriptionsResource(DialpadResource):
     Returns:
         An iterator of items from A successful response"""
     return self._iter_request(
-      method='GET', params={'cursor': cursor, 'target_type': target_type, 'target_id': target_id}
+      method='GET',
+      sub_path='/api/v2/subscriptions/sms',
+      params={'cursor': cursor, 'target_type': target_type, 'target_id': target_id},
     )
 
   def partial_update(
@@ -136,5 +138,5 @@ class SmsEventSubscriptionsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/subscriptions/sms/{{id}}{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/subscriptions/sms/{id}', body=request_body
     )

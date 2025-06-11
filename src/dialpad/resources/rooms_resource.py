@@ -40,7 +40,7 @@ class RoomsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/rooms/{{id}}/assign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/rooms/{id}/assign_number', body=request_body
     )
 
   def assign_phone_pin(self, request_body: CreateInternationalPinProto) -> InternationalPinProto:
@@ -61,7 +61,9 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(
+      method='POST', sub_path='/api/v2/rooms/international_pin', body=request_body
+    )
 
   def create(self, request_body: CreateRoomMessage) -> RoomProto:
     """Room -- Create
@@ -77,7 +79,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/rooms', body=request_body)
 
   def delete(self, id: int) -> RoomProto:
     """Room -- Delete
@@ -93,7 +95,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/rooms/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/rooms/{id}')
 
   def delete_room_phone(self, id: str, parent_id: int) -> None:
     """Room Phone -- Delete
@@ -108,9 +110,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='DELETE', sub_path=f'/api/v2/rooms/{{parent_id}}/deskphones/{{id}}{parent_id}{id}'
-    )
+    return self._request(method='DELETE', sub_path=f'/api/v2/rooms/{parent_id}/deskphones/{id}')
 
   def get(self, id: int) -> RoomProto:
     """Room -- Get
@@ -126,7 +126,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/rooms/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/rooms/{id}')
 
   def get_room_phone(self, id: str, parent_id: int) -> DeskPhone:
     """Room Phone -- Get
@@ -141,9 +141,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='GET', sub_path=f'/api/v2/rooms/{{parent_id}}/deskphones/{{id}}{parent_id}{id}'
-    )
+    return self._request(method='GET', sub_path=f'/api/v2/rooms/{parent_id}/deskphones/{id}')
 
   def list(
     self, cursor: Optional[str] = None, office_id: Optional[int] = None
@@ -162,7 +160,9 @@ class RoomsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'office_id': office_id})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/rooms', params={'cursor': cursor, 'office_id': office_id}
+    )
 
   def list_room_phones(self, parent_id: int) -> Iterator[DeskPhone]:
     """Room Phone -- List
@@ -176,9 +176,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(
-      method='GET', sub_path=f'/api/v2/rooms/{{parent_id}}/deskphones{parent_id}'
-    )
+    return self._iter_request(method='GET', sub_path=f'/api/v2/rooms/{parent_id}/deskphones')
 
   def partial_update(self, id: int, request_body: UpdateRoomMessage) -> RoomProto:
     """Room -- Update
@@ -195,7 +193,7 @@ class RoomsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='PATCH', sub_path=f'/api/v2/rooms/{{id}}{id}', body=request_body)
+    return self._request(method='PATCH', sub_path=f'/api/v2/rooms/{id}', body=request_body)
 
   def unassign_number(self, id: int, request_body: UnassignNumberMessage) -> NumberProto:
     """Dialpad Number -- Unassign
@@ -213,5 +211,5 @@ class RoomsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/rooms/{{id}}/unassign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/rooms/{id}/unassign_number', body=request_body
     )

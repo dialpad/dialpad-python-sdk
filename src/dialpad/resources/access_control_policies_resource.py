@@ -38,7 +38,7 @@ class AccessControlPoliciesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/accesscontrolpolicies/{{id}}/assign{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/accesscontrolpolicies/{id}/assign', body=request_body
     )
 
   def create(self, request_body: CreatePolicyMessage) -> PolicyProto:
@@ -55,7 +55,7 @@ class AccessControlPoliciesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/accesscontrolpolicies', body=request_body)
 
   def delete(self, id: int) -> PolicyProto:
     """Access Control Policies -- Delete
@@ -71,7 +71,7 @@ class AccessControlPoliciesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/accesscontrolpolicies/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/accesscontrolpolicies/{id}')
 
   def get(self, id: int) -> PolicyProto:
     """Access Control Policies -- Get
@@ -85,7 +85,7 @@ class AccessControlPoliciesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/accesscontrolpolicies/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/accesscontrolpolicies/{id}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[PolicyProto]:
     """Access Control Policies -- List Policies
@@ -99,7 +99,9 @@ class AccessControlPoliciesResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/accesscontrolpolicies', params={'cursor': cursor}
+    )
 
   def list_assignments(
     self, id: int, cursor: Optional[str] = None
@@ -118,7 +120,7 @@ class AccessControlPoliciesResource(DialpadResource):
         An iterator of items from A successful response"""
     return self._iter_request(
       method='GET',
-      sub_path=f'/api/v2/accesscontrolpolicies/{{id}}/assignments{id}',
+      sub_path=f'/api/v2/accesscontrolpolicies/{id}/assignments',
       params={'cursor': cursor},
     )
 
@@ -138,7 +140,7 @@ class AccessControlPoliciesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/accesscontrolpolicies/{{id}}{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/accesscontrolpolicies/{id}', body=request_body
     )
 
   def unassign(self, id: int, request_body: UnassignmentPolicyMessage) -> PolicyAssignmentProto:
@@ -157,7 +159,5 @@ class AccessControlPoliciesResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST',
-      sub_path=f'/api/v2/accesscontrolpolicies/{{id}}/unassign{id}',
-      body=request_body,
+      method='POST', sub_path=f'/api/v2/accesscontrolpolicies/{id}/unassign', body=request_body
     )

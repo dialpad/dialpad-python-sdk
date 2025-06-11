@@ -31,7 +31,7 @@ class CallRoutersResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='POST', sub_path=f'/api/v2/callrouters/{{id}}/assign_number{id}', body=request_body
+      method='POST', sub_path=f'/api/v2/callrouters/{id}/assign_number', body=request_body
     )
 
   def create(self, request_body: CreateApiCallRouterMessage) -> ApiCallRouterProto:
@@ -46,7 +46,7 @@ class CallRoutersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/callrouters', body=request_body)
 
   def delete(self, id: str) -> None:
     """Call Router -- Delete
@@ -60,7 +60,7 @@ class CallRoutersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/callrouters/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/callrouters/{id}')
 
   def get(self, id: int) -> ApiCallRouterProto:
     """Call Router -- Get
@@ -74,7 +74,7 @@ class CallRoutersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/callrouters/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/callrouters/{id}')
 
   def list(
     self, cursor: Optional[str] = None, office_id: Optional[int] = None
@@ -91,7 +91,11 @@ class CallRoutersResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'office_id': office_id})
+    return self._iter_request(
+      method='GET',
+      sub_path='/api/v2/callrouters',
+      params={'cursor': cursor, 'office_id': office_id},
+    )
 
   def partial_update(self, id: str, request_body: UpdateApiCallRouterMessage) -> ApiCallRouterProto:
     """Call Router -- Update
@@ -106,6 +110,4 @@ class CallRoutersResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(
-      method='PATCH', sub_path=f'/api/v2/callrouters/{{id}}{id}', body=request_body
-    )
+    return self._request(method='PATCH', sub_path=f'/api/v2/callrouters/{id}', body=request_body)

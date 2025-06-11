@@ -25,7 +25,7 @@ class CallbacksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/callback', body=request_body)
 
   def validate_callback(self, request_body: CallbackMessage) -> ValidateCallbackProto:
     """Call Back -- Validate
@@ -41,4 +41,4 @@ class CallbacksResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(method='POST', sub_path='/api/v2/callback/validate', body=request_body)

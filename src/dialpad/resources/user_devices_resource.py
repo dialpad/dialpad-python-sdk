@@ -24,7 +24,7 @@ class UserDevicesResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/userdevices/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/userdevices/{id}')
 
   def list(
     self, cursor: Optional[str] = None, user_id: Optional[str] = None
@@ -43,4 +43,6 @@ class UserDevicesResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor, 'user_id': user_id})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/userdevices', params={'cursor': cursor, 'user_id': user_id}
+    )

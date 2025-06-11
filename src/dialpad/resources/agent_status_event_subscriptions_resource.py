@@ -35,7 +35,9 @@ class AgentStatusEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='POST', body=request_body)
+    return self._request(
+      method='POST', sub_path='/api/v2/subscriptions/agent_status', body=request_body
+    )
 
   def delete(self, id: int) -> AgentStatusEventSubscriptionProto:
     """Agent Status -- Delete
@@ -53,7 +55,7 @@ class AgentStatusEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/agent_status/{{id}}{id}')
+    return self._request(method='DELETE', sub_path=f'/api/v2/subscriptions/agent_status/{id}')
 
   def get(self, id: int) -> AgentStatusEventSubscriptionProto:
     """Agent Status -- Get
@@ -71,7 +73,7 @@ class AgentStatusEventSubscriptionsResource(DialpadResource):
 
     Returns:
         A successful response"""
-    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/agent_status/{{id}}{id}')
+    return self._request(method='GET', sub_path=f'/api/v2/subscriptions/agent_status/{id}')
 
   def list(self, cursor: Optional[str] = None) -> Iterator[AgentStatusEventSubscriptionProto]:
     """Agent Status -- List
@@ -89,7 +91,9 @@ class AgentStatusEventSubscriptionsResource(DialpadResource):
 
     Returns:
         An iterator of items from A successful response"""
-    return self._iter_request(method='GET', params={'cursor': cursor})
+    return self._iter_request(
+      method='GET', sub_path='/api/v2/subscriptions/agent_status', params={'cursor': cursor}
+    )
 
   def partial_update(
     self, id: str, request_body: UpdateAgentStatusEventSubscription
@@ -111,5 +115,5 @@ class AgentStatusEventSubscriptionsResource(DialpadResource):
     Returns:
         A successful response"""
     return self._request(
-      method='PATCH', sub_path=f'/api/v2/subscriptions/agent_status/{{id}}{id}', body=request_body
+      method='PATCH', sub_path=f'/api/v2/subscriptions/agent_status/{id}', body=request_body
     )
