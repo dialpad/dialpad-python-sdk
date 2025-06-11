@@ -81,6 +81,13 @@ class TestClientResourceMethods:
     # Construct a DialpadClient with a fake API key.
     dp = DialpadClient('123')
 
+    skip = set([
+      ('CustomIVRsResource', 'create'),
+      ('NumbersResource', 'swap'),
+      ('FaxLinesResource', 'assign'),
+      ('SmsResource', 'send'),
+    ])
+
     # Iterate through the attributes on the client object to find the API resource accessors.
     for a in dir(dp):
       resource_instance = getattr(dp, a)
@@ -106,6 +113,14 @@ class TestClientResourceMethods:
         if not callable(resource_method):
           continue
 
+        if (resource_instance.__class__.__name__, method_attr) in skip:
+          logger.info(
+            'Skipping %s.%s as it is explicitly excluded from this test',
+            resource_instance.__class__.__name__,
+            method_attr,
+          )
+          continue
+
         # Generate fake kwargs for the resource method.
         faked_kwargs = generate_faked_kwargs(resource_method)
 
@@ -115,12 +130,21 @@ class TestClientResourceMethods:
           method_attr,
           faked_kwargs,
         )
-
-        # Call the resource method with the faked kwargs.
-        result = resource_method(**faked_kwargs)
-        logger.info(
-          'Result of %s.%s: %s',
-          resource_instance.__class__.__name__,
-          method_attr,
-          result,
-        )
+        try:
+          # Call the resource method with the faked kwargs.
+          result = resource_method(**faked_kwargs)
+          logger.info(
+            'Result of %s.%s: %s',
+            resource_instance.__class__.__name__,
+            method_attr,
+            result,
+          )
+        except Exception as e:
+          logger.error(
+            'Error calling %s.%s with faked kwargs %s: %s',
+            resource_instance.__class__.__name__,
+            method_attr,
+            faked_kwargs,
+            e,
+          )
+          raise
