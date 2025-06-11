@@ -93,15 +93,6 @@ class HoldQueueCallCenter(TypedDict):
   'Whether or not to allow callers to be placed in your hold queue when no agents are available. Default is False.'
 
 
-class VoiceIntelligence(TypedDict):
-  """TypedDict representation of the VoiceIntelligence schema."""
-
-  allow_pause: NotRequired[bool]
-  'Allow individual users to start and stop Vi during calls. Default is True.'
-  auto_start: NotRequired[bool]
-  'Auto start Vi for this call center. Default is True.'
-
-
 class DtmfOptions(TypedDict):
   """DTMF routing options."""
 
@@ -206,6 +197,15 @@ class RoutingOptions(TypedDict):
   'Routing options to use during off hours.'
   open: RoutingOptionsInner
   'Routing options to use during open hours.'
+
+
+class VoiceIntelligence(TypedDict):
+  """TypedDict representation of the VoiceIntelligence schema."""
+
+  allow_pause: NotRequired[bool]
+  'Allow individual users to start and stop Vi during calls. Default is True.'
+  auto_start: NotRequired[bool]
+  'Auto start Vi for this call center. Default is True.'
 
 
 class CallCenterProto(TypedDict):

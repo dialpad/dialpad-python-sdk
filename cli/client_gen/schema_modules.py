@@ -104,8 +104,11 @@ def _extract_external_dependencies(schemas: List[SchemaPath]) -> Dict[str, Set[s
 def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
   """
   Sort schemas to ensure dependencies are defined before they are referenced.
-  Uses topological sort based on schema dependencies.
+  Uses topological sort based on schema dependencies with deterministic ordering.
   """
+  # Start with a pre-sorted list to ensure a consistent result order
+  schemas = list(sorted(schemas, key=_extract_schema_title))
+
   # Extract schema titles
   schema_titles = {_extract_schema_title(schema): schema for schema in schemas}
 
@@ -114,7 +117,7 @@ def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
   for title, schema in schema_titles.items():
     dependency_graph[title] = _find_schema_dependencies(schema)
 
-  # Perform topological sort
+  # Perform topological sort with deterministic ordering
   sorted_titles: List[str] = []
   visited: Set[str] = set()
   temp_visited: Set[str] = set()
@@ -130,8 +133,9 @@ def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
 
     temp_visited.add(title)
 
-    # Visit all dependencies first
-    for dep_title in dependency_graph.get(title, set()):
+    # Visit all dependencies first, sorted alphabetically for consistency
+    dependencies = dependency_graph.get(title, set())
+    for dep_title in sorted(dependencies):
       if dep_title in schema_titles:  # Only consider dependencies we actually have
         visit(dep_title)
 
@@ -139,8 +143,8 @@ def _sort_schemas(schemas: List[SchemaPath]) -> List[SchemaPath]:
     visited.add(title)
     sorted_titles.append(title)
 
-  # Visit all nodes
-  for title in schema_titles:
+  # Visit all nodes in alphabetical order for deterministic results
+  for title in sorted(schema_titles.keys()):
     if title not in visited:
       visit(title)
 
