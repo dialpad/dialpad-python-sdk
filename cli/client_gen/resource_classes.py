@@ -1,7 +1,9 @@
 import ast
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import List, Tuple
+
 from jsonschema_path.paths import SchemaPath
+
 from .resource_methods import http_method_to_func_def
 
 """Utilities for converting OpenAPI schema pieces to Python Resource class definitions."""

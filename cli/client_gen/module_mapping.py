@@ -1,15 +1,13 @@
-import os
 import json
-import re
-from typing import Optional
-
-from typing_extensions import TypedDict
-from jsonschema_path.paths import SchemaPath
 import logging
-from rich.prompt import Prompt
+import os
+
+from jsonschema_path.paths import SchemaPath
 from rich.console import Console
 from rich.panel import Panel
+from rich.prompt import Prompt
 from rich.text import Text
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 console = Console()

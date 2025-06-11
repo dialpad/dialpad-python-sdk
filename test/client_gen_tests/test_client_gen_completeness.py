@@ -3,27 +3,24 @@
 """Tests to verify that the API client generation components are working correctly."""
 
 import ast
+import json
 import logging
 import os
-import re
-import json
-from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
-from openapi_core import OpenAPI
 import pytest
 from jsonschema_path import SchemaPath
+from openapi_core import OpenAPI
 
 from cli.client_gen.annotation import spec_piece_to_annotation
+from cli.client_gen.module_mapping import load_module_mapping
+from cli.client_gen.resource_classes import resource_class_to_class_def, resource_path_to_class_def
 from cli.client_gen.resource_methods import http_method_to_func_def
-from cli.client_gen.resource_classes import resource_path_to_class_def, resource_class_to_class_def
 from cli.client_gen.resource_modules import resource_class_to_module_def
-from cli.client_gen.module_mapping import load_module_mapping, ModuleMappingEntry
 from cli.client_gen.resource_packages import _group_operations_by_class
 from cli.client_gen.schema_classes import schema_to_typed_dict_def
 from cli.client_gen.schema_modules import schemas_to_module_def
-
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
@@ -274,7 +271,7 @@ class TestGenerationUtilities:
 
     # Check that each group contains operations
     for class_name, operations in grouped_operations.items():
-      assert class_name, f'Empty class name found in grouped operations'
+      assert class_name, 'Empty class name found in grouped operations'
       assert operations, f'No operations found for class {class_name}'
 
       # Check the structure of each operation tuple

@@ -1,7 +1,8 @@
 import ast
 from typing import Dict, List, Optional, Set, Tuple
+
 from jsonschema_path.paths import SchemaPath
-from .annotation import _get_collection_item_type
+
 from .resource_classes import resource_class_to_class_def
 from .resource_methods import _is_collection_response
 

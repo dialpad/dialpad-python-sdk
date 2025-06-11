@@ -1,8 +1,8 @@
+from typing import Iterator, Optional
+
 import requests
 
 from .resources import DialpadResourcesMixin
-from typing import Optional, Iterator
-
 
 hosts = dict(live='https://dialpad.com', sandbox='https://sandbox.dialpad.com')
 

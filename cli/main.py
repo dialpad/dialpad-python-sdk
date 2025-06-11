@@ -1,21 +1,20 @@
-from typing import Annotated
-import inquirer
 import os
 import re
-import typer
+from typing import Annotated
 
+import inquirer
+import typer
 from openapi_core import OpenAPI
 
 REPO_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 SPEC_FILE = os.path.join(REPO_ROOT, 'dialpad_api_spec.json')
 CLIENT_DIR = os.path.join(REPO_ROOT, 'src', 'dialpad')
 
-from cli.client_gen.schema_modules import schemas_to_module_def
-from cli.client_gen.utils import write_python_file
 from cli.client_gen.module_mapping import update_module_mapping
-from cli.client_gen.schema_packages import schemas_to_package_directory
 from cli.client_gen.resource_packages import resources_to_package_directory
-
+from cli.client_gen.schema_modules import schemas_to_module_def
+from cli.client_gen.schema_packages import schemas_to_package_directory
+from cli.client_gen.utils import write_python_file
 
 app = typer.Typer()
 

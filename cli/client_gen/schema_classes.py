@@ -1,6 +1,8 @@
 import ast
-from typing import List, Dict, Optional, Set, Tuple
+from typing import List, Set, Tuple
+
 from jsonschema_path.paths import SchemaPath
+
 from . import annotation
 
 """Utilities for converting OpenAPI object schemas into TypedDict definitions."""

@@ -1,16 +1,16 @@
 """Orchestrates the generation of Python resource modules based on module_mapping.json."""
 
-import ast
 import os
 import re  # Ensure re is imported if to_snake_case is defined here or called
-import rich
-from rich.markdown import Markdown
-from typing import Dict, List, Tuple, Set
-from jsonschema_path import SchemaPath
+from typing import Dict, List, Tuple
 
+import rich
+from jsonschema_path import SchemaPath
+from rich.markdown import Markdown
+
+from .module_mapping import ModuleMappingEntry, load_module_mapping
 from .resource_modules import resource_class_to_module_def
-from .utils import write_python_file, reformat_python_file
-from .module_mapping import load_module_mapping, ModuleMappingEntry
+from .utils import reformat_python_file, write_python_file
 
 
 def to_snake_case(name: str) -> str:
@@ -163,12 +163,12 @@ def resources_to_package_directory(
       # Convert the class name to property name (removing 'Resource' suffix and converting to snake_case)
       property_name = to_snake_case(class_name.removesuffix('Resource'))
 
-      f.write(f'  @property\n')
+      f.write('  @property\n')
       f.write(f'  def {property_name}(self) -> {class_name}:\n')
       f.write(f'    """Returns an instance of {class_name}.\n\n')
-      f.write(f'    Returns:\n')
+      f.write('    Returns:\n')
       f.write(f'        A {class_name} instance initialized with this client.\n')
-      f.write(f'    """\n')
+      f.write('    """\n')
       f.write(f'    return {class_name}(self)\n\n')
 
     # Add __all__ for export of the classes and the mixin

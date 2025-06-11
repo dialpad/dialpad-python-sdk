@@ -11,18 +11,16 @@ ensure:
   the Dialpad API's open-api spec
 """
 
-import inspect
 import logging
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 import requests
-from urllib.parse import parse_qs
-from urllib.parse import urlparse
-
 from openapi_core import OpenAPI
 from openapi_core.contrib.requests import RequestsOpenAPIRequest
 from openapi_core.datatypes import RequestParameters
-from werkzeug.datastructures import Headers
-from werkzeug.datastructures import ImmutableMultiDict
+from werkzeug.datastructures import Headers, ImmutableMultiDict
+
 from .utils import generate_faked_kwargs
 
 logger = logging.getLogger(__name__)

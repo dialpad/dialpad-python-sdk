@@ -1,9 +1,9 @@
 import ast
 import os
-import rich
 import subprocess
-import typer
 
+import rich
+import typer
 from rich.markdown import Markdown
 
 

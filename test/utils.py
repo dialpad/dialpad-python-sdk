@@ -1,8 +1,9 @@
 import inspect
 import logging
-from typing import TypedDict, List, Any, Callable, get_origin, get_args, Literal, Optional, Union
-from typing_extensions import NotRequired
+from typing import Any, Callable, List, Literal, Union, get_args, get_origin
+
 from faker import Faker
+from typing_extensions import NotRequired
 
 fake = Faker()
 logger = logging.getLogger(__name__)

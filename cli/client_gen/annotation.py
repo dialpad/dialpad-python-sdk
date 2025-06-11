@@ -1,5 +1,6 @@
 import ast
-from typing import Optional, Iterator, Union, Literal
+from typing import Optional
+
 from jsonschema_path.paths import SchemaPath
 
 """Utilities for converting OpenAPI schema pieces to Python type annotations."""

@@ -1,7 +1,9 @@
 import ast
 import re
-from typing import Dict, List, Optional, Set, Any
+from typing import Optional
+
 from jsonschema_path.paths import SchemaPath
+
 from .annotation import spec_piece_to_annotation
 
 """Utilities for converting OpenAPI schema pieces to Python Resource method definitions."""
@@ -214,7 +216,7 @@ def http_method_to_func_body(
       desc_200 = resp_200.contents()['description']
       if docstring_parts:
         docstring_parts.append('')
-      docstring_parts.append(f'Returns:')
+      docstring_parts.append('Returns:')
 
       # Check if this is a collection response
       is_collection = _is_collection_response(method_spec)

@@ -1,5 +1,7 @@
 import os
+
 from jsonschema_path.paths import SchemaPath
+
 from .schema_modules import schemas_to_module_def
 from .utils import write_python_file
 

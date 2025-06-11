@@ -1,6 +1,8 @@
 import ast
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
+
 from jsonschema_path.paths import SchemaPath
+
 from .schema_classes import schema_to_typed_dict_def
 
 
