@@ -2,11 +2,9 @@ from typing import Optional, List, Dict, Union, Literal
 from typing_extensions import TypedDict, NotRequired
 
 
-class ReservedLineType(TypedDict):
-  """Reserved number fax line assignment."""
+class TollfreeLineType(TypedDict):
+  """Tollfree fax line assignment."""
 
-  number: str
-  'A phone number to assign. (e164-formatted)'
   type: str
   'Type of line.'
 
@@ -29,9 +27,11 @@ class Target(TypedDict):
   'Type of the target to assign the fax line to.'
 
 
-class TollfreeLineType(TypedDict):
-  """Tollfree fax line assignment."""
+class ReservedLineType(TypedDict):
+  """Reserved number fax line assignment."""
 
+  number: str
+  'A phone number to assign. (e164-formatted)'
   type: str
   'Type of line.'
 

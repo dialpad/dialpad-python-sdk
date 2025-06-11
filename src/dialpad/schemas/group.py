@@ -77,31 +77,6 @@ class VoiceIntelligence(TypedDict):
   'Auto start Vi for this call center. Default is True.'
 
 
-class HoldQueueCallCenter(TypedDict):
-  """TypedDict representation of the HoldQueueCallCenter schema."""
-
-  allow_queue_callback: NotRequired[bool]
-  'Whether or not to allow callers to request a callback. Default is False.'
-  announce_position: NotRequired[bool]
-  'Whether or not to let callers know their place in the queue. This option is not available when a maximum queue wait time of less than 2 minutes is selected. Default is True.'
-  announcement_interval_seconds: NotRequired[int]
-  'Hold announcement interval wait time. Default is 2 min.'
-  max_hold_count: NotRequired[int]
-  'If all operators are busy on other calls, send callers to a hold queue. This is to specify your queue size. Choose from 1-1000. Default is 50.'
-  max_hold_seconds: NotRequired[int]
-  'Maximum queue wait time in seconds. Choose from 30s to 18000s (3 hours). Default is 900s (15 min).'
-  queue_callback_dtmf: NotRequired[str]
-  'Allow callers to request a callback when the queue has more than queue_callback_threshold number of calls by pressing one of the followings: [0,1,2,3,4,5,6,7,8,9,*,#]. Default is 9.'
-  queue_callback_threshold: NotRequired[int]
-  'Allow callers to request a callback when the queue has more than this number of calls. Default is 5.'
-  queue_escape_dtmf: NotRequired[str]
-  'Allow callers to exit the hold queue to voicemail by pressing one of the followings:\n[0,1,2,3,4,5,6,7,8,9,*,#]. Default is *.'
-  stay_in_queue_after_closing: NotRequired[bool]
-  'Whether or not to allow existing calls to stay in queue after the call center has closed. Default is False.'
-  unattended_queue: NotRequired[bool]
-  'Whether or not to allow callers to be placed in your hold queue when no agents are available. Default is False.'
-
-
 class DtmfOptions(TypedDict):
   """DTMF routing options."""
 
@@ -206,6 +181,31 @@ class RoutingOptions(TypedDict):
   'Routing options to use during off hours.'
   open: RoutingOptionsInner
   'Routing options to use during open hours.'
+
+
+class HoldQueueCallCenter(TypedDict):
+  """TypedDict representation of the HoldQueueCallCenter schema."""
+
+  allow_queue_callback: NotRequired[bool]
+  'Whether or not to allow callers to request a callback. Default is False.'
+  announce_position: NotRequired[bool]
+  'Whether or not to let callers know their place in the queue. This option is not available when a maximum queue wait time of less than 2 minutes is selected. Default is True.'
+  announcement_interval_seconds: NotRequired[int]
+  'Hold announcement interval wait time. Default is 2 min.'
+  max_hold_count: NotRequired[int]
+  'If all operators are busy on other calls, send callers to a hold queue. This is to specify your queue size. Choose from 1-1000. Default is 50.'
+  max_hold_seconds: NotRequired[int]
+  'Maximum queue wait time in seconds. Choose from 30s to 18000s (3 hours). Default is 900s (15 min).'
+  queue_callback_dtmf: NotRequired[str]
+  'Allow callers to request a callback when the queue has more than queue_callback_threshold number of calls by pressing one of the followings: [0,1,2,3,4,5,6,7,8,9,*,#]. Default is 9.'
+  queue_callback_threshold: NotRequired[int]
+  'Allow callers to request a callback when the queue has more than this number of calls. Default is 5.'
+  queue_escape_dtmf: NotRequired[str]
+  'Allow callers to exit the hold queue to voicemail by pressing one of the followings:\n[0,1,2,3,4,5,6,7,8,9,*,#]. Default is *.'
+  stay_in_queue_after_closing: NotRequired[bool]
+  'Whether or not to allow existing calls to stay in queue after the call center has closed. Default is False.'
+  unattended_queue: NotRequired[bool]
+  'Whether or not to allow callers to be placed in your hold queue when no agents are available. Default is False.'
 
 
 class CallCenterProto(TypedDict):

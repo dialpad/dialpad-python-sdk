@@ -7,6 +7,17 @@ import typer
 from rich.markdown import Markdown
 
 
+def reformat_python_file(filepath: str) -> None:
+  """Reformats a Python file using ruff."""
+  try:
+    subprocess.run(['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True)
+  except FileNotFoundError:
+    typer.echo('uv command not found. Please ensure uv is installed and in your PATH.', err=True)
+    raise typer.Exit(1)
+  except subprocess.CalledProcessError as e:
+    typer.echo(f'Error formatting {filepath} with uv ruff format: {e}', err=True)
+
+
 def write_python_file(filepath: str, module_node: ast.Module) -> None:
   """Writes an AST module to a Python file, and reformats it appropriately with ruff."""
 
@@ -18,17 +29,6 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
   with open(filepath, 'w') as f:
     f.write(ast.unparse(ast.fix_missing_locations(module_node)))
 
-  # Reformat the generated file using uv ruff format
-  try:
-    subprocess.run(
-      ['uv', 'run', 'ruff', 'format', filepath], check=True, capture_output=True, text=True
-    )
-  except FileNotFoundError:
-    typer.echo('uv command not found. Please ensure uv is installed and in your PATH.', err=True)
-    raise typer.Exit(1)
-  except subprocess.CalledProcessError as e:
-    typer.echo(f'Error formatting {filepath} with uv ruff format: {e}', err=True)
-    # This error doesn't necessarily mean the file is invalid, so we can still continue
-    # optimistically here.
+  reformat_python_file(filepath)
 
   rich.print(Markdown(f'Generated `{filepath}`.'))

@@ -1,12 +1,13 @@
 import requests
 
+from .resources import DialpadResourcesMixin
 from typing import Optional, Iterator
 
 
 hosts = dict(live='https://dialpad.com', sandbox='https://sandbox.dialpad.com')
 
 
-class DialpadClient(object):
+class DialpadClient(DialpadResourcesMixin):
   def __init__(
     self,
     token: str,

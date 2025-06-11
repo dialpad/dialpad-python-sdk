@@ -3,11 +3,13 @@
 import ast
 import os
 import re  # Ensure re is imported if to_snake_case is defined here or called
+import rich
+from rich.markdown import Markdown
 from typing import Dict, List, Tuple, Set
 from jsonschema_path import SchemaPath
 
 from .resource_modules import resource_class_to_module_def
-from .utils import write_python_file  # Assuming to_snake_case is also in utils
+from .utils import write_python_file, reformat_python_file
 from .module_mapping import load_module_mapping, ModuleMappingEntry
 
 
@@ -129,6 +131,7 @@ def resources_to_package_directory(
 
   with open(init_file_path, 'w') as f:
     f.write('# This is an auto-generated resource package. Please do not edit it directly.\n\n')
+    f.write('from typing import Optional, Iterator\n\n')
 
     # Create a mapping from snake_case module name to its original ClassName
     # to ensure correct import statements in __init__.py
@@ -139,9 +142,33 @@ def resources_to_package_directory(
       if actual_class_name:
         f.write(f'from .{module_snake_name} import {actual_class_name}\n')
 
+    # Add the DialpadResourcesMixin class
+    f.write('\n\nclass DialpadResourcesMixin:\n')
+    f.write('  """Mixin class that provides resource properties for each API resource.\n\n')
+    f.write('  This mixin is used by the DialpadClient class to provide easy access\n')
+    f.write('  to all API resources as properties.\n  """\n\n')
+
+    # Add a property for each resource class
+    for class_name in sorted(all_resource_class_names_in_package):
+      # Convert the class name to property name (removing 'Resource' suffix and converting to snake_case)
+      property_name = to_snake_case(class_name.removesuffix('Resource'))
+
+      f.write(f'  @property\n')
+      f.write(f'  def {property_name}(self) -> {class_name}:\n')
+      f.write(f'    """Returns an instance of {class_name}.\n\n')
+      f.write(f'    Returns:\n')
+      f.write(f'        A {class_name} instance initialized with this client.\n')
+      f.write(f'    """\n')
+      f.write(f'    return {class_name}(self)\n\n')
+
+    # Add __all__ for export of the classes and the mixin
     f.write('\n__all__ = [\n')
     for class_name in sorted(all_resource_class_names_in_package):
       f.write(f"    '{class_name}',\n")
+    f.write("    'DialpadResourcesMixin',\n")
     f.write(']\n')
 
-  print(f'Resource package generated at {output_dir}')
+  reformat_python_file(init_file_path)
+
+  rich.print(Markdown(f'Resource package generated at `{output_dir}`.'))
+
