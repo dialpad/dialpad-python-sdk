@@ -55,7 +55,40 @@ def openapi_stub(requests_mock):
   def request_matcher(request: requests.PreparedRequest):
     openapi.validate_request(RequestsMockOpenAPIRequest(request))
 
-    # If the request is valid, return a fake response.
+    # Handle pagination for /api/v2/users endpoint
+    if '/api/v2/users' in request.url:
+      parsed_url = urlparse(request.url)
+      query_params = parse_qs(parsed_url.query)
+      cursor = query_params.get('cursor', [None])[0]
+
+      if cursor is None:
+        # First page: 3 users with cursor for next page
+        response_data = {
+          'items': [
+            {'id': 1, 'display_name': 'User 1'},
+            {'id': 2, 'display_name': 'User 2'},
+            {'id': 3, 'display_name': 'User 3'}
+          ],
+          'cursor': 'next_page_cursor'
+        }
+      elif cursor == 'next_page_cursor':
+        # Second page: 2 users, no next cursor
+        response_data = {
+          'items': [
+            {'id': 4, 'display_name': 'User 4'},
+            {'id': 5, 'display_name': 'User 5'}
+          ]
+        }
+      else:
+        # No more pages
+        response_data = {'items': []}
+
+      fake_response = requests.Response()
+      fake_response.status_code = 200
+      fake_response._content = str.encode(str(response_data).replace("'", '"'))
+      return fake_response
+
+    # If the request is valid, return a generic fake response.
     fake_response = requests.Response()
     fake_response.status_code = 200
     fake_response._content = b'{"success": true}'
@@ -67,6 +100,15 @@ def openapi_stub(requests_mock):
 class TestClientResourceMethods:
   """Smoketest for all the client resource methods to ensure they produce valid requests according
   to the OpenAPI spec."""
+
+  def test_pagination_handling(self, openapi_stub):
+    """Verifies that the DialpadClient handles pagination."""
+
+    # Construct a DialpadClient with a fake API key.
+    dp = DialpadClient('123')
+
+    _users = list(dp.users.list())
+    assert len(_users) == 5, 'Expected to resolve exactly 5 users from paginated responses.'
 
   def test_request_conformance(self, openapi_stub):
     """Verifies that all API requests produced by this library conform to the spec.
