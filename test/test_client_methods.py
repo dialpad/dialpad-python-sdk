@@ -1,0 +1,126 @@
+#!/usr/bin/env python
+
+"""Tests to automatically detect common issues with resource definitions.
+
+In particular these tests will look through the files in dialpad-python-sdk/dialpad/resources/ and
+ensure:
+
+- All subclasses of DialpadResource are exposed directly in resources/__init__.py
+- All resources are available as properties of DialpadClient
+- Public methods defined on the concrete subclasses only make web requests that agree with
+  the Dialpad API's open-api spec
+"""
+
+import inspect
+import logging
+import pytest
+import requests
+from urllib.parse import parse_qs
+from urllib.parse import urlparse
+
+from openapi_core import OpenAPI
+from openapi_core.contrib.requests import RequestsOpenAPIRequest
+from openapi_core.datatypes import RequestParameters
+from werkzeug.datastructures import Headers
+from werkzeug.datastructures import ImmutableMultiDict
+from .utils import generate_faked_kwargs
+
+logger = logging.getLogger(__name__)
+
+
+class RequestsMockOpenAPIRequest(RequestsOpenAPIRequest):
+  """
+  Converts a requests-mock request to an OpenAPI request
+  """
+
+  def __init__(self, request):
+    self.request = request
+    if request.url is None:
+      raise RuntimeError('Request URL is missing')
+    self._url_parsed = urlparse(request.url, allow_fragments=False)
+
+    self.parameters = RequestParameters(
+      query=ImmutableMultiDict(parse_qs(self._url_parsed.query)),
+      header=Headers(dict(self.request.headers)),
+    )
+
+
+# The "requests_mock" pytest fixture stubs out live requests with a schema validation check
+# against the Dialpad API openapi spec.
+@pytest.fixture
+def openapi_stub(requests_mock):
+  openapi = OpenAPI.from_file_path('dialpad_api_spec.json')
+
+  def request_matcher(request: requests.PreparedRequest):
+    openapi.validate_request(RequestsMockOpenAPIRequest(request))
+
+    # If the request is valid, return a fake response.
+    fake_response = requests.Response()
+    fake_response.status_code = 200
+    fake_response._content = b'{"success": true}'
+    return fake_response
+
+  requests_mock.add_matcher(request_matcher)
+
+
+from dialpad.client import DialpadClient
+from dialpad.resources.base import DialpadResource
+
+
+class TestClientResourceMethods:
+  """Smoketest for all the client resource methods to ensure they produce valid requests according
+  to the OpenAPI spec."""
+
+  def test_request_conformance(self, openapi_stub):
+    """Verifies that all API requests produced by this library conform to the spec.
+
+    Although this test cannot guarantee that the requests are semantically correct, it can at least
+    determine whether they are well-formed according to the OpenAPI spec.
+    """
+
+    # Construct a DialpadClient with a fake API key.
+    dp = DialpadClient('123')
+
+    # Iterate through the attributes on the client object to find the API resource accessors.
+    for a in dir(dp):
+      resource_instance = getattr(dp, a)
+
+      # Skip any attributes that are not DialpadResources
+      if not isinstance(resource_instance, DialpadResource):
+        continue
+
+      logger.info('Verifying request format of %s methods', resource_instance.__class__.__name__)
+
+      # Iterate through the attributes on the resource instance.
+      for method_attr in dir(resource_instance):
+        # Skip any methods and attributes that are not unique to this resource class.
+        if method_attr in dir(DialpadResource):
+          continue
+
+        # Skip private attributes.
+        if method_attr.startswith('_'):
+          continue
+
+        # Skip attributes that are not functions.
+        resource_method = getattr(resource_instance, method_attr)
+        if not callable(resource_method):
+          continue
+
+        # Generate fake kwargs for the resource method.
+        faked_kwargs = generate_faked_kwargs(resource_method)
+
+        logger.info(
+          'Testing resource method %s.%s with faked kwargs: %s',
+          resource_instance.__class__.__name__,
+          method_attr,
+          faked_kwargs,
+        )
+
+        # Call the resource method with the faked kwargs.
+        result = resource_method(**faked_kwargs)
+        logger.info(
+          'Result of %s.%s: %s',
+          resource_instance.__class__.__name__,
+          method_attr,
+          result,
+        )

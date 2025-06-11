@@ -1,57 +1,89 @@
-import json
-import os
-import requests
+import inspect
+import logging
+from typing import TypedDict, List, Any, Callable
+from faker import Faker
+
+fake = Faker()
+logger = logging.getLogger(__name__)
 
 
-RESOURCE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.resources')
+def generate_faked_kwargs(func: Callable) -> dict[str, Any]:
+  """
+  Generates a dictionary of keyword arguments for a given function.
+
+  This function inspects the signature of the input function and uses the Faker
+  library to generate mock data for each parameter based on its type annotation.
+  It supports standard types, lists, and nested TypedDicts.
+
+  Args:
+      func: The function for which to generate kwargs.
+
+  Returns:
+      A dictionary of keyword arguments that can be used to call the function.
+  """
+  kwargs = {}
+  signature = inspect.signature(func)
+  params = signature.parameters
+
+  for name, param in params.items():
+    annotation = param.annotation
+    if annotation is not inspect.Parameter.empty:
+      kwargs[name] = _generate_fake_data(annotation)
+    else:
+      # Handle cases where there's no type hint with a default or warning
+      print(f"Warning: No type annotation for parameter '{name}'. Skipping.")
+
+  return kwargs
 
 
-def resource_filepath(filename):
-  """Returns a path to the given file name in the test resources directory."""
-  return os.path.join(RESOURCE_PATH, filename)
+def _is_typed_dict(type_hint: Any) -> bool:
+  """Checks if a type hint is a TypedDict."""
+  return (
+    inspect.isclass(type_hint)
+    and issubclass(type_hint, dict)
+    and hasattr(type_hint, '__annotations__')
+  )
 
 
-def prepare_test_resources():
-  """Prepares any resources that are expected to be available at test-time."""
+def _generate_fake_data(type_hint: Any) -> Any:
+  """
+  Recursively generates fake data based on the provided type hint.
 
-  if not os.path.exists(RESOURCE_PATH):
-    os.mkdir(RESOURCE_PATH)
+  Args:
+      type_hint: The type annotation for which to generate data.
 
-  # Generate the Dialpad API swagger spec, and write it to a file for easy access.
-  with open(resource_filepath('swagger_spec.json'), 'w') as f:
-    json.dump(_generate_swagger_spec(), f)
+  Returns:
+      Generated fake data corresponding to the type hint.
+  """
+  # Handle basic types
+  if type_hint is int:
+    return fake.pyint()
+  if type_hint is str:
+    return fake.word()
+  if type_hint is float:
+    return fake.pyfloat()
+  if type_hint is bool:
+    return fake.boolean()
+  if type_hint is list or type_hint is List:
+    # Generate a list of 1-5 strings for a generic list
+    return [fake.word() for _ in range(fake.pyint(min_value=1, max_value=5))]
 
+  # Handle typing.List[some_type]
+  origin = getattr(type_hint, '__origin__', None)
+  args = getattr(type_hint, '__args__', None)
 
-def _generate_swagger_spec():
-  """Downloads current Dialpad API swagger spec and returns it as a dict."""
+  if origin in (list, List) and args:
+    inner_type = args[0]
+    # Generate a list of 1-5 elements of the specified inner type
+    return [_generate_fake_data(inner_type) for _ in range(fake.pyint(min_value=1, max_value=5))]
 
-  # Unfortunately, a little bit of massaging is needed to appease the swagger parser.
-  def _hotpatch_spec_piece(piece):
-    if 'type' in piece:
-      if piece['type'] == 'string' and piece.get('format') == 'int64' and 'default' in piece:
-        piece['default'] = str(piece['default'])
+  # Handle TypedDict
+  if _is_typed_dict(type_hint):
+    typed_dict_data = {}
+    for field_name, field_type in type_hint.__annotations__.items():
+      typed_dict_data[field_name] = _generate_fake_data(field_type)
+    return typed_dict_data
 
-      if 'operationId' in piece and 'parameters' in piece:
-        for sub_p in piece['parameters']:
-          sub_p['required'] = sub_p.get('required', False)
-
-    if 'basePath' in piece:
-      del piece['basePath']
-
-  def _hotpatch_spec(spec):
-    if isinstance(spec, dict):
-      _hotpatch_spec_piece(spec)
-      for k, v in spec.items():
-        _hotpatch_spec(v)
-
-    elif isinstance(spec, list):
-      for v in spec:
-        _hotpatch_spec(v)
-
-    return spec
-
-  # Download the spec from dialpad.com.
-  spec_json = requests.get('https://dialpad.com/static/openapi/apiv2openapi-en.json').json()
-
-  # Return a patched version that will satisfy the swagger lib.
-  return _hotpatch_spec(spec_json)
+  # Fallback for unhandled types
+  logger.warning(f"WarUnhandled type '{type_hint}'. Returning None.")
+  return None
