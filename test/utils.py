@@ -111,6 +111,11 @@ def _generate_fake_data(type_hint: Any) -> Any:
       chosen_type = fake.random_element(elements=non_none_args)
       return _generate_fake_data(chosen_type)
 
+  if origin in (list, List) and args:
+    inner_type = args[0]
+    # Generate a list of 1-5 elements of the specified inner type
+    return [_generate_fake_data(inner_type) for _ in range(fake.pyint(min_value=1, max_value=5))]
+
   # Handle TypedDict
   if _is_typed_dict(type_hint):
     typed_dict_data = {}
