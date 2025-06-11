@@ -1,6 +1,10 @@
 import inspect
 import logging
-from typing import TypedDict, List, Any, Callable
+from typing import TypedDict, List, Any, Callable, get_origin, get_args
+try:
+  from typing_extensions import NotRequired
+except ImportError:
+  from typing import NotRequired
 from faker import Faker
 
 fake = Faker()
@@ -45,6 +49,23 @@ def _is_typed_dict(type_hint: Any) -> bool:
   )
 
 
+def _unwrap_not_required(type_hint: Any) -> Any:
+  """
+  Unwraps NotRequired annotations to get the underlying type.
+
+  Args:
+      type_hint: The type annotation that might be wrapped in NotRequired.
+
+  Returns:
+      The unwrapped type or the original type if not NotRequired.
+  """
+  origin = get_origin(type_hint)
+  if origin is NotRequired:
+    args = get_args(type_hint)
+    return args[0] if args else type_hint
+  return type_hint
+
+
 def _generate_fake_data(type_hint: Any) -> Any:
   """
   Recursively generates fake data based on the provided type hint.
@@ -55,6 +76,9 @@ def _generate_fake_data(type_hint: Any) -> Any:
   Returns:
       Generated fake data corresponding to the type hint.
   """
+  # Unwrap NotRequired annotations first
+  type_hint = _unwrap_not_required(type_hint)
+
   # Handle basic types
   if type_hint is int:
     return fake.pyint()
@@ -69,8 +93,8 @@ def _generate_fake_data(type_hint: Any) -> Any:
     return [fake.word() for _ in range(fake.pyint(min_value=1, max_value=5))]
 
   # Handle typing.List[some_type]
-  origin = getattr(type_hint, '__origin__', None)
-  args = getattr(type_hint, '__args__', None)
+  origin = get_origin(type_hint) or getattr(type_hint, '__origin__', None)
+  args = get_args(type_hint) or getattr(type_hint, '__args__', None)
 
   if origin in (list, List) and args:
     inner_type = args[0]
@@ -85,5 +109,5 @@ def _generate_fake_data(type_hint: Any) -> Any:
     return typed_dict_data
 
   # Fallback for unhandled types
-  logger.warning(f"WarUnhandled type '{type_hint}'. Returning None.")
+  logger.warning(f"Unhandled type '{type_hint}'. Returning None.")
   return None
