@@ -1010,17 +1010,5 @@
       "resource_class": "WebsocketsResource",
       "method_name": "partial_update"
     }
-  },
-  "/api/v2/wfm/metrics/activity": {
-    "get": {
-      "resource_class": "WFMActivityMetricsResource",
-      "method_name": "list"
-    }
-  },
-  "/api/v2/wfm/metrics/agent": {
-    "get": {
-      "resource_class": "WFMAgentMetricsResource",
-      "method_name": "list"
-    }
   }
 }

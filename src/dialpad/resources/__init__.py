@@ -20,13 +20,13 @@ from .coaching_teams_resource import CoachingTeamsResource
 from .company_resource import CompanyResource
 from .contact_event_subscriptions_resource import ContactEventSubscriptionsResource
 from .contacts_resource import ContactsResource
-from .custom_iv_rs_resource import CustomIVRsResource
+from .custom_ivrs_resource import CustomIVRsResource
 from .departments_resource import DepartmentsResource
 from .fax_lines_resource import FaxLinesResource
 from .meeting_rooms_resource import MeetingRoomsResource
 from .meetings_resource import MeetingsResource
 from .numbers_resource import NumbersResource
-from .o_auth2_resource import OAuth2Resource
+from .oauth2_resource import OAuth2Resource
 from .offices_resource import OfficesResource
 from .recording_share_links_resource import RecordingShareLinksResource
 from .rooms_resource import RoomsResource
@@ -39,8 +39,6 @@ from .user_devices_resource import UserDevicesResource
 from .users_resource import UsersResource
 from .webhooks_resource import WebhooksResource
 from .websockets_resource import WebsocketsResource
-from .wfm_activity_metrics_resource import WFMActivityMetricsResource
-from .wfm_agent_metrics_resource import WFMAgentMetricsResource
 
 
 class DialpadResourcesMixin:
@@ -213,7 +211,7 @@ class DialpadResourcesMixin:
     return ContactsResource(self)
 
   @property
-  def custom_iv_rs(self) -> CustomIVRsResource:
+  def custom_ivrs(self) -> CustomIVRsResource:
     """Returns an instance of CustomIVRsResource.
 
     Returns:
@@ -267,7 +265,7 @@ class DialpadResourcesMixin:
     return NumbersResource(self)
 
   @property
-  def o_auth2(self) -> OAuth2Resource:
+  def oauth2(self) -> OAuth2Resource:
     """Returns an instance of OAuth2Resource.
 
     Returns:
@@ -366,24 +364,6 @@ class DialpadResourcesMixin:
     return UsersResource(self)
 
   @property
-  def wfm_activity_metrics(self) -> WFMActivityMetricsResource:
-    """Returns an instance of WFMActivityMetricsResource.
-
-    Returns:
-        A WFMActivityMetricsResource instance initialized with this client.
-    """
-    return WFMActivityMetricsResource(self)
-
-  @property
-  def wfm_agent_metrics(self) -> WFMAgentMetricsResource:
-    """Returns an instance of WFMAgentMetricsResource.
-
-    Returns:
-        A WFMAgentMetricsResource instance initialized with this client.
-    """
-    return WFMAgentMetricsResource(self)
-
-  @property
   def webhooks(self) -> WebhooksResource:
     """Returns an instance of WebhooksResource.
 
@@ -438,8 +418,6 @@ __all__ = [
   'TranscriptsResource',
   'UserDevicesResource',
   'UsersResource',
-  'WFMActivityMetricsResource',
-  'WFMAgentMetricsResource',
   'WebhooksResource',
   'WebsocketsResource',
   'DialpadResourcesMixin',

@@ -17,17 +17,27 @@ def to_snake_case(name: str) -> str:
   """Converts a CamelCase or PascalCase string to snake_case."""
   if not name:
     return ''
+
   if name.endswith('Resource'):
     name_part = name[: -len('Resource')]
     if not name_part:  # Original name was "Resource"
       return 'resource_base'  # Or some other default to avoid just "_resource"
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name_part)
-    s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-    return f'{s2}_resource' if s2 else 'base_resource'  # Avoid empty before _resource
+    # Convert the name part and add _resource suffix
+    converted = _convert_to_snake_case(name_part)
+    return f'{converted}_resource' if converted else 'base_resource'
 
-  s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-  s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-  return s2
+  return _convert_to_snake_case(name)
+
+
+def _convert_to_snake_case(name: str) -> str:
+  """Helper function to convert a string to snake_case with proper acronym handling."""
+  # Handle sequences of uppercase letters followed by lowercase (like "XMLParser" -> "xml_parser")
+  words = re.findall(r'([A-Z]+[^A-Z]*)', name)
+  if not words:
+    return name.lower()  # If no uppercase letters, just return the name in lowercase
+
+  # Join the words with underscores and convert to lowercase
+  return '_'.join(word.lower() for word in words).strip('_')
 
 
 def _group_operations_by_class(
