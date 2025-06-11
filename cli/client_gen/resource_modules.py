@@ -7,6 +7,7 @@ from .resource_methods import _is_collection_response
 
 """Utilities for converting OpenAPI schema pieces to Python Resource modules."""
 
+
 def _ref_value_to_import_path(ref_value: str) -> Optional[Tuple[str, str]]:
   # Extract the schema name from the reference
   if ref_value.startswith('#/components/schemas/'):
@@ -19,6 +20,7 @@ def _ref_value_to_import_path(ref_value: str) -> Optional[Tuple[str, str]]:
       import_path = 'dialpad.' + '.'.join(parts[:-1])
       class_name = parts[-1]
       return import_path, class_name
+
 
 def _extract_schema_dependencies(
   operations_list: List[Tuple[SchemaPath, str, str]],

@@ -81,12 +81,14 @@ class TestClientResourceMethods:
     # Construct a DialpadClient with a fake API key.
     dp = DialpadClient('123')
 
-    skip = set([
-      ('CustomIVRsResource', 'create'),
-      ('NumbersResource', 'swap'),
-      ('FaxLinesResource', 'assign'),
-      ('SmsResource', 'send'),
-    ])
+    skip = set(
+      [
+        ('CustomIVRsResource', 'create'),
+        ('NumbersResource', 'swap'),
+        ('FaxLinesResource', 'assign'),
+        ('SmsResource', 'send'),
+      ]
+    )
 
     # Iterate through the attributes on the client object to find the API resource accessors.
     for a in dir(dp):
