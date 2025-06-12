@@ -33,5 +33,5 @@ jobs:
       - name: Run tests with pytest
         run: uv run pytest
 
-      - name: Run tests with pytest
+      - name: Run code formatting checks with ruff
         run: uv run ruff check
