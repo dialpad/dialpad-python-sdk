@@ -1,0 +1,1014 @@
+{
+  "/api/v2/numbers/format": {
+    "post": {
+      "resource_class": "NumbersResource",
+      "method_name": "format_number"
+    }
+  },
+  "/api/v2/accesscontrolpolicies/{id}/assign": {
+    "post": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "assign"
+    }
+  },
+  "/api/v2/accesscontrolpolicies": {
+    "get": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/accesscontrolpolicies/{id}": {
+    "delete": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/accesscontrolpolicies/{id}/assignments": {
+    "get": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "list_assignments"
+    }
+  },
+  "/api/v2/accesscontrolpolicies/{id}/unassign": {
+    "post": {
+      "resource_class": "AccessControlPoliciesResource",
+      "method_name": "unassign"
+    }
+  },
+  "/api/v2/app/settings": {
+    "get": {
+      "resource_class": "AppSettingsResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/blockednumbers/add": {
+    "post": {
+      "resource_class": "BlockedNumbersResource",
+      "method_name": "add"
+    }
+  },
+  "/api/v2/blockednumbers/{number}": {
+    "get": {
+      "resource_class": "BlockedNumbersResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/blockednumbers/remove": {
+    "post": {
+      "resource_class": "BlockedNumbersResource",
+      "method_name": "remove"
+    }
+  },
+  "/api/v2/blockednumbers": {
+    "get": {
+      "resource_class": "BlockedNumbersResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/call/{id}/participants/add": {
+    "post": {
+      "resource_class": "CallsResource",
+      "method_name": "add_participant"
+    }
+  },
+  "/api/v2/call/{id}": {
+    "get": {
+      "resource_class": "CallsResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/call/initiate_ivr_call": {
+    "post": {
+      "resource_class": "CallsResource",
+      "method_name": "initiate_ivr_call"
+    }
+  },
+  "/api/v2/call": {
+    "get": {
+      "resource_class": "CallsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "CallsResource",
+      "method_name": "initiate_ring_call"
+    }
+  },
+  "/api/v2/call/{id}/transfer": {
+    "post": {
+      "resource_class": "CallsResource",
+      "method_name": "transfer"
+    }
+  },
+  "/api/v2/call/{id}/unpark": {
+    "post": {
+      "resource_class": "CallsResource",
+      "method_name": "unpark"
+    }
+  },
+  "/api/v2/call/{id}/actions/hangup": {
+    "put": {
+      "resource_class": "CallsResource",
+      "method_name": "hangup_call"
+    }
+  },
+  "/api/v2/call/{id}/labels": {
+    "put": {
+      "resource_class": "CallsResource",
+      "method_name": "set_call_label"
+    }
+  },
+  "/api/v2/callback": {
+    "post": {
+      "resource_class": "CallbacksResource",
+      "method_name": "enqueue_callback"
+    }
+  },
+  "/api/v2/callback/validate": {
+    "post": {
+      "resource_class": "CallbacksResource",
+      "method_name": "validate_callback"
+    }
+  },
+  "/api/v2/callcenters": {
+    "get": {
+      "resource_class": "CallCentersResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "CallCentersResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/callcenters/{id}": {
+    "delete": {
+      "resource_class": "CallCentersResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "CallCentersResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "CallCentersResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/callcenters/{id}/status": {
+    "get": {
+      "resource_class": "CallCentersResource",
+      "method_name": "get_status"
+    }
+  },
+  "/api/v2/callcenters/operators/{id}/dutystatus": {
+    "get": {
+      "resource_class": "CallCenterOperatorsResource",
+      "method_name": "get_duty_status"
+    },
+    "patch": {
+      "resource_class": "CallCenterOperatorsResource",
+      "method_name": "update_duty_status"
+    }
+  },
+  "/api/v2/callcenters/{call_center_id}/operators/{user_id}/skill": {
+    "get": {
+      "resource_class": "CallCentersResource",
+      "method_name": "get_operator_skill_level"
+    },
+    "patch": {
+      "resource_class": "CallCentersResource",
+      "method_name": "update_operator_skill_level"
+    }
+  },
+  "/api/v2/callcenters/{id}/operators": {
+    "delete": {
+      "resource_class": "CallCentersResource",
+      "method_name": "remove_operator"
+    },
+    "get": {
+      "resource_class": "CallCentersResource",
+      "method_name": "list_operators"
+    },
+    "post": {
+      "resource_class": "CallCentersResource",
+      "method_name": "add_operator"
+    }
+  },
+  "/api/v2/calllabels": {
+    "get": {
+      "resource_class": "CallLabelsResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/callreviewsharelink": {
+    "post": {
+      "resource_class": "CallReviewShareLinksResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/callreviewsharelink/{id}": {
+    "delete": {
+      "resource_class": "CallReviewShareLinksResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "CallReviewShareLinksResource",
+      "method_name": "get"
+    },
+    "put": {
+      "resource_class": "CallReviewShareLinksResource",
+      "method_name": "update"
+    }
+  },
+  "/api/v2/callrouters": {
+    "get": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/callrouters/{id}": {
+    "delete": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/callrouters/{id}/assign_number": {
+    "post": {
+      "resource_class": "CallRoutersResource",
+      "method_name": "assign_number"
+    }
+  },
+  "/api/v2/channels/{id}": {
+    "delete": {
+      "resource_class": "ChannelsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "ChannelsResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/channels": {
+    "get": {
+      "resource_class": "ChannelsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "ChannelsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/channels/{id}/members": {
+    "delete": {
+      "resource_class": "ChannelsResource",
+      "method_name": "remove_member"
+    },
+    "get": {
+      "resource_class": "ChannelsResource",
+      "method_name": "list_members"
+    },
+    "post": {
+      "resource_class": "ChannelsResource",
+      "method_name": "add_member"
+    }
+  },
+  "/api/v2/coachingteams/{id}/members": {
+    "get": {
+      "resource_class": "CoachingTeamsResource",
+      "method_name": "list_members"
+    },
+    "post": {
+      "resource_class": "CoachingTeamsResource",
+      "method_name": "add_member"
+    }
+  },
+  "/api/v2/coachingteams/{id}": {
+    "get": {
+      "resource_class": "CoachingTeamsResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/coachingteams": {
+    "get": {
+      "resource_class": "CoachingTeamsResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/company": {
+    "get": {
+      "resource_class": "CompanyResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/company/{id}/smsoptout": {
+    "get": {
+      "resource_class": "CompanyResource",
+      "method_name": "get_sms_opt_out_list"
+    }
+  },
+  "/api/v2/conference/rooms": {
+    "get": {
+      "resource_class": "MeetingRoomsResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/conference/meetings": {
+    "get": {
+      "resource_class": "MeetingsResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/contacts/{id}": {
+    "delete": {
+      "resource_class": "ContactsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "ContactsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "ContactsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/contacts": {
+    "get": {
+      "resource_class": "ContactsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "ContactsResource",
+      "method_name": "create"
+    },
+    "put": {
+      "resource_class": "ContactsResource",
+      "method_name": "create_or_update"
+    }
+  },
+  "/api/v2/customivrs/{target_type}/{target_id}/{ivr_type}": {
+    "delete": {
+      "resource_class": "CustomIVRsResource",
+      "method_name": "unassign"
+    },
+    "patch": {
+      "resource_class": "CustomIVRsResource",
+      "method_name": "assign"
+    }
+  },
+  "/api/v2/customivrs": {
+    "get": {
+      "resource_class": "CustomIVRsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "CustomIVRsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/customivrs/{ivr_id}": {
+    "patch": {
+      "resource_class": "CustomIVRsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/departments/{id}": {
+    "delete": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/departments": {
+    "get": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/departments/{id}/operators": {
+    "delete": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "remove_operator"
+    },
+    "get": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "list_operators"
+    },
+    "post": {
+      "resource_class": "DepartmentsResource",
+      "method_name": "add_operator"
+    }
+  },
+  "/api/v2/faxline": {
+    "post": {
+      "resource_class": "FaxLinesResource",
+      "method_name": "assign"
+    }
+  },
+  "/api/v2/numbers/{number}/assign": {
+    "post": {
+      "resource_class": "NumbersResource",
+      "method_name": "assign"
+    }
+  },
+  "/api/v2/numbers/assign": {
+    "post": {
+      "resource_class": "NumbersResource",
+      "method_name": "auto_assign"
+    }
+  },
+  "/api/v2/numbers/{number}": {
+    "delete": {
+      "resource_class": "NumbersResource",
+      "method_name": "unassign"
+    },
+    "get": {
+      "resource_class": "NumbersResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/numbers": {
+    "get": {
+      "resource_class": "NumbersResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/numbers/swap": {
+    "post": {
+      "resource_class": "NumbersResource",
+      "method_name": "swap"
+    }
+  },
+  "/oauth2/authorize": {
+    "get": {
+      "resource_class": "OAuth2Resource",
+      "method_name": "authorize_token"
+    }
+  },
+  "/oauth2/deauthorize": {
+    "post": {
+      "resource_class": "OAuth2Resource",
+      "method_name": "deauthorize_token"
+    }
+  },
+  "/oauth2/token": {
+    "post": {
+      "resource_class": "OAuth2Resource",
+      "method_name": "redeem_token"
+    }
+  },
+  "/api/v2/offices/{office_id}/plan": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "get_billing_plan"
+    }
+  },
+  "/api/v2/offices/{office_id}/callcenters": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_call_centers"
+    }
+  },
+  "/api/v2/offices/{office_id}/teams": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_coaching_teams"
+    }
+  },
+  "/api/v2/offices/{office_id}/departments": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_departments"
+    }
+  },
+  "/api/v2/offices/{id}/assign_number": {
+    "post": {
+      "resource_class": "OfficesResource",
+      "method_name": "assign_number"
+    }
+  },
+  "/api/v2/offices/{id}/unassign_number": {
+    "post": {
+      "resource_class": "OfficesResource",
+      "method_name": "unassign_number"
+    }
+  },
+  "/api/v2/offices/{id}/e911": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "get_e911_address"
+    },
+    "put": {
+      "resource_class": "OfficesResource",
+      "method_name": "update_e911_address"
+    }
+  },
+  "/api/v2/offices/{office_id}/available_licenses": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_available_licenses"
+    }
+  },
+  "/api/v2/offices/{id}/offdutystatuses": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_offduty_statuses"
+    }
+  },
+  "/api/v2/offices/{id}": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/offices": {
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "OfficesResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/offices/{id}/operators": {
+    "delete": {
+      "resource_class": "OfficesResource",
+      "method_name": "remove_operator"
+    },
+    "get": {
+      "resource_class": "OfficesResource",
+      "method_name": "list_operators"
+    },
+    "post": {
+      "resource_class": "OfficesResource",
+      "method_name": "add_operator"
+    }
+  },
+  "/api/v2/recordingsharelink": {
+    "post": {
+      "resource_class": "RecordingShareLinksResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/recordingsharelink/{id}": {
+    "delete": {
+      "resource_class": "RecordingShareLinksResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "RecordingShareLinksResource",
+      "method_name": "get"
+    },
+    "put": {
+      "resource_class": "RecordingShareLinksResource",
+      "method_name": "update"
+    }
+  },
+  "/api/v2/rooms/{id}/assign_number": {
+    "post": {
+      "resource_class": "RoomsResource",
+      "method_name": "assign_number"
+    }
+  },
+  "/api/v2/rooms/{id}/unassign_number": {
+    "post": {
+      "resource_class": "RoomsResource",
+      "method_name": "unassign_number"
+    }
+  },
+  "/api/v2/rooms/{id}": {
+    "delete": {
+      "resource_class": "RoomsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "RoomsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "RoomsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/rooms": {
+    "get": {
+      "resource_class": "RoomsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "RoomsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/rooms/international_pin": {
+    "post": {
+      "resource_class": "RoomsResource",
+      "method_name": "assign_phone_pin"
+    }
+  },
+  "/api/v2/rooms/{parent_id}/deskphones/{id}": {
+    "delete": {
+      "resource_class": "RoomsResource",
+      "method_name": "delete_room_phone"
+    },
+    "get": {
+      "resource_class": "RoomsResource",
+      "method_name": "get_room_phone"
+    }
+  },
+  "/api/v2/rooms/{parent_id}/deskphones": {
+    "get": {
+      "resource_class": "RoomsResource",
+      "method_name": "list_room_phones"
+    }
+  },
+  "/api/v2/schedulereports/{id}": {
+    "delete": {
+      "resource_class": "ScheduleReportsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "ScheduleReportsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "ScheduleReportsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/schedulereports": {
+    "get": {
+      "resource_class": "ScheduleReportsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "ScheduleReportsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/sms": {
+    "post": {
+      "resource_class": "SmsResource",
+      "method_name": "send"
+    }
+  },
+  "/api/v2/stats/{id}": {
+    "get": {
+      "resource_class": "StatsResource",
+      "method_name": "get_result"
+    }
+  },
+  "/api/v2/stats": {
+    "post": {
+      "resource_class": "StatsResource",
+      "method_name": "initiate_processing"
+    }
+  },
+  "/api/v2/subscriptions/agent_status": {
+    "get": {
+      "resource_class": "AgentStatusEventSubscriptionsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "AgentStatusEventSubscriptionsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/subscriptions/agent_status/{id}": {
+    "delete": {
+      "resource_class": "AgentStatusEventSubscriptionsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "AgentStatusEventSubscriptionsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "AgentStatusEventSubscriptionsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/subscriptions/call": {
+    "get": {
+      "resource_class": "CallEventSubscriptionsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "CallEventSubscriptionsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/subscriptions/call/{id}": {
+    "delete": {
+      "resource_class": "CallEventSubscriptionsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "CallEventSubscriptionsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "CallEventSubscriptionsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/subscriptions/changelog": {
+    "get": {
+      "resource_class": "ChangelogEventSubscriptionsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "ChangelogEventSubscriptionsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/subscriptions/changelog/{id}": {
+    "delete": {
+      "resource_class": "ChangelogEventSubscriptionsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "ChangelogEventSubscriptionsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "ChangelogEventSubscriptionsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/subscriptions/contact": {
+    "get": {
+      "resource_class": "ContactEventSubscriptionsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "ContactEventSubscriptionsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/subscriptions/contact/{id}": {
+    "delete": {
+      "resource_class": "ContactEventSubscriptionsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "ContactEventSubscriptionsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "ContactEventSubscriptionsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/subscriptions/sms": {
+    "get": {
+      "resource_class": "SmsEventSubscriptionsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "SmsEventSubscriptionsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/subscriptions/sms/{id}": {
+    "delete": {
+      "resource_class": "SmsEventSubscriptionsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "SmsEventSubscriptionsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "SmsEventSubscriptionsResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/transcripts/{call_id}": {
+    "get": {
+      "resource_class": "TranscriptsResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/transcripts/{call_id}/url": {
+    "get": {
+      "resource_class": "TranscriptsResource",
+      "method_name": "get_url"
+    }
+  },
+  "/api/v2/userdevices/{id}": {
+    "get": {
+      "resource_class": "UserDevicesResource",
+      "method_name": "get"
+    }
+  },
+  "/api/v2/userdevices": {
+    "get": {
+      "resource_class": "UserDevicesResource",
+      "method_name": "list"
+    }
+  },
+  "/api/v2/users/{id}/initiate_call": {
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "initiate_call"
+    }
+  },
+  "/api/v2/users/{id}/activecall": {
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "toggle_active_call_recording"
+    }
+  },
+  "/api/v2/users/{id}/togglevi": {
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "toggle_active_call_vi"
+    }
+  },
+  "/api/v2/users/{id}/caller_id": {
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "get_caller_id"
+    },
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "set_caller_id"
+    }
+  },
+  "/api/v2/users/{parent_id}/deskphones/{id}": {
+    "delete": {
+      "resource_class": "UsersResource",
+      "method_name": "delete_deskphone"
+    },
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "get_deskphone"
+    }
+  },
+  "/api/v2/users/{parent_id}/deskphones": {
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "list_deskphones"
+    }
+  },
+  "/api/v2/users/{id}/assign_number": {
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "assign_number"
+    }
+  },
+  "/api/v2/users/{id}/unassign_number": {
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "unassign_number"
+    }
+  },
+  "/api/v2/users/{id}/togglednd": {
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "toggle_dnd"
+    }
+  },
+  "/api/v2/users/{id}/e911": {
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "get_e911_address"
+    },
+    "put": {
+      "resource_class": "UsersResource",
+      "method_name": "set_e911_address"
+    }
+  },
+  "/api/v2/users/{id}/personas": {
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "list_personas"
+    }
+  },
+  "/api/v2/users/{id}/screenpop": {
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "trigger_screenpop"
+    }
+  },
+  "/api/v2/users/{id}": {
+    "delete": {
+      "resource_class": "UsersResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/users": {
+    "get": {
+      "resource_class": "UsersResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "UsersResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/users/{id}/move_office": {
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "move_office"
+    }
+  },
+  "/api/v2/users/{id}/status": {
+    "patch": {
+      "resource_class": "UsersResource",
+      "method_name": "update_user_status"
+    }
+  },
+  "/api/v2/webhooks": {
+    "get": {
+      "resource_class": "WebhooksResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "WebhooksResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/webhooks/{id}": {
+    "delete": {
+      "resource_class": "WebhooksResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "WebhooksResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "WebhooksResource",
+      "method_name": "partial_update"
+    }
+  },
+  "/api/v2/websockets": {
+    "get": {
+      "resource_class": "WebsocketsResource",
+      "method_name": "list"
+    },
+    "post": {
+      "resource_class": "WebsocketsResource",
+      "method_name": "create"
+    }
+  },
+  "/api/v2/websockets/{id}": {
+    "delete": {
+      "resource_class": "WebsocketsResource",
+      "method_name": "delete"
+    },
+    "get": {
+      "resource_class": "WebsocketsResource",
+      "method_name": "get"
+    },
+    "patch": {
+      "resource_class": "WebsocketsResource",
+      "method_name": "partial_update"
+    }
+  }
+}

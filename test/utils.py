@@ -1,57 +1,132 @@
-import json
-import os
-import requests
+import inspect
+import logging
+from typing import Annotated, Any, Callable, List, Literal, Union, get_args, get_origin
+
+from faker import Faker
+from typing_extensions import NotRequired
+
+fake = Faker()
+logger = logging.getLogger(__name__)
 
 
-RESOURCE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.resources')
+def generate_faked_kwargs(func: Callable) -> dict[str, Any]:
+  """
+  Generates a dictionary of keyword arguments for a given function.
+
+  This function inspects the signature of the input function and uses the Faker
+  library to generate mock data for each parameter based on its type annotation.
+  It supports standard types, lists, and nested TypedDicts.
+
+  Args:
+      func: The function for which to generate kwargs.
+
+  Returns:
+      A dictionary of keyword arguments that can be used to call the function.
+  """
+  kwargs = {}
+  signature = inspect.signature(func)
+  params = signature.parameters
+
+  for name, param in params.items():
+    annotation = param.annotation
+    if annotation is not inspect.Parameter.empty:
+      kwargs[name] = _generate_fake_data(annotation)
+    else:
+      # Handle cases where there's no type hint with a default or warning
+      print(f"Warning: No type annotation for parameter '{name}'. Skipping.")
+
+  return kwargs
 
 
-def resource_filepath(filename):
-  """Returns a path to the given file name in the test resources directory."""
-  return os.path.join(RESOURCE_PATH, filename)
+def _is_typed_dict(type_hint: Any) -> bool:
+  """Checks if a type hint is a TypedDict."""
+  return (
+    inspect.isclass(type_hint)
+    and issubclass(type_hint, dict)
+    and hasattr(type_hint, '__annotations__')
+  )
 
 
-def prepare_test_resources():
-  """Prepares any resources that are expected to be available at test-time."""
+def _unwrap_not_required(type_hint: Any) -> Any:
+  """
+  Unwraps NotRequired annotations to get the underlying type.
 
-  if not os.path.exists(RESOURCE_PATH):
-    os.mkdir(RESOURCE_PATH)
+  Args:
+      type_hint: The type annotation that might be wrapped in NotRequired.
 
-  # Generate the Dialpad API swagger spec, and write it to a file for easy access.
-  with open(resource_filepath('swagger_spec.json'), 'w') as f:
-    json.dump(_generate_swagger_spec(), f)
+  Returns:
+      The unwrapped type or the original type if not NotRequired.
+  """
+  origin = get_origin(type_hint)
+  if origin is NotRequired:
+    args = get_args(type_hint)
+    return args[0] if args else type_hint
+  return type_hint
 
 
-def _generate_swagger_spec():
-  """Downloads current Dialpad API swagger spec and returns it as a dict."""
+def _generate_fake_data(type_hint: Any) -> Any:
+  """
+  Recursively generates fake data based on the provided type hint.
 
-  # Unfortunately, a little bit of massaging is needed to appease the swagger parser.
-  def _hotpatch_spec_piece(piece):
-    if 'type' in piece:
-      if piece['type'] == 'string' and piece.get('format') == 'int64' and 'default' in piece:
-        piece['default'] = str(piece['default'])
+  Args:
+      type_hint: The type annotation for which to generate data.
 
-      if 'operationId' in piece and 'parameters' in piece:
-        for sub_p in piece['parameters']:
-          sub_p['required'] = sub_p.get('required', False)
+  Returns:
+      Generated fake data corresponding to the type hint.
+  """
+  # Unwrap NotRequired annotations first
+  type_hint = _unwrap_not_required(type_hint)
 
-    if 'basePath' in piece:
-      del piece['basePath']
+  # Handle basic types
+  if type_hint is int:
+    return fake.pyint()
+  if type_hint is str:
+    return fake.word()
+  if type_hint is float:
+    return fake.pyfloat()
+  if type_hint is bool:
+    return fake.boolean()
+  if type_hint is list or type_hint is List:
+    # Generate a list of 1-5 strings for a generic list
+    return [fake.word() for _ in range(fake.pyint(min_value=1, max_value=5))]
 
-  def _hotpatch_spec(spec):
-    if isinstance(spec, dict):
-      _hotpatch_spec_piece(spec)
-      for k, v in spec.items():
-        _hotpatch_spec(v)
+  # Handle typing.List[some_type], Literal, Optional, and Union
+  origin = get_origin(type_hint) or getattr(type_hint, '__origin__', None)
+  args = get_args(type_hint) or getattr(type_hint, '__args__', None)
 
-    elif isinstance(spec, list):
-      for v in spec:
-        _hotpatch_spec(v)
+  if origin is Annotated and args[-1] == 'base64':
+    return 'DEADBEEF'  # Placeholder for base64-encoded data
 
-    return spec
+  # Handle Literal types
+  if origin is Literal and args:
+    return fake.random_element(elements=args)
 
-  # Download the spec from dialpad.com.
-  spec_json = requests.get('https://dialpad.com/static/openapi/apiv2openapi-en.json').json()
+  # Handle Optional types (which are Union[T, None])
+  if origin is Union and args:
+    # Filter out NoneType from Union args
+    non_none_args = [arg for arg in args if arg is not type(None)]
+    if len(non_none_args) == 1:
+      # This is Optional[T] - generate data for T with 80% probability
+      if fake.boolean(chance_of_getting_true=80):
+        return _generate_fake_data(non_none_args[0])
+      return None
+    # For general Union types, pick a random non-None type
+    if non_none_args:
+      chosen_type = fake.random_element(elements=non_none_args)
+      return _generate_fake_data(chosen_type)
 
-  # Return a patched version that will satisfy the swagger lib.
-  return _hotpatch_spec(spec_json)
+  if origin in (list, List) and args:
+    inner_type = args[0]
+    # Generate a list of 1-5 elements of the specified inner type
+    return [_generate_fake_data(inner_type) for _ in range(fake.pyint(min_value=1, max_value=5))]
+
+  # Handle TypedDict
+  if _is_typed_dict(type_hint):
+    typed_dict_data = {}
+    for field_name, field_type in type_hint.__annotations__.items():
+      typed_dict_data[field_name] = _generate_fake_data(field_type)
+    return typed_dict_data
+
+  # Fallback for unhandled types
+  logger.warning(f"Unhandled type '{type_hint}'. Returning None.")
+  return None

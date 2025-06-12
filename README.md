@@ -9,10 +9,10 @@ For information about the API itself, head on over to our
 
 ## Installation
 
-Just use everyone's favourite python package installer: `pip`
+Just use everyone's new favourite python package manager: `uv`
 
 ```bash
-pip install python-dialpad
+uv add python-dialpad
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
-print(dp_client.user.get(user_id='1234567'))
+print(dp_client.users.get(user_id='1234567'))
 ```
 
 ### Client Constructor Arguments
@@ -42,14 +42,18 @@ print(dp_client.user.get(user_id='1234567'))
 
 ### API Resources
 
-In general, each resource that we support in our public API will be exposed as properties of the
-client object. For example, the `User` resource can be accessed using the `user` property (as
+In general, resources that we support in our public API will be exposed as properties of the
+client object. For example, the `User` resource can be accessed using the `users` property (as
 demonstrated above).
 
 Each of these resource properties will expose related HTTP methods as methods of that resource
 property.
 
-For example, `GET /api/v2/users/{id}` translates to `dp_client.user.get('the_user_id')`.
+For example, `GET /api/v2/users/{id}` translates to `dp_client.users.get('a_user_id')`.
+
+When in doubt, type annotations and docstrings are sourced directly from the Dialpad API spec, and
+should behave well with most editors' autocomplete/tooltip features:
+![user list method tooltip](./docs/images/tooltip_example.png)
 
 
 ### API Responses
@@ -65,98 +69,39 @@ from dialpad import DialpadClient
 
 dp_client = DialpadClient(sandbox=True, token='API_TOKEN_HERE')
 
-for user in dp_client.user.list():
+for user in dp_client.users.list():
   print(user)
 ```
 
 
 ## Development
 
-### Testing
-
-That's right, the testing section is first in line! Before you start diving in, let's just make sure your environment is set up properly, and that the tests are running buttery-smooth.
-
-Assuming you've already cloned the repository, all you'll need to do is install `tox`, and run the command against the appropriate environment.
-
-* Install the `tox` package.
-  ```shell
-  $ pip install tox
-  ```
-
-* Run the tests
-  ```shell
-  $ tox
-  ```
-  Optionaly, you can specify an environment to run the tests against. For eg:
-  ```shell
-  $ tox -e py3
-  ```
-That was easy :)
-
-Neato!
-
-### Adding New Resources
-
-Most of the changes to this library will probably just be adding support for additional resources
-and endpoints that we expose in the API, so let's start with how to add a new resource.
-
-Each resource exposed by this library should have its own python file under the `dialpad/resources`
-directory, and should define a single `class` that inherits from `DialpadResource`.
-
-The class itself should set the `_resource_path` class property to a list of strings such
-that `'/api/v2/' + '/'.join(_resource_path)` corresponds to the API path for that resource.
-
-Once the `_resource_path` is defined, the resource class can define instance methods to expose
-functionality related to the resource that it represents, and can use the `self.request` helper
-method to make authenticated requests to API paths under the `_resource_path`. For example,
-if `_resource_path` is set to `['users']`, then calling `self.request(method='POST')` would make
-a `POST` request to `/api/v2/users`. (A more precise description of the `request` method is given
-in the following section)
-
-With that in mind, most methods that the developer chooses to add to a resource class will probably
-just be a very thin method that passes the appropriate arguments into `self.request`, and returns
-the result.
+This project is now managed with `uv`, and exposes a cli tool to automate most maintenance tasks.
+`uv run cli --help` for details.
 
 
-#### The `request` Helper Method
+### Maintenance Releases
 
-`self.request` is a helper method that handles the details of authentication, response parsing, and
-pagination, such that the caller only needs to specify the API path, HTTP method, and request data.
-The method arguments are as follows:
+Changes/additions to the Dialpad API can be handled (mostly) automatically 👍
 
-- `path (optional)` Any additional path elements that should be added after the `_resource_path`
-- `method (optional, default: 'GET')` The HTTP method
-- `data (optional)` A python dict defining either the query params or the JSON payload, depending on
-  which HTTP method is specified
-- `headers (optional)` Any additional headers that should be included in the request (the API key
-  is automatically included)
+#### Update Procedure
 
-If the request succeeds, then `self.request` will either return a python dict, or an iterator of
-python dicts, depending on whether the server responds with a pagenated response. Pagenated
-responses will be detected automatically, so the caller does not need to worry about it.
+- Overwrite `dialpad_api_spec.json` with the latest spec
 
-If the request fails, then a `requests.HTTPError` exception will be raised, and it'll be up to the
-consumer of this library to deal with it 😎
+- Run `uv run cli preprocess-spec`
+  - This just does a few ham-fisted inplace edits to the spec file to make the schema paths a bit nicer
 
+- Run `uv run cli update-resource-module-mapping --interactive`
+  - This adds entries to `module_mapping.json` for any new API operations in the API spec.
+    We (humans) get to decide the appropriate resource class and method name 👍
 
-#### The `resources/__init__.py` File
+![resource module mapping](./docs/images/resource_module_mapping.png)
 
-When a new file is added to the `resources` directory, a new import statement should also be added
-to `__init__.py` to expose the newly defined resource class as a direct property of the `resources`
-module.
+- Run `uv run cli generate-client`
+  - This will regenerate all of the schema and resource files as per the API spec.
 
+- Run `uv run pytest`
+  - Never hurts to confirm that nothing got borked 👍
 
-#### `DialpadClient` Resource Properties
+TODO: version bump, build, push, publish
 
-In addition to adding the new class to the `__init__.py` file, the new resource class should also
-be added as a cached property of the `DialpadClient` class.
-
-
-#### Recap
-
-To add a new resource to this client library, simply:
-- Create a new file under the `resources` directory
-- Define a new subclass of `DialpadResource` within said file
-- Expose methods related to that resource as methods on your new class
-- Add a new import statement in `resources/__init__.py`
-- Add a new property to the `DialpadClient` class

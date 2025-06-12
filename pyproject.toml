@@ -1,0 +1,67 @@
+[project]
+name = "python-dialpad"
+version = "3.0.0"
+description = "A python wrapper for the Dialpad REST API"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "cached-property>=2.0.1",
+    "requests>=2.28.0",
+]
+
+[project.scripts]
+cli = "cli.main:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dialpad"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-xs --showlocals --cov=dialpad --cov-fail-under=95"
+
+[tool.uv]
+dev-dependencies = [
+    "faker>=37.3.0",
+    "inquirer>=3.4.0",
+    "openapi-core>=0.19.5",
+    "pytest-cov>=6.2.1",
+    "pytest>=8.4.0",
+    "requests-mock>=1.12.1",
+    "ruff>=0.11.12",
+    "six>=1.17.0",
+    "swagger-parser",
+    "swagger-stub>=0.2.1",
+    "typer>=0.16.0",
+    "urllib3>=2.4.0",
+]
+
+[tool.uv.sources]
+swagger-parser = { git = "https://github.com/jakedialpad/swagger-parser", rev = "v1.0.1b" }
+
+[tool.ruff]
+line-length = 100
+indent-width = 2
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+]
+ignore = ["E501"]  # line-too-long
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["dialpad", "cli"]
+force-single-line = false
+split-on-trailing-comma = true
