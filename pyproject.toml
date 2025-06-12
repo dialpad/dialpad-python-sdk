@@ -29,6 +29,7 @@ dev-dependencies = [
     "faker>=37.3.0",
     "inquirer>=3.4.0",
     "openapi-core>=0.19.5",
+    "pytest-cov>=6.2.1",
     "pytest>=8.4.0",
     "requests-mock>=1.12.1",
     "ruff>=0.11.12",
