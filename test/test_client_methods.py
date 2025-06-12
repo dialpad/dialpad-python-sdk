@@ -122,10 +122,8 @@ class TestClientResourceMethods:
 
     skip = set(
       [
-        ('CustomIVRsResource', 'create'),
         ('NumbersResource', 'swap'),
         ('FaxLinesResource', 'assign'),
-        ('SmsResource', 'send'),
       ]
     )
 

@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Any, Callable, List, Literal, Union, get_args, get_origin
+from typing import Annotated, Any, Callable, List, Literal, Union, get_args, get_origin
 
 from faker import Faker
 from typing_extensions import NotRequired
@@ -93,6 +93,9 @@ def _generate_fake_data(type_hint: Any) -> Any:
   # Handle typing.List[some_type], Literal, Optional, and Union
   origin = get_origin(type_hint) or getattr(type_hint, '__origin__', None)
   args = get_args(type_hint) or getattr(type_hint, '__args__', None)
+
+  if origin is Annotated and args[-1] == 'base64':
+    return 'DEADBEEF'  # Placeholder for base64-encoded data
 
   # Handle Literal types
   if origin is Literal and args:

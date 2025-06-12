@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -106,7 +106,7 @@ class SendSMSMessage(TypedDict):
   'The number of who sending the SMS. The number must be assigned to user or a user group. It will override user_id and sender_group_id.'
   infer_country_code: NotRequired[bool]
   "If true, to_numbers will be assumed to be from the specified user's country, and the E164 format requirement will be relaxed."
-  media: NotRequired[str]
+  media: NotRequired[Annotated[str, 'base64']]
   'Base64-encoded media attachment (will cause the message to be sent as MMS).\n(Max 500 KiB raw file size)'
   sender_group_id: NotRequired[int]
   'The ID of an office, department, or call center that the User should send the message on behalf of.'

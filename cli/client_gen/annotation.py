@@ -5,7 +5,6 @@ from jsonschema_path.paths import SchemaPath
 
 """Utilities for converting OpenAPI schema pieces to Python type annotations."""
 
-
 def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
   """Converts an OpenAPI type+format to a Python type string"""
   s_mapping = {
@@ -16,7 +15,7 @@ def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
     (
       'string',
       'byte',
-    ): 'str',  # TODO: We expect these to be b-64 strings... we can probably bake a solution into the client lib so that this can be typed as bytes on the method itself
+    ): 'Annotated[str, \'base64\']',
     (
       'string',
       'date-time',

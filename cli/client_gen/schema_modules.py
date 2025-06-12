@@ -168,6 +168,7 @@ def schemas_to_module_def(schemas: List[SchemaPath]) -> ast.Module:
     ast.ImportFrom(
       module='typing',
       names=[
+        ast.alias(name='Annotated', asname=None),
         ast.alias(name='Optional', asname=None),
         ast.alias(name='List', asname=None),
         ast.alias(name='Dict', asname=None),

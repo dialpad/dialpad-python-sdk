@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -8,7 +8,7 @@ class CreateCustomIvrMessage(TypedDict):
 
   description: NotRequired[str]
   '[single-line only]\n\nThe description of the new IVR. Max 256 characters.'
-  file: str
+  file: Annotated[str, 'base64']
   'An MP3 audio file. The file needs to be Base64-encoded.'
   ivr_type: Literal[
     'ASK_FIRST_OPERATOR_NOT_AVAILABLE',
