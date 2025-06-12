@@ -5,6 +5,7 @@ from jsonschema_path.paths import SchemaPath
 
 """Utilities for converting OpenAPI schema pieces to Python type annotations."""
 
+
 def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
   """Converts an OpenAPI type+format to a Python type string"""
   s_mapping = {
@@ -15,7 +16,7 @@ def spec_type_to_py_type(s_type: str, s_format: Optional[str]) -> str:
     (
       'string',
       'byte',
-    ): 'Annotated[str, \'base64\']',
+    ): "Annotated[str, 'base64']",
     (
       'string',
       'date-time',

@@ -67,17 +67,14 @@ def openapi_stub(requests_mock):
           'items': [
             {'id': 1, 'display_name': 'User 1'},
             {'id': 2, 'display_name': 'User 2'},
-            {'id': 3, 'display_name': 'User 3'}
+            {'id': 3, 'display_name': 'User 3'},
           ],
-          'cursor': 'next_page_cursor'
+          'cursor': 'next_page_cursor',
         }
       elif cursor == 'next_page_cursor':
         # Second page: 2 users, no next cursor
         response_data = {
-          'items': [
-            {'id': 4, 'display_name': 'User 4'},
-            {'id': 5, 'display_name': 'User 5'}
-          ]
+          'items': [{'id': 4, 'display_name': 'User 4'}, {'id': 5, 'display_name': 'User 5'}]
         }
       else:
         # No more pages
@@ -120,12 +117,6 @@ class TestClientResourceMethods:
     # Construct a DialpadClient with a fake API key.
     dp = DialpadClient('123')
 
-    skip = set(
-      [
-        ('FaxLinesResource', 'assign'),
-      ]
-    )
-
     # Iterate through the attributes on the client object to find the API resource accessors.
     for a in dir(dp):
       resource_instance = getattr(dp, a)
@@ -151,20 +142,16 @@ class TestClientResourceMethods:
         if not callable(resource_method):
           continue
 
-        if (resource_instance.__class__.__name__, method_attr) in skip:
-          logger.info(
-            'Skipping %s.%s as it is explicitly excluded from this test',
-            resource_instance.__class__.__name__,
-            method_attr,
-          )
-          continue
-
         # Generate fake kwargs for the resource method.
         faked_kwargs = generate_faked_kwargs(resource_method)
         if (resource_instance.__class__.__name__, method_attr) == ('NumbersResource', 'swap'):
           # The openapi validator doesn't like that swap_details can be valid under multiple
           # OneOf schemas...
           faked_kwargs['request_body'].pop('swap_details', None)
+
+        if (resource_instance.__class__.__name__, method_attr) == ('FaxLinesResource', 'assign'):
+          # The openapi validator doesn't like it if "line" could be valid under multiple schemas.
+          faked_kwargs['request_body']['line'] = {'type': 'toll-free'}
 
         logger.info(
           'Testing resource method %s.%s with faked kwargs: %s',
