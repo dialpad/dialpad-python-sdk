@@ -41,9 +41,6 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
 
 def bump_patch_version() -> str:
   """Bumps the patch version in pyproject.toml using uv."""
-  subprocess.run(
-    ['uv', 'version', '--bump', 'patch'], check=True, capture_output=True, text=True
-  )
   return subprocess.run(
-    ['uv', 'version', '--short'], check=True, capture_output=True, text=True
+    ['uv', 'version', '--short', '--bump', 'patch'], check=True, capture_output=True, text=True
   ).stdout.strip()
