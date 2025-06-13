@@ -37,3 +37,10 @@ def write_python_file(filepath: str, module_node: ast.Module) -> None:
   reformat_python_file(filepath)
 
   rich.print(Markdown(f'Generated `{filepath}`.'))
+
+
+def bump_patch_version() -> str:
+  """Bumps the patch version in pyproject.toml using uv."""
+  return subprocess.run(
+    ['uv', 'version', '--short', '--bump', 'patch'], check=True, capture_output=True, text=True
+  ).stdout.strip()
