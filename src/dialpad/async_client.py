@@ -16,7 +16,7 @@ class AsyncDialpadClient(AsyncDialpadResourcesMixin):
     company_id: Optional[str] = None,
   ):
     self._token = token
-    self._session = httpx.AsyncClient()
+    self._session = httpx.AsyncClient(timeout=600.0)
     self._base_url = base_url or hosts.get('sandbox' if sandbox else 'live')
     self._company_id = company_id
 
