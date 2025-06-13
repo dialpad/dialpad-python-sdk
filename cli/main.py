@@ -2,11 +2,11 @@ import os
 import re
 from typing import Annotated
 
-import typer
 import requests
 import rich
-from rich.markdown import Markdown
+import typer
 from openapi_core import OpenAPI
+from rich.markdown import Markdown
 
 from cli.client_gen.module_mapping import update_module_mapping
 from cli.client_gen.resource_packages import resources_to_package_directory
