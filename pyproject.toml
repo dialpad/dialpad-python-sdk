@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "cached-property>=2.0.1",
+    "httpx>=0.28.1",
     "requests>=2.28.0",
 ]
 
