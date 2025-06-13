@@ -41,7 +41,7 @@ def _convert_to_snake_case(name: str) -> str:
 
 
 def _group_operations_by_class(
-  api_spec: SchemaPath, module_mapping: Dict[str, Dict[str, ModuleMappingEntry]]
+  api_spec: SchemaPath, module_mapping: Dict[str, Dict[str, ModuleMappingEntry]], use_async: bool = False,
 ) -> Dict[str, List[Tuple[SchemaPath, str, str]]]:
   """
   Groups API operations by their target resource class.
@@ -87,6 +87,8 @@ def _group_operations_by_class(
         continue
 
       resource_class_name = operation_mapping_entry['resource_class']
+      if use_async:
+        resource_class_name = f'Async{resource_class_name}'
 
       if resource_class_name not in grouped_operations:
         grouped_operations[resource_class_name] = []
@@ -101,6 +103,7 @@ def _group_operations_by_class(
 def resources_to_package_directory(
   api_spec: SchemaPath,
   output_dir: str,
+  use_async: bool = False,
 ) -> None:
   """
   Converts OpenAPI operations to a Python resource package directory structure,
@@ -118,7 +121,7 @@ def resources_to_package_directory(
     print(f'Error loading module mapping: {e}')
     return
 
-  grouped_operations_by_class_name = _group_operations_by_class(api_spec, mapping_data)
+  grouped_operations_by_class_name = _group_operations_by_class(api_spec, mapping_data, use_async=use_async)
 
   generated_module_snake_names = []
 
@@ -129,7 +132,7 @@ def resources_to_package_directory(
       operations_with_target_methods.append((op_spec_path, target_method_name, original_api_path))
 
     module_ast = resource_class_to_module_def(
-      resource_class_name, operations_with_target_methods, api_spec
+      resource_class_name, operations_with_target_methods, api_spec, use_async=use_async
     )
 
     module_file_snake_name = to_snake_case(resource_class_name)
@@ -152,7 +155,10 @@ def resources_to_package_directory(
         f.write(f'from .{module_snake_name} import {actual_class_name}\n')
 
     # Add the DialpadResourcesMixin class
-    f.write('\n\nclass DialpadResourcesMixin:\n')
+    if use_async:
+      f.write('\n\nclass AsyncDialpadResourcesMixin:\n')
+    else:
+      f.write('\n\nclass DialpadResourcesMixin:\n')
     f.write('  """Mixin class that provides resource properties for each API resource.\n\n')
     f.write('  This mixin is used by the DialpadClient class to provide easy access\n')
     f.write('  to all API resources as properties.\n  """\n\n')
@@ -160,7 +166,7 @@ def resources_to_package_directory(
     # Add a property for each resource class
     for class_name in sorted(all_resource_class_names_in_package):
       # Convert the class name to property name (removing 'Resource' suffix and converting to snake_case)
-      property_name = to_snake_case(class_name.removesuffix('Resource'))
+      property_name = to_snake_case(class_name.removesuffix('Resource').removeprefix('Async'))
 
       f.write('  @property\n')
       f.write(f'  def {property_name}(self) -> {class_name}:\n')

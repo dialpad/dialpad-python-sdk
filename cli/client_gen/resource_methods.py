@@ -1,6 +1,6 @@
 import ast
 import re
-from typing import Optional
+from typing import Optional, Union
 
 from jsonschema_path.paths import SchemaPath
 
@@ -139,7 +139,7 @@ def _build_method_call_args(
 
 
 def http_method_to_func_body(
-  method_spec: SchemaPath, api_path: Optional[str] = None
+  method_spec: SchemaPath, api_path: Optional[str] = None, use_async: bool = False
 ) -> list[ast.stmt]:
   """
   Generates the body of the Python function, including a docstring and request call.
@@ -147,6 +147,7 @@ def http_method_to_func_body(
   Args:
       method_spec: The SchemaPath for the operation
       api_path: The original API path string (e.g., '/users/{user_id}')
+      use_async: Whether to generate an async function
 
   Returns:
       A list of ast.stmt nodes representing the function body
@@ -241,15 +242,31 @@ def http_method_to_func_body(
   # Create the appropriate request method call
   method_name = '_iter_request' if is_collection else '_request'
 
-  request_call = ast.Return(
-    value=ast.Call(
-      func=ast.Attribute(
-        value=ast.Name(id='self', ctx=ast.Load()), attr=method_name, ctx=ast.Load()
-      ),
-      args=[],
-      keywords=call_args,
-    )
+  # Create the request call
+  request_call_expr = ast.Call(
+    func=ast.Attribute(
+      value=ast.Name(id='self', ctx=ast.Load()), attr=method_name, ctx=ast.Load()
+    ),
+    args=[],
+    keywords=call_args,
   )
+
+  if use_async and is_collection:
+    # For async collection responses, use async for loop with yield
+    if_async_for = ast.AsyncFor(
+      target=ast.Name(id='item', ctx=ast.Store()),
+      iter=request_call_expr,
+      body=[ast.Expr(value=ast.Yield(value=ast.Name(id='item', ctx=ast.Load())))],
+      orelse=[],
+    )
+    return [docstring_node, if_async_for]
+  elif use_async:
+    # For async non-collection responses, use await
+    request_call_expr = ast.Await(value=request_call_expr)
+    request_call = ast.Return(value=request_call_expr)
+  else:
+    # For sync responses, return directly
+    request_call = ast.Return(value=request_call_expr)
 
   # Put it all together
   return [docstring_node, request_call]
@@ -345,8 +362,8 @@ def http_method_to_func_args(method_spec: SchemaPath) -> ast.arguments:
 
 
 def http_method_to_func_def(
-  method_spec: SchemaPath, override_func_name: Optional[str] = None, api_path: Optional[str] = None
-) -> ast.FunctionDef:
+  method_spec: SchemaPath, override_func_name: Optional[str] = None, api_path: Optional[str] = None, use_async: bool = False
+) -> Union[ast.FunctionDef, ast.AsyncFunctionDef]:
   """
   Converts an OpenAPI method spec to a Python function definition.
 
@@ -354,19 +371,32 @@ def http_method_to_func_def(
       method_spec: The SchemaPath for the operation
       override_func_name: An optional name to use for the function instead of the default
       api_path: The original API path string (e.g., '/users/{user_id}')
+      use_async: Whether to generate an async function
 
   Returns:
-      An ast.FunctionDef node representing the Python method
+      An ast.FunctionDef or ast.AsyncFunctionDef node representing the Python method
   """
   func_name = override_func_name if override_func_name else http_method_to_func_name(method_spec)
 
   # Generate function body with potentially modified path
-  func_body = http_method_to_func_body(method_spec, api_path=api_path)
+  func_body = http_method_to_func_body(method_spec, api_path=api_path, use_async=use_async)
 
-  return ast.FunctionDef(
-    name=func_name,
-    args=http_method_to_func_args(method_spec),
-    body=func_body,
-    decorator_list=[],
-    returns=spec_piece_to_annotation(method_spec / 'responses'),
-  )
+  func_args = http_method_to_func_args(method_spec)
+  returns_annotation = spec_piece_to_annotation(method_spec / 'responses', use_async=use_async)
+
+  if use_async:
+    return ast.AsyncFunctionDef(
+      name=func_name,
+      args=func_args,
+      body=func_body,
+      decorator_list=[],
+      returns=returns_annotation,
+    )
+  else:
+    return ast.FunctionDef(
+      name=func_name,
+      args=func_args,
+      body=func_body,
+      decorator_list=[],
+      returns=returns_annotation,
+    )

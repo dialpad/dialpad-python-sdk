@@ -161,7 +161,7 @@ def _get_collection_item_type(schema_dict: dict) -> str:
   return None
 
 
-def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
+def spec_piece_to_annotation(spec_piece: SchemaPath, use_async: bool = False) -> ast.Name:
   """Converts requestBody, responses, property, or parameter elements to the appropriate ast.Name annotation"""
   spec_dict = spec_piece.contents()
 
@@ -205,6 +205,10 @@ def spec_piece_to_annotation(spec_piece: SchemaPath) -> ast.Name:
         item_type = _get_collection_item_type(dereffed_response_schema)
         if item_type:
           # Return Iterator[ItemType] instead of the Collection type
+          if use_async:
+            return create_annotation(
+              py_type=f'AsyncIterator[{item_type}]', nullable=False, omissible=False
+            )
           return create_annotation(
             py_type=f'Iterator[{item_type}]', nullable=False, omissible=False
           )

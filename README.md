@@ -73,6 +73,19 @@ for user in dp_client.users.list():
   print(user)
 ```
 
+### Async Support
+
+`AsyncDialpadClient` is a thing now 🌈
+
+```python
+
+from dialpad import AsyncDialpadClient
+
+dp_client = AsyncDialpadClient(sandbox=True, token='API_TOKEN_HERE')
+
+async for user in dp_client.users.list():
+  print(user)
+```
 
 ## Development
 

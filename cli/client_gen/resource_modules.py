@@ -91,7 +91,7 @@ def _extract_schema_dependencies(
 
 
 def resource_class_to_module_def(
-  class_name: str, operations_list: List[Tuple[SchemaPath, str, str]], api_spec: SchemaPath
+  class_name: str, operations_list: List[Tuple[SchemaPath, str, str]], api_spec: SchemaPath, use_async: bool = False
 ) -> ast.Module:
   """
   Converts a resource class specification to a Python module definition (ast.Module).
@@ -118,14 +118,14 @@ def resource_class_to_module_def(
         ast.alias(name='Dict', asname=None),
         ast.alias(name='Union', asname=None),
         ast.alias(name='Literal', asname=None),
-        ast.alias(name='Iterator', asname=None),
+        ast.alias(name='AsyncIterator', asname=None) if use_async else ast.alias(name='Iterator', asname=None),
         ast.alias(name='Any', asname=None),
       ],
       level=0,  # Absolute import
     ),
     ast.ImportFrom(
-      module='dialpad.resources.base',
-      names=[ast.alias(name='DialpadResource', asname=None)],
+      module='dialpad.async_resources.base' if use_async else 'dialpad.resources.base',
+      names=[ast.alias(name='AsyncDialpadResource' if use_async else 'DialpadResource', asname=None)],
       level=0,  # Absolute import
     ),
   ]
@@ -141,7 +141,7 @@ def resource_class_to_module_def(
     )
 
   # Generate the class definition using resource_class_to_class_def
-  class_definition = resource_class_to_class_def(class_name, operations_list)
+  class_definition = resource_class_to_class_def(class_name, operations_list, use_async=use_async)
 
   # Construct the ast.Module with imports and class definition
   module_body = import_statements + [class_definition]
