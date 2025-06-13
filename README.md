@@ -86,22 +86,21 @@ Changes/additions to the Dialpad API can be handled (mostly) automatically 👍
 
 #### Update Procedure
 
-- Overwrite `dialpad_api_spec.json` with the latest spec
+- Run `uv run cli interactive-update`
 
-- Run `uv run cli preprocess-spec`
-  - This just does a few ham-fisted inplace edits to the spec file to make the schema paths a bit nicer
-
-- Run `uv run cli update-resource-module-mapping --interactive`
-  - This adds entries to `module_mapping.json` for any new API operations in the API spec.
-    We (humans) get to decide the appropriate resource class and method name 👍
-
-![resource module mapping](./docs/images/resource_module_mapping.png)
-
-- Run `uv run cli generate-client`
-  - This will regenerate all of the schema and resource files as per the API spec.
+This will take care of pulling down the latest OAS from dialpad.com, updating the client
+accordingly, and bumping the package version number.
 
 - Run `uv run pytest`
   - Never hurts to confirm that nothing got borked 👍
 
-TODO: version bump, build, push, publish
+- Commit the changes, tag the commit, and push up the changes
+  - `interactive-update` provides these in its output for convenience 👍
 
+Pushing up a version tag will trigger GHA to build, test, and publish to PyPI 🍻
+
+
+### Feature Releases
+
+The schema and resource classes in this project are now automatically-generated, but the rest of
+the project files can still be directly edited to add features or extend functionality
