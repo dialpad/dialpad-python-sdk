@@ -68,6 +68,9 @@ def generate_client():
   # Write the generated resource modules to the client directory
   resources_to_package_directory(open_api_spec.spec, os.path.join(CLIENT_DIR, 'resources'))
 
+  # Write async version of the resource modules to the async_resources directory
+  resources_to_package_directory(open_api_spec.spec, os.path.join(CLIENT_DIR, 'async_resources'), use_async=True)
+
 @app.command('interactive-update')
 def interactive_update():
   """The one-stop-shop for updating the Dialpad client with the latest dialpad api spec."""

@@ -13,7 +13,7 @@ VALID_HTTP_METHODS = {'get', 'put', 'post', 'delete', 'options', 'head', 'patch'
 
 
 def resource_class_to_class_def(
-  class_name: str, operations_list: List[Tuple[SchemaPath, str, str]]
+  class_name: str, operations_list: List[Tuple[SchemaPath, str, str]], use_async: bool = False
 ) -> ast.ClassDef:
   """
   Converts a list of OpenAPI operations to a Python resource class definition.
@@ -55,7 +55,7 @@ def resource_class_to_class_def(
 
       # Generate function definition for this operation
       func_def = http_method_to_func_def(
-        operation_spec_path, override_func_name=target_method_name, api_path=original_api_path
+        operation_spec_path, override_func_name=target_method_name, api_path=original_api_path, use_async=use_async
       )
       class_body_stmts.append(func_def)
     except Exception as e:
@@ -63,27 +63,9 @@ def resource_class_to_class_def(
 
   # Base class: DialpadResource
   base_class_node = ast.Name(id='DialpadResource', ctx=ast.Load())
+  if use_async:
+    base_class_node = ast.Name(id='AsyncDialpadResource', ctx=ast.Load())
 
   return ast.ClassDef(
     name=class_name, bases=[base_class_node], keywords=[], body=class_body_stmts, decorator_list=[]
   )
-
-
-# Keep the old function for backward compatibility or testing
-def _path_str_to_class_name(path_str: str) -> str:
-  """Converts an OpenAPI path string to a Python class name."""
-  if path_str == '/':
-    return 'RootResource'
-
-  name_parts = []
-  cleaned_path = path_str.lstrip('/')
-  for part in cleaned_path.split('/'):
-    if part.startswith('{') and part.endswith('}'):
-      param_name = part[1:-1]
-      # Convert snake_case or kebab-case to CamelCase (e.g., user_id -> UserId)
-      name_parts.append(''.join(p.capitalize() for p in param_name.replace('-', '_').split('_')))
-    else:
-      # Convert static part to CamelCase (e.g., call-queues -> CallQueues)
-      name_parts.append(''.join(p.capitalize() for p in part.replace('-', '_').split('_')))
-
-  return ''.join(name_parts) + 'Resource'
