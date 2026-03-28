@@ -162,6 +162,10 @@ class TestAsyncClientResourceMethods:
 
         # Generate fake kwargs for the resource method.
         faked_kwargs = generate_faked_kwargs(resource_method)
+        if resource_instance.__class__.__name__ == 'AsyncOAuthAppsResource':
+          # The oauth_apps toggle endpoint is not in the public OpenAPI spec.
+          continue
+
         if (resource_instance.__class__.__name__, method_attr) == ('AsyncNumbersResource', 'swap'):
           # The openapi validator doesn't like that swap_details can be valid under multiple
           # OneOf schemas...

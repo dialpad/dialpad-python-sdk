@@ -25,6 +25,7 @@ from .meeting_rooms_resource import MeetingRoomsResource
 from .meetings_resource import MeetingsResource
 from .numbers_resource import NumbersResource
 from .oauth2_resource import OAuth2Resource
+from .oauth_apps_resource import OAuthAppsResource
 from .offices_resource import OfficesResource
 from .recording_share_links_resource import RecordingShareLinksResource
 from .rooms_resource import RoomsResource
@@ -263,6 +264,15 @@ class DialpadResourcesMixin:
     return NumbersResource(self)
 
   @property
+  def oauth_apps(self) -> OAuthAppsResource:
+    """Returns an instance of OAuthAppsResource.
+
+    Returns:
+        A OAuthAppsResource instance initialized with this client.
+    """
+    return OAuthAppsResource(self)
+
+  @property
   def oauth2(self) -> OAuth2Resource:
     """Returns an instance of OAuth2Resource.
 
@@ -405,6 +415,7 @@ __all__ = [
   'MeetingRoomsResource',
   'MeetingsResource',
   'NumbersResource',
+  'OAuthAppsResource',
   'OAuth2Resource',
   'OfficesResource',
   'RecordingShareLinksResource',

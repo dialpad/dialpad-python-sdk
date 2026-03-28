@@ -27,6 +27,7 @@ from .async_meeting_rooms_resource import AsyncMeetingRoomsResource
 from .async_meetings_resource import AsyncMeetingsResource
 from .async_numbers_resource import AsyncNumbersResource
 from .async_oauth2_resource import AsyncOAuth2Resource
+from .async_oauth_apps_resource import AsyncOAuthAppsResource
 from .async_offices_resource import AsyncOfficesResource
 from .async_recording_share_links_resource import AsyncRecordingShareLinksResource
 from .async_rooms_resource import AsyncRoomsResource
@@ -265,6 +266,15 @@ class AsyncDialpadResourcesMixin:
     return AsyncNumbersResource(self)
 
   @property
+  def oauth_apps(self) -> AsyncOAuthAppsResource:
+    """Returns an instance of AsyncOAuthAppsResource.
+
+    Returns:
+        A AsyncOAuthAppsResource instance initialized with this client.
+    """
+    return AsyncOAuthAppsResource(self)
+
+  @property
   def oauth2(self) -> AsyncOAuth2Resource:
     """Returns an instance of AsyncOAuth2Resource.
 
@@ -407,6 +417,7 @@ __all__ = [
   'AsyncMeetingRoomsResource',
   'AsyncMeetingsResource',
   'AsyncNumbersResource',
+  'AsyncOAuthAppsResource',
   'AsyncOAuth2Resource',
   'AsyncOfficesResource',
   'AsyncRecordingShareLinksResource',
