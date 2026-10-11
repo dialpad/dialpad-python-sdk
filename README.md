@@ -38,6 +38,8 @@ print(dp_client.users.get(user_id='1234567'))
 - `sandbox (optional)` If the `sandbox` argument is set to `True`, then API calls will be
   routed to `https://sandbox.dialpad.com`.
 - `base_url (optional)` Routes requests to a specific url.
+- `timeout (optional)` The number of seconds to wait for a response before giving up on a request.
+  Defaults to `600`. Pass `None` to wait indefinitely.
 
 
 ### API Resources

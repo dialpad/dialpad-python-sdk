@@ -6,6 +6,9 @@ from .async_resources import AsyncDialpadResourcesMixin
 
 hosts = dict(live='https://dialpad.com', sandbox='https://sandbox.dialpad.com')
 
+# How long to wait on the API before giving up on a request, in seconds.
+DEFAULT_TIMEOUT = 600.0
+
 
 class AsyncDialpadClient(AsyncDialpadResourcesMixin):
   def __init__(
@@ -14,9 +17,10 @@ class AsyncDialpadClient(AsyncDialpadResourcesMixin):
     sandbox: bool = False,
     base_url: Optional[str] = None,
     company_id: Optional[str] = None,
+    timeout: Optional[float] = DEFAULT_TIMEOUT,
   ):
     self._token = token
-    self._session = httpx.AsyncClient(timeout=600.0)
+    self._session = httpx.AsyncClient(timeout=timeout)
     self._base_url = base_url or hosts.get('sandbox' if sandbox else 'live')
     self._company_id = company_id
 
@@ -30,7 +34,7 @@ class AsyncDialpadClient(AsyncDialpadResourcesMixin):
 
   @company_id.deleter
   def company_id(self):
-    del self._company_id
+    self._company_id = None
 
   def _url(self, path: str) -> str:
     return f'{self._base_url}/{path.lstrip("/")}'
@@ -44,7 +48,8 @@ class AsyncDialpadClient(AsyncDialpadResourcesMixin):
     headers: Optional[dict] = None,
   ) -> httpx.Response:
     url = self._url(sub_path)
-    headers = headers or dict()
+    # Work on a copy, so that the caller's dict is not left holding the API token.
+    headers = dict(headers or {})
     if self.company_id:
       headers.update({'DP-Company-ID': str(self.company_id)})
 
